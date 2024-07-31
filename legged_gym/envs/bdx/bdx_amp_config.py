@@ -29,8 +29,7 @@
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 import glob
 
-from legged_gym.envs.base.legged_robot_config import (LeggedRobotCfg,
-                                                      LeggedRobotCfgPPO)
+from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
 MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
@@ -40,9 +39,9 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
-        num_envs = 8
+        num_envs = 1
         include_history_steps = None  # Number of steps of history to include.
-        num_observations = 57  # TODO what ?
+        num_observations = 51  # TODO what ?
         num_privileged_obs = 57
         num_actions = 15
         reference_state_initialization = True

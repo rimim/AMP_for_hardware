@@ -38,7 +38,7 @@ class LoopMode(enum.Enum):
 
 
 class MotionLib(object):
-    def __init__(self, motion_file, device, sample_dt = None):
+    def __init__(self, motion_file, device, sample_dt=None):
         self._num_dof = 15
         self._device = device
         self._dataset_name_to_id = {}
@@ -226,23 +226,27 @@ class MotionLib(object):
         for _ in range(nb_mini_batch):
             motion_ids = self.sample_motions(mini_batch_size)
             motion_times = self.sample_time(motion_ids)
-            root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel = self.get_motion_state(
-                motion_ids, motion_times
+            root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel = (
+                self.get_motion_state(motion_ids, motion_times)
             )
 
-            s = torch.cat([root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1)
+            s = torch.cat(
+                [root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1
+            )
 
             if self._sample_dt is not None:
                 dt = self._sample_dt
             else:
                 dt = self._motion_dt[motion_ids]
-            root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel = self.get_motion_state(
-                motion_ids, motion_times + dt
+            root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel = (
+                self.get_motion_state(motion_ids, motion_times + dt)
             )
 
-            s_next = torch.cat([root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1)
-
+            s_next = torch.cat(
+                [root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1
+            )
             yield s, s_next
+
 
 class MotionData(object):
     """Motion data representing a pose trajectory for a character.

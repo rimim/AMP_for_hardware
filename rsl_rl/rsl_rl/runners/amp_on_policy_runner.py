@@ -96,6 +96,7 @@ class AMPOnPolicyRunner:
         min_std = torch.tensor(self.cfg["min_normalized_std"], device=self.device) * (
             torch.abs(self.env.dof_pos_limits[:, 1] - self.env.dof_pos_limits[:, 0])
         )
+        min_std = None
         self.alg: PPO = alg_class(
             actor_critic,
             discriminator,
@@ -162,6 +163,11 @@ class AMPOnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
+                    print("=====")
+                    print(obs.shape)
+                    print("---")
+                    print(amp_obs.shape)
+                    print("=====")
                     actions = self.alg.act(obs, critic_obs, amp_obs)
                     (
                         obs,
