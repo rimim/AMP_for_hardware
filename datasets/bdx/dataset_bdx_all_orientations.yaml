@@ -1,0 +1,145 @@
+motions:
+  - file: "mujoco_forward_all_orientations/bdx_forward_0.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_5.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_10.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_15.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_20.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_25.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_30.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_35.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_40.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_45.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_50.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_55.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_60.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_65.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_70.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_75.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_80.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_85.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_90.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_95.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_100.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_105.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_110.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_115.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_120.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_125.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_130.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_135.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_140.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_145.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_150.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_155.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_160.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_165.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_170.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_175.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_180.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-5.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-10.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-15.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-20.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-25.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-30.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-35.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-40.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-45.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-50.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-55.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-60.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-65.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-70.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-75.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-80.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-85.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-90.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-95.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-100.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-105.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-110.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-115.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-120.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-125.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-130.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-135.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-140.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-145.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-150.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-155.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-160.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-165.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-170.txt"
+    weight: 0.0138
+  - file: "mujoco_forward_all_orientations/bdx_forward_-175.txt"
+    weight: 0.0138
