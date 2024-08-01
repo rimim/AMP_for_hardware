@@ -44,6 +44,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         num_observations = 51  # TODO what ?
         num_privileged_obs = 57
         num_actions = 15
+        env_spacing = 3.0
         reference_state_initialization = True
         reference_state_initialization_prob = 0.85
         amp_motion_file = MOTION_FILE
@@ -170,9 +171,9 @@ class BDXAMPCfg(LeggedRobotCfg):
             stand_still = 0.0
             dof_pos_limits = 0.0
 
-    class sim:
-        class physix:
-            max_gpu_contact_pairs = 2**22
+    # class sim:
+    #     class physix:
+    #         max_gpu_contact_pairs = 2**22
 
     class commands:
         curriculum = False
