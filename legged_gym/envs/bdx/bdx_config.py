@@ -35,46 +35,91 @@ class BDXRoughCfg(LeggedRobotCfg):
 
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
-        num_envs = 2
+        num_envs = 16
         include_history_steps = None  # Number of steps of history to include.
-        num_observations = 235
-        num_privileged_obs = 235
+        num_observations = 51
+        num_privileged_obs = 57
+        num_actions = 15
+        env_spacing = 1.0
         reference_state_initialization = False
         # reference_state_initialization_prob = 0.85
         # amp_motion_files = MOTION_FILES
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.42]  # x,y,z [m]
+        pos = [0.0, 0.0, 0.175]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
-            "FL_hip_joint": 0.1,  # [rad]
-            "RL_hip_joint": 0.1,  # [rad]
-            "FR_hip_joint": -0.1,  # [rad]
-            "RR_hip_joint": -0.1,  # [rad]
-            "FL_thigh_joint": 0.8,  # [rad]
-            "RL_thigh_joint": 1.0,  # [rad]
-            "FR_thigh_joint": 0.8,  # [rad]
-            "RR_thigh_joint": 1.0,  # [rad]
-            "FL_calf_joint": -1.5,  # [rad]
-            "RL_calf_joint": -1.5,  # [rad]
-            "FR_calf_joint": -1.5,  # [rad]
-            "RR_calf_joint": -1.5,  # [rad]
+            "right_hip_yaw": -0.03676731090962078,  # [rad]
+            "right_hip_roll": -0.030315211140564333,  # [rad]
+            "right_hip_pitch": 0.4065815100399598,  # [rad]
+            "right_knee": -1.0864064934571644,  # [rad]
+            "right_ankle": 0.5932324840794684,  # [rad]
+            "left_hip_yaw": -0.03485756878823724,  # [rad]
+            "left_hip_roll": 0.052286054888550475,  # [rad]
+            "left_hip_pitch": 0.36623601032755765,  # [rad]
+            "left_knee": -0.964204465274923,  # [rad]
+            "left_ankle": 0.5112970996901808,  # [rad]
+            "neck_pitch": -0.17453292519943295,  # [rad]
+            "head_pitch": -0.17453292519943295,  # [rad]
+            "head_yaw": 0,  # [rad]
+            "left_antenna": 0.0,  # [rad]
+            "right_antenna": 0.0,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        stiffness = {"joint": 20.0}  # [N*m/rad]
-        damping = {"joint": 0.5}  # [N*m*s/rad]
+        stiffness = {
+            "left_hip_yaw": 10.0,
+            "left_hip_roll": 10.0,
+            "left_hip_pitch": 10.0,
+            "left_knee": 10.0,
+            "left_ankle": 10.0,
+            "right_hip_yaw": 10.0,
+            "right_hip_roll": 10.0,
+            "right_hip_pitch": 10.0,
+            "right_knee": 10.0,
+            "right_ankle": 10.0,
+            "neck_pitch": 10.0,
+            "head_pitch": 10.0,
+            "head_yaw": 10.0,
+            "left_antenna": 10.0,
+            "right_antenna": 10.0,
+        }  # [N*m/rad]
+
+        damping = {
+            "left_hip_yaw": 0.5,
+            "left_hip_roll": 0.5,
+            "left_hip_pitch": 0.5,
+            "left_knee": 0.5,
+            "left_ankle": 0.5,
+            "right_hip_yaw": 0.5,
+            "right_hip_roll": 0.5,
+            "right_hip_pitch": 0.5,
+            "right_knee": 0.5,
+            "right_ankle": 0.5,
+            "neck_pitch": 0.5,
+            "head_pitch": 0.5,
+            "head_yaw": 0.5,
+            "left_antenna": 0.5,
+            "right_antenna": 0.5,
+        }  # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
+        # action_scale = 1
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 4
+        decimation = 1
+        # decimation = 6
+
+    class terrain(LeggedRobotCfg.terrain):
+        mesh_type = "plane"
+        measure_heights = False
 
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
         foot_name = "foot"
-        penalize_contacts_on = []
+        penalize_contacts_on = ["left_knee" "right_knee"]
         terminate_after_contacts_on = ["body_module"]
+        flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
     class rewards(LeggedRobotCfg.rewards):

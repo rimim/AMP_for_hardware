@@ -44,7 +44,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         num_observations = 51  # TODO what ?
         num_privileged_obs = 57
         num_actions = 15
-        # env_spacing = 3.0
+        env_spacing = 1.0
         reference_state_initialization = True
         reference_state_initialization_prob = 0.85
         amp_motion_file = MOTION_FILE
@@ -112,6 +112,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 1
+        # decimation = 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -123,11 +124,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         penalize_contacts_on = ["left_knee" "right_knee"]
         terminate_after_contacts_on = ["body_module"]
         flip_visual_attachments = False
-        self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
+        self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
         clip_actions = 1.0
+
+    # class sim(LeggedRobotCfg.sim):
+    #     dt = 0.001
 
     class domain_rand:
         randomize_friction = True
@@ -174,10 +178,6 @@ class BDXAMPCfg(LeggedRobotCfg):
             action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
-
-    # class sim:
-    #     class physix:
-    #         max_gpu_contact_pairs = 2**22
 
     class commands:
         curriculum = False

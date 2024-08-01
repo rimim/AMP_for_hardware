@@ -113,12 +113,6 @@ class MotionLib(object):
                     @ tmp_root_pos
                 )
 
-            try:
-                R.from_quat(rot_quat)
-            except Exception as e:
-                print("AAAAAAAAAAAAAAAAAAAAAAAAAA")
-                print(e)
-                print(rot_quat)
             root_rot[i, :] = rot_quat
             root_pos[i, :] = tmp_root_pos
             dof_pos[i, :] = frame_t[7:]

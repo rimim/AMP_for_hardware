@@ -97,12 +97,9 @@ class LeggedRobot(BaseTask):
         self.init_done = True
 
         if self.cfg.env.reference_state_initialization:
-            self.motion_lib = MotionLib(self.cfg.env.amp_motion_file, self.device)
-            # self.amp_loader = AMPLoader(
-            #     motion_files=self.cfg.env.amp_motion_files,
-            #     device=self.device,
-            #     time_between_frames=self.dt,
-            # )
+            self.motion_lib = MotionLib(
+                self.cfg.env.amp_motion_file, self.device, sample_dt=self.sim_params.dt
+            )
 
     def reset(self):
         """Reset all robots"""
@@ -267,7 +264,6 @@ class LeggedRobot(BaseTask):
                 dof_vel,
             ) = self.motion_lib.get_motion_state(motion_ids, motion_times)
 
-            # frames = self.motion_lib.get_motion_state
             self._reset_dofs_amp(env_ids, dof_pos, dof_vel)
             self._reset_root_states_amp(
                 env_ids, root_pos, root_rot, root_vel, root_ang_vel
@@ -603,15 +599,6 @@ class LeggedRobot(BaseTask):
                 p_gains * (actions_scaled + self.default_dof_pos - self.dof_pos)
                 - d_gains * self.dof_vel
             )
-            print("====")
-            print(p_gains)
-            print(actions_scaled)
-            print(self.default_dof_pos)
-            print(self.dof_pos)
-            print(d_gains)
-            print(self.dof_vel)
-            print(torques)
-            print("=======")
         elif control_type == "V":
             torques = (
                 p_gains * (actions_scaled - self.dof_vel)
@@ -621,6 +608,7 @@ class LeggedRobot(BaseTask):
             torques = actions_scaled
         else:
             raise NameError(f"Unknown controller type: {control_type}")
+        
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
 
     def _reset_dofs(self, env_ids):
