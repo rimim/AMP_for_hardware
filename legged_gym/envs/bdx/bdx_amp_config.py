@@ -170,6 +170,10 @@ class BDXAMPCfg(LeggedRobotCfg):
             stand_still = 0.0
             dof_pos_limits = 0.0
 
+    class sim:
+        class physix:
+            max_gpu_contact_pairs = 2**22
+
     class commands:
         curriculum = False
         max_curriculum = 1.0
