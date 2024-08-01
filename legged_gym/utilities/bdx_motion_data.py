@@ -127,9 +127,8 @@ class MotionLib(object):
         root_vel = to_torch(root_vel, device=self._device)
         root_ang_vel = to_torch(root_ang_vel, device=self._device)
         dof_vel = to_torch(dof_vel, device=self._device)
-        # root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
-        # return root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
-        return root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel
+
+        return root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel 
 
     def _load_motions(self, motion_file):
         self._motions = []

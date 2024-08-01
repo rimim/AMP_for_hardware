@@ -39,12 +39,12 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
-        num_envs = 2
+        num_envs = 64
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 51  # TODO what ?
         num_privileged_obs = 57
         num_actions = 15
-        env_spacing = 3.0
+        # env_spacing = 3.0
         reference_state_initialization = True
         reference_state_initialization_prob = 0.85
         amp_motion_file = MOTION_FILE
@@ -108,8 +108,8 @@ class BDXAMPCfg(LeggedRobotCfg):
             "right_antenna": 0.5,
         }  # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 1
-        # action_scale = 0.25
+        # action_scale = 1
+        action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
 
@@ -124,6 +124,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         terminate_after_contacts_on = ["body_module"]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
+        default_dof_drive_mode = 1  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+
+    class normalization(LeggedRobotCfg.normalization):
+        clip_observations = 5.0
+        clip_actions = 1.0
 
     class domain_rand:
         randomize_friction = True
@@ -151,7 +156,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
-        base_height_target = 0.25
+        base_height_target = 0.175
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
@@ -180,7 +185,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         max_curriculum = 1.0
         num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = False  # if true: compute ang vel command from heading error
+        heading_command = True  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [-0.1, 0.1]  # min max [m/s]
@@ -212,11 +217,11 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_discr_hidden_dims = [1024, 512]
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
-        min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
-            0.02,
-            0.02,
-            0.02,
-        ]  # WARNING TOTALLY PIFFED
+        # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
+        #     0.02,
+        #     0.02,
+        #     0.02,
+        # ]  # WARNING TOTALLY PIFFED
 
         pass
         pass

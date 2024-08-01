@@ -368,25 +368,22 @@ class LeggedRobot(BaseTask):
             self.obs_buf = torch.clone(self.privileged_obs_buf)
 
     def get_amp_observations(self):
-        joint_pos = self.dof_pos
-        # foot_pos = self.foot_positions_in_base_frame(self.dof_pos).to(self.device)
-        base_lin_vel = self.base_lin_vel
-        base_ang_vel = self.base_ang_vel
-        joint_vel = self.dof_vel
-        z_pos = self.root_states[:, 2:3]
-        # return torch.cat(
-        #     (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos), dim=-1
-        # )
+        # root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel
+        root_pos = self.root_states[:, :3]
+        root_rot = self.root_states[:, 3:7]
+        dof_pos = self.dof_pos
+        root_vel = self.root_states[:, 7:10]
+        root_ang_vel = self.root_states[:, 10:13]
+        dof_vel = self.dof_vel
 
-        # root_pos,root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
         return torch.cat(
             (
-                self.root_states[:, :3],
-                self.root_states[:, 3:7],
-                self.root_states[:, 7:10],
-                self.root_states[:, 10:13],
-                joint_pos,
-                joint_vel,
+                root_pos,
+                root_rot,
+                dof_pos,
+                root_vel,
+                root_ang_vel,
+                dof_vel,
             ),
             dim=-1,
         )

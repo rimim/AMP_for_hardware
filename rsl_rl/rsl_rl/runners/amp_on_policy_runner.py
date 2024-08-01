@@ -93,9 +93,9 @@ class AMPOnPolicyRunner:
 
         # self.discr: AMPDiscriminator = AMPDiscriminator()
         alg_class = eval(self.cfg["algorithm_class_name"])  # PPO
-        min_std = torch.tensor(self.cfg["min_normalized_std"], device=self.device) * (
-            torch.abs(self.env.dof_pos_limits[:, 1] - self.env.dof_pos_limits[:, 0])
-        )
+        # min_std = torch.tensor(self.cfg["min_normalized_std"], device=self.device) * (
+        #     torch.abs(self.env.dof_pos_limits[:, 1] - self.env.dof_pos_limits[:, 0])
+        # )
         min_std = None
         self.alg: PPO = alg_class(
             actor_critic,
@@ -163,6 +163,17 @@ class AMPOnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
+                    print("+++++++++")
+                    print("OBS")
+                    for ob in obs:
+                        print(torch.isnan(ob))
+                    print("CRITIC OBS")
+                    for cr_ob in critic_obs:
+                        print(torch.isnan(cr_ob))
+                    print("AMP OBS")
+                    for am_ob in amp_obs:
+                        print(torch.isnan(am_ob))
+                    print("===")
                     actions = self.alg.act(obs, critic_obs, amp_obs)
                     (
                         obs,
