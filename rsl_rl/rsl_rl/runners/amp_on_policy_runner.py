@@ -163,17 +163,6 @@ class AMPOnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
-                    print("+++++++++")
-                    print("OBS")
-                    for ob in obs:
-                        print(torch.isnan(ob))
-                    print("CRITIC OBS")
-                    for cr_ob in critic_obs:
-                        print(torch.isnan(cr_ob))
-                    print("AMP OBS")
-                    for am_ob in amp_obs:
-                        print(torch.isnan(am_ob))
-                    print("===")
                     actions = self.alg.act(obs, critic_obs, amp_obs)
                     (
                         obs,

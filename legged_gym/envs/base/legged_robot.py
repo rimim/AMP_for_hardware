@@ -43,7 +43,8 @@ from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
 from legged_gym.utilities.bdx_motion_data import MotionLib
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
+from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
+                                   wrap_to_pi)
 from legged_gym.utils.terrain import Terrain
 
 from .legged_robot_config import LeggedRobotCfg
@@ -329,6 +330,11 @@ class LeggedRobot(BaseTask):
 
     def compute_observations(self):
         """Computes observations"""
+
+        # self.gym.refresh_dof_state_tensor(self.sim)
+        # self.gym.refresh_actor_root_state_tensor(self.sim)
+        # self.gym.refresh_net_contact_force_tensor(self.sim)
+
         self.privileged_obs_buf = torch.cat(
             (
                 self.base_lin_vel * self.obs_scales.lin_vel,
@@ -341,6 +347,7 @@ class LeggedRobot(BaseTask):
             ),
             dim=-1,
         )
+
         # add perceptive inputs if not blind
         if self.cfg.terrain.measure_heights:
             heights = (
@@ -596,6 +603,15 @@ class LeggedRobot(BaseTask):
                 p_gains * (actions_scaled + self.default_dof_pos - self.dof_pos)
                 - d_gains * self.dof_vel
             )
+            print("====")
+            print(p_gains)
+            print(actions_scaled)
+            print(self.default_dof_pos)
+            print(self.dof_pos)
+            print(d_gains)
+            print(self.dof_vel)
+            print(torques)
+            print("=======")
         elif control_type == "V":
             torques = (
                 p_gains * (actions_scaled - self.dof_vel)
@@ -691,7 +707,6 @@ class LeggedRobot(BaseTask):
         self.root_states[env_ids, 3:7] = root_orn
         self.root_states[env_ids, 7:10] = quat_rotate(root_orn, root_vel)
         self.root_states[env_ids, 10:13] = quat_rotate(root_orn, root_ang_vel)
-
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(
             self.sim,

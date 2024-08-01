@@ -113,6 +113,12 @@ class MotionLib(object):
                     @ tmp_root_pos
                 )
 
+            try:
+                R.from_quat(rot_quat)
+            except Exception as e:
+                print("AAAAAAAAAAAAAAAAAAAAAAAAAA")
+                print(e)
+                print(rot_quat)
             root_rot[i, :] = rot_quat
             root_pos[i, :] = tmp_root_pos
             dof_pos[i, :] = frame_t[7:]
@@ -128,7 +134,7 @@ class MotionLib(object):
         root_ang_vel = to_torch(root_ang_vel, device=self._device)
         dof_vel = to_torch(dof_vel, device=self._device)
 
-        return root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel 
+        return root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel
 
     def _load_motions(self, motion_file):
         self._motions = []

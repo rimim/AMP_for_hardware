@@ -39,7 +39,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
-        num_envs = 64
+        num_envs = 16
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 51  # TODO what ?
         num_privileged_obs = 57
@@ -111,7 +111,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6
+        decimation = 1
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -120,11 +120,10 @@ class BDXAMPCfg(LeggedRobotCfg):
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
         foot_name = "foot"
-        penalize_contacts_on = []
+        penalize_contacts_on = ["left_knee" "right_knee"]
         terminate_after_contacts_on = ["body_module"]
         flip_visual_attachments = False
-        self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
-        default_dof_drive_mode = 1  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+        self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
