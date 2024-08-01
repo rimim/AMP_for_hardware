@@ -377,8 +377,18 @@ class LeggedRobot(BaseTask):
         # return torch.cat(
         #     (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos), dim=-1
         # )
+
+        # root_pos,root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
         return torch.cat(
-            (joint_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos), dim=-1
+            (
+                self.root_states[:, :3],
+                self.root_states[:, 3:7],
+                self.root_states[:, 7:10],
+                self.root_states[:, 10:13],
+                joint_pos,
+                joint_vel,
+            ),
+            dim=-1,
         )
 
     def create_sim(self):

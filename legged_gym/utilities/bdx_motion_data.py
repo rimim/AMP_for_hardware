@@ -43,7 +43,8 @@ class MotionLib(object):
         self._device = device
         self._dataset_name_to_id = {}
         self._load_motions(motion_file)
-        self.observation_dim = 3 + 4 + self._num_dof
+        # root_pos, root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
+        self.observation_dim = 3 + 4 + 3 + 3 + self._num_dof + self._num_dof
         self._sample_dt = sample_dt
 
     def num_motions(self):
@@ -126,7 +127,8 @@ class MotionLib(object):
         root_vel = to_torch(root_vel, device=self._device)
         root_ang_vel = to_torch(root_ang_vel, device=self._device)
         dof_vel = to_torch(dof_vel, device=self._device)
-
+        # root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
+        # return root_rot, root_vel, root_ang_vel, dof_pos, dof_vel
         return root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel
 
     def _load_motions(self, motion_file):

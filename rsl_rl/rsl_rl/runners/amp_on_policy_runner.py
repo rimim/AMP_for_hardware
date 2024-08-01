@@ -163,11 +163,6 @@ class AMPOnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
-                    print("=====")
-                    print(obs.shape)
-                    print("---")
-                    print(amp_obs.shape)
-                    print("=====")
                     actions = self.alg.act(obs, critic_obs, amp_obs)
                     (
                         obs,

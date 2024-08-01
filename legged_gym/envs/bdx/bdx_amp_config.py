@@ -39,7 +39,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
-        num_envs = 1
+        num_envs = 2
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 51  # TODO what ?
         num_privileged_obs = 57
@@ -119,9 +119,10 @@ class BDXAMPCfg(LeggedRobotCfg):
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
         foot_name = "foot"
-        penalize_contacts_on = ["left_knee", "right_knee"]
+        penalize_contacts_on = []
         terminate_after_contacts_on = ["body_module"]
-        self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
+        flip_visual_attachments = False
+        self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
     class domain_rand:
         randomize_friction = True
