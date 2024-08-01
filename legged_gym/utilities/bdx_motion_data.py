@@ -222,6 +222,7 @@ class MotionLib(object):
 
         return motion_files, motion_weights
 
+    # TODO this is probably the culprit
     def feed_forward_generator(self, nb_mini_batch, mini_batch_size):
         """Generates a batch of AMP transitions."""
         for _ in range(nb_mini_batch):
@@ -232,7 +233,15 @@ class MotionLib(object):
             )
 
             s = torch.cat(
-                [root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1
+                [
+                    root_pos.copy(),
+                    root_rot.copy(),
+                    dof_pos.copy(),
+                    root_vel.copy(),
+                    root_ang_vel.copy(),
+                    dof_vel.copy(),
+                ],
+                dim=1,
             )
 
             if self._sample_dt is not None:
@@ -244,7 +253,15 @@ class MotionLib(object):
             )
 
             s_next = torch.cat(
-                [root_pos, root_rot, dof_pos, root_vel, root_ang_vel, dof_vel], dim=1
+                [
+                    root_pos.copy(),
+                    root_rot.copy(),
+                    dof_pos.copy(),
+                    root_vel.copy(),
+                    root_ang_vel.copy(),
+                    dof_vel.copy(),
+                ],
+                dim=1,
             )
             yield s, s_next
 
