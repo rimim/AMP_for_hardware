@@ -43,8 +43,7 @@ from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
 from legged_gym.utilities.bdx_motion_data import MotionLib
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
-                                   wrap_to_pi)
+from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
 from legged_gym.utils.terrain import Terrain
 
 from .legged_robot_config import LeggedRobotCfg
@@ -114,6 +113,7 @@ class LeggedRobot(BaseTask):
                 self.num_envs, self.num_actions, device=self.device, requires_grad=False
             )
         )
+
         return obs, privileged_obs
 
     def step(self, actions):
@@ -122,6 +122,15 @@ class LeggedRobot(BaseTask):
         Args:
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
+
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
+
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
         # step physics and render each frame
@@ -131,10 +140,12 @@ class LeggedRobot(BaseTask):
             self.gym.set_dof_actuation_force_tensor(
                 self.sim, gymtorch.unwrap_tensor(self.torques)
             )
+            self.torques = self.torques.view(self.torques.shape)
             self.gym.simulate(self.sim)
             if self.device == "cpu":
                 self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
+            self.gym.refresh_net_contact_force_tensor(self.sim)
         reset_env_ids, terminal_amp_states = self.post_physics_step()
 
         # return clipped obs, clipped states (None), rewards, dones and infos
@@ -177,6 +188,7 @@ class LeggedRobot(BaseTask):
         calls self._post_physics_step_callback() for common computations
         calls self._draw_debug_vis() if needed
         """
+
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_net_contact_force_tensor(self.sim)
 
@@ -608,7 +620,7 @@ class LeggedRobot(BaseTask):
             torques = actions_scaled
         else:
             raise NameError(f"Unknown controller type: {control_type}")
-        
+
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
 
     def _reset_dofs(self, env_ids):
