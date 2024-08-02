@@ -27,7 +27,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
+
 import glob
+
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
@@ -37,7 +39,6 @@ MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
 
 
 class BDXAMPCfg(LeggedRobotCfg):
-
     class env(LeggedRobotCfg.env):
         # num_envs = 5480
         num_envs = 16
@@ -118,6 +119,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
         measure_heights = False
+        static_friction = 5.0
+        dynamic_friction = 5.0
 
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
