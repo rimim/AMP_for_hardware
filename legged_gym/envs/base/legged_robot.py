@@ -41,10 +41,10 @@ from torch import Tensor
 
 from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
-
 # from legged_gym.utilities.bdx_motion_data import MotionLib
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
+from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
+                                   wrap_to_pi)
 from legged_gym.utils.terrain import Terrain
 from rsl_rl.datasets.motion_loader import AMPLoader
 
@@ -182,9 +182,7 @@ class LeggedRobot(BaseTask):
         calls self._post_physics_step_callback() for common computations
         calls self._draw_debug_vis() if needed
         """
-        print(self.root_states)
         self.gym.refresh_actor_root_state_tensor(self.sim)
-        print(self.root_states)
         self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.episode_length_buf += 1
