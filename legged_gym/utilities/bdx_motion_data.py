@@ -234,12 +234,12 @@ class MotionLib(object):
 
             s = torch.cat(
                 [
-                    root_pos.copy(),
-                    root_rot.copy(),
-                    dof_pos.copy(),
-                    root_vel.copy(),
-                    root_ang_vel.copy(),
-                    dof_vel.copy(),
+                    root_pos,
+                    root_rot,
+                    dof_pos,
+                    root_vel,
+                    root_ang_vel,
+                    dof_vel,
                 ],
                 dim=1,
             )
@@ -254,12 +254,12 @@ class MotionLib(object):
 
             s_next = torch.cat(
                 [
-                    root_pos.copy(),
-                    root_rot.copy(),
-                    dof_pos.copy(),
-                    root_vel.copy(),
-                    root_ang_vel.copy(),
-                    dof_vel.copy(),
+                    root_pos,
+                    root_rot,
+                    dof_pos,
+                    root_vel,
+                    root_ang_vel,
+                    dof_vel,
                 ],
                 dim=1,
             )

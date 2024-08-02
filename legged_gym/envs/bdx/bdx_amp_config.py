@@ -137,7 +137,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         randomize_friction = True
         friction_range = [0.25, 1.75]
         randomize_base_mass = True
-        added_mass_range = [-1.0, 1.0]
+        added_mass_range = [-0.05, 0.05]
         push_robots = True
         push_interval_s = 15
         max_push_vel_xy = 1.0
