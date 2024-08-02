@@ -104,6 +104,7 @@ class AMPOnPolicyRunner:
             amp_normalizer,
             device=self.device,
             min_std=min_std,
+            disc_grad_penalty=train_cfg["runner"]["disc_grad_penalty"],
             **self.alg_cfg,
         )
         self.num_steps_per_env = self.cfg["num_steps_per_env"]

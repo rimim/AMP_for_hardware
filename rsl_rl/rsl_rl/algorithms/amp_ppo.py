@@ -36,6 +36,7 @@ from rsl_rl.modules import ActorCritic
 from rsl_rl.storage import RolloutStorage
 from rsl_rl.storage.replay_buffer import ReplayBuffer
 
+
 class AMPPPO:
     actor_critic: ActorCritic
     def __init__(self,
@@ -58,6 +59,7 @@ class AMPPPO:
                  device='cpu',
                  amp_replay_buffer_size=100000,
                  min_std=None,
+                 disc_grad_penalty=10.0,
                  ):
 
         self.device = device
@@ -101,6 +103,7 @@ class AMPPPO:
         self.lam = lam
         self.max_grad_norm = max_grad_norm
         self.use_clipped_value_loss = use_clipped_value_loss
+        self.disc_grad_penalty = disc_grad_penalty
 
     def init_storage(self, num_envs, num_transitions_per_env, actor_obs_shape, critic_obs_shape, action_shape):
         self.storage = RolloutStorage(
@@ -233,7 +236,7 @@ class AMPPPO:
                     policy_d, -1 * torch.ones(policy_d.size(), device=self.device))
                 amp_loss = 0.5 * (expert_loss + policy_loss)
                 grad_pen_loss = self.discriminator.compute_grad_pen(
-                    *sample_amp_expert, lambda_=10)
+                    *sample_amp_expert, lambda_=self.disc_grad_penalty)
 
                 # Compute total loss.
                 loss = (
