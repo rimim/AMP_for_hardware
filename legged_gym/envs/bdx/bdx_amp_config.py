@@ -33,7 +33,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
 # MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
-MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves_amp_for_hardware_format/*")
+MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
 
 
 class BDXAMPCfg(LeggedRobotCfg):
