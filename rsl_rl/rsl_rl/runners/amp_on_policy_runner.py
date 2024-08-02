@@ -37,10 +37,10 @@ import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-# from rsl_rl.datasets.motion_loader import AMPLoader
-from legged_gym.utilities.bdx_motion_data import MotionLib
+# from legged_gym.utilities.bdx_motion_data import MotionLib
 from rsl_rl.algorithms import AMPPPO, PPO
 from rsl_rl.algorithms.amp_discriminator import AMPDiscriminator
+from rsl_rl.datasets.motion_loader import AMPLoader
 from rsl_rl.env import VecEnv
 from rsl_rl.modules import ActorCritic, ActorCriticRecurrent
 from rsl_rl.utils.utils import Normalizer
@@ -71,20 +71,20 @@ class AMPOnPolicyRunner:
             **self.policy_cfg,
         ).to(self.device)
 
-        motion_lib = MotionLib(
-            self.cfg["amp_motion_file"], device=self.device, sample_dt=self.env.dt
-        )
-
-        # amp_data = AMPLoader(
-        #     device,
-        #     time_between_frames=self.env.dt,
-        #     preload_transitions=True,
-        #     num_preload_transitions=train_cfg["runner"]["amp_num_preload_transitions"],
-        #     motion_files=self.cfg["amp_motion_files"],
+        # motion_lib = MotionLib(
+        #     self.cfg["amp_motion_file"], device=self.device, sample_dt=self.env.dt
         # )
-        amp_normalizer = Normalizer(motion_lib.observation_dim)
+
+        amp_data = AMPLoader(
+            device,
+            time_between_frames=self.env.dt,
+            preload_transitions=True,
+            num_preload_transitions=train_cfg["runner"]["amp_num_preload_transitions"],
+            motion_files=self.cfg["amp_motion_files"],
+        )
+        amp_normalizer = Normalizer(amp_data.observation_dim)
         discriminator = AMPDiscriminator(
-            motion_lib.observation_dim * 2,
+            amp_data.observation_dim * 2,
             train_cfg["runner"]["amp_reward_coef"],
             train_cfg["runner"]["amp_discr_hidden_dims"],
             device,
@@ -100,7 +100,7 @@ class AMPOnPolicyRunner:
         self.alg: PPO = alg_class(
             actor_critic,
             discriminator,
-            motion_lib,
+            amp_data,
             amp_normalizer,
             device=self.device,
             min_std=min_std,

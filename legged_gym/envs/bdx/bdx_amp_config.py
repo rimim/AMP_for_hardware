@@ -32,7 +32,8 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
-MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
+# MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
+MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves_amp_for_hardware_format/*")
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -45,9 +46,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         num_privileged_obs = 57
         num_actions = 15
         env_spacing = 1.0
-        reference_state_initialization = True
+        reference_state_initialization = False
         reference_state_initialization_prob = 0.85
-        amp_motion_file = MOTION_FILE
+        amp_motion_files = MOTION_FILES
 
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.175]  # x,y,z [m]
@@ -111,8 +112,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 1
-        # decimation = 6
+        # decimation = 1
+        decimation = 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -210,7 +211,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         max_iterations = 500000  # number of policy updates
 
         amp_reward_coef = 2.0
-        amp_motion_file = MOTION_FILE
+        amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]

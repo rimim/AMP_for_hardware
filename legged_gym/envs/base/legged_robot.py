@@ -41,16 +41,14 @@ from torch import Tensor
 
 from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
-from legged_gym.utilities.bdx_motion_data import MotionLib
+
+# from legged_gym.utilities.bdx_motion_data import MotionLib
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
-                                   wrap_to_pi)
+from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
 from legged_gym.utils.terrain import Terrain
+from rsl_rl.datasets.motion_loader import AMPLoader
 
 from .legged_robot_config import LeggedRobotCfg
-
-# from rsl_rl.datasets.motion_loader import AMPLoader
-
 
 COM_OFFSET = torch.tensor([0.012731, 0.002186, 0.000515])
 HIP_OFFSETS = (
@@ -97,9 +95,15 @@ class LeggedRobot(BaseTask):
         self.init_done = True
 
         if self.cfg.env.reference_state_initialization:
-            self.motion_lib = MotionLib(
-                self.cfg.env.amp_motion_file, self.device, sample_dt=self.sim_params.dt
+            self.amp_loader = AMPLoader(
+                motion_files=self.cfg.env.amp_motion_files,
+                device=self.device,
+                time_between_frames=self.dt,
             )
+
+            # self.motion_lib = MotionLib(
+            #     self.cfg.env.amp_motion_file, self.device, sample_dt=self.sim_params.dt
+            # )
 
     def reset(self):
         """Reset all robots"""
@@ -135,6 +139,7 @@ class LeggedRobot(BaseTask):
             if self.device == "cpu":
                 self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
+
         reset_env_ids, terminal_amp_states = self.post_physics_step()
 
         # return clipped obs, clipped states (None), rewards, dones and infos
@@ -177,7 +182,9 @@ class LeggedRobot(BaseTask):
         calls self._post_physics_step_callback() for common computations
         calls self._draw_debug_vis() if needed
         """
+        print(self.root_states)
         self.gym.refresh_actor_root_state_tensor(self.sim)
+        print(self.root_states)
         self.gym.refresh_net_contact_force_tensor(self.sim)
 
         self.episode_length_buf += 1
@@ -251,23 +258,25 @@ class LeggedRobot(BaseTask):
 
         # reset robot states
         if self.cfg.env.reference_state_initialization:
-            # frames = self.amp_loader.get_full_frame_batch(len(env_ids))
-            motion_ids = self.motion_lib.sample_motions(len(env_ids))
-            motion_times = self.motion_lib.sample_time(motion_ids)
+            frames = self.amp_loader.get_full_frame_batch(len(env_ids))
+            self._reset_dofs_amp(env_ids, frames)
+            self._reset_root_states_amp(env_ids, frames)
+            # motion_ids = self.motion_lib.sample_motions(len(env_ids))
+            # motion_times = self.motion_lib.sample_time(motion_ids)
 
-            (
-                root_pos,
-                root_rot,
-                dof_pos,
-                root_vel,
-                root_ang_vel,
-                dof_vel,
-            ) = self.motion_lib.get_motion_state(motion_ids, motion_times)
+            # (
+            #     root_pos,
+            #     root_rot,
+            #     dof_pos,
+            #     root_vel,
+            #     root_ang_vel,
+            #     dof_vel,
+            # ) = self.motion_lib.get_motion_state(motion_ids, motion_times)
 
-            self._reset_dofs_amp(env_ids, dof_pos, dof_vel)
-            self._reset_root_states_amp(
-                env_ids, root_pos, root_rot, root_vel, root_ang_vel
-            )
+            # self._reset_dofs_amp(env_ids, dof_pos, dof_vel)
+            # self._reset_root_states_amp(
+            #     env_ids, root_pos, root_rot, root_vel, root_ang_vel
+            # )
         else:
             self._reset_dofs(env_ids)
             self._reset_root_states(env_ids)
@@ -608,7 +617,7 @@ class LeggedRobot(BaseTask):
             torques = actions_scaled
         else:
             raise NameError(f"Unknown controller type: {control_type}")
-        
+
         return torch.clip(torques, -self.torque_limits, self.torque_limits)
 
     def _reset_dofs(self, env_ids):
@@ -632,7 +641,27 @@ class LeggedRobot(BaseTask):
             len(env_ids_int32),
         )
 
-    def _reset_dofs_amp(self, env_ids, dof_pos, dof_vel):
+    # def _reset_dofs_amp(self, env_ids, dof_pos, dof_vel):
+    #     """Resets DOF position and velocities of selected environmments
+    #     Positions are randomly selected within 0.5:1.5 x default positions.
+    #     Velocities are set to zero.
+
+    #     Args:
+    #         env_ids (List[int]): Environemnt ids
+    #         frames: AMP frames to initialize motion with
+    #     """
+    #     self.dof_pos[env_ids] = dof_pos
+    #     self.dof_vel[env_ids] = dof_vel
+
+    #     env_ids_int32 = env_ids.to(dtype=torch.int32)
+    #     self.gym.set_dof_state_tensor_indexed(
+    #         self.sim,
+    #         gymtorch.unwrap_tensor(self.dof_state),
+    #         gymtorch.unwrap_tensor(env_ids_int32),
+    #         len(env_ids_int32),
+    #     )
+
+    def _reset_dofs_amp(self, env_ids, frames):
         """Resets DOF position and velocities of selected environmments
         Positions are randomly selected within 0.5:1.5 x default positions.
         Velocities are set to zero.
@@ -641,8 +670,8 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): Environemnt ids
             frames: AMP frames to initialize motion with
         """
-        self.dof_pos[env_ids] = dof_pos
-        self.dof_vel[env_ids] = dof_vel
+        self.dof_pos[env_ids] = AMPLoader.get_joint_pose_batch(frames)
+        self.dof_vel[env_ids] = AMPLoader.get_joint_vel_batch(frames)
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_dof_state_tensor_indexed(
             self.sim,
@@ -680,9 +709,29 @@ class LeggedRobot(BaseTask):
             len(env_ids_int32),
         )
 
-    def _reset_root_states_amp(
-        self, env_ids, root_pos, root_orn, root_vel, root_ang_vel
-    ):
+    # def _reset_root_states_amp(
+    #     self, env_ids, root_pos, root_orn, root_vel, root_ang_vel
+    # ):
+    #     """Resets ROOT states position and velocities of selected environmments
+    #         Sets base position based on the curriculum
+    #         Selects randomized base velocities within -0.5:0.5 [m/s, rad/s]
+    #     Args:
+    #         env_ids (List[int]): Environemnt ids
+    #     """
+    #     # base position
+    #     root_pos[:, :2] = root_pos[:, :2] + self.env_origins[env_ids, :2]
+    #     self.root_states[env_ids, :3] = root_pos
+    #     self.root_states[env_ids, 3:7] = root_orn
+    #     self.root_states[env_ids, 7:10] = quat_rotate(root_orn, root_vel)
+    #     self.root_states[env_ids, 10:13] = quat_rotate(root_orn, root_ang_vel)
+    #     env_ids_int32 = env_ids.to(dtype=torch.int32)
+    #     self.gym.set_actor_root_state_tensor_indexed(
+    #         self.sim,
+    #         gymtorch.unwrap_tensor(self.root_states),
+    #         gymtorch.unwrap_tensor(env_ids_int32),
+    #         len(env_ids_int32),
+    #     )
+    def _reset_root_states_amp(self, env_ids, frames):
         """Resets ROOT states position and velocities of selected environmments
             Sets base position based on the curriculum
             Selects randomized base velocities within -0.5:0.5 [m/s, rad/s]
@@ -690,11 +739,18 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): Environemnt ids
         """
         # base position
+        root_pos = AMPLoader.get_root_pos_batch(frames)
         root_pos[:, :2] = root_pos[:, :2] + self.env_origins[env_ids, :2]
         self.root_states[env_ids, :3] = root_pos
+        root_orn = AMPLoader.get_root_rot_batch(frames)
         self.root_states[env_ids, 3:7] = root_orn
-        self.root_states[env_ids, 7:10] = quat_rotate(root_orn, root_vel)
-        self.root_states[env_ids, 10:13] = quat_rotate(root_orn, root_ang_vel)
+        self.root_states[env_ids, 7:10] = quat_rotate(
+            root_orn, AMPLoader.get_linear_vel_batch(frames)
+        )
+        self.root_states[env_ids, 10:13] = quat_rotate(
+            root_orn, AMPLoader.get_angular_vel_batch(frames)
+        )
+
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(
             self.sim,
