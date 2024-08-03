@@ -75,43 +75,43 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         stiffness = {
-            "left_hip_yaw": 4.0,
-            "left_hip_roll": 4.0,
-            "left_hip_pitch": 4.0,
-            "left_knee": 4.0,
-            "left_ankle": 4.0,
-            "right_hip_yaw": 4.0,
-            "right_hip_roll": 4.0,
-            "right_hip_pitch": 4.0,
-            "right_knee": 4.0,
-            "right_ankle": 4.0,
-            "neck_pitch": 4.0,
-            "head_pitch": 4.0,
-            "head_yaw": 4.0,
-            "left_antenna": 4.0,
-            "right_antenna": 4.0,
+            "left_hip_yaw": 10.0,
+            "left_hip_roll": 10.0,
+            "left_hip_pitch": 10.0,
+            "left_knee": 10.0,
+            "left_ankle": 10.0,
+            "right_hip_yaw": 10.0,
+            "right_hip_roll": 10.0,
+            "right_hip_pitch": 10.0,
+            "right_knee": 10.0,
+            "right_ankle": 10.0,
+            "neck_pitch": 10.0,
+            "head_pitch": 10.0,
+            "head_yaw": 10.0,
+            "left_antenna": 10.0,
+            "right_antenna": 10.0,
         }  # [N*m/rad]
 
         damping = {
-            "left_hip_yaw": 0.2,
-            "left_hip_roll": 0.2,
-            "left_hip_pitch": 0.2,
-            "left_knee": 0.2,
-            "left_ankle": 0.2,
-            "right_hip_yaw": 0.2,
-            "right_hip_roll": 0.2,
-            "right_hip_pitch": 0.2,
-            "right_knee": 0.2,
-            "right_ankle": 0.2,
-            "neck_pitch": 0.2,
-            "head_pitch": 0.2,
-            "head_yaw": 0.2,
-            "left_antenna": 0.2,
-            "right_antenna": 0.2,
+            "left_hip_yaw": 0.5,
+            "left_hip_roll": 0.5,
+            "left_hip_pitch": 0.5,
+            "left_knee": 0.5,
+            "left_ankle": 0.5,
+            "right_hip_yaw": 0.5,
+            "right_hip_roll": 0.5,
+            "right_hip_pitch": 0.5,
+            "right_knee": 0.5,
+            "right_ankle": 0.5,
+            "neck_pitch": 0.5,
+            "head_pitch": 0.5,
+            "head_yaw": 0.5,
+            "left_antenna": 0.5,
+            "right_antenna": 0.5,
         }  # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
-        # action_scale = 1
-        action_scale = 0.25
+        action_scale = 1
+        # action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
         # decimation = 1
         decimation = 6
@@ -144,7 +144,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class domain_rand:
         randomize_friction = True
-        friction_range = [0.25, 1.75]
+        friction_range = [0.8, 1.2]
         randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
         push_robots = True
@@ -160,7 +160,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class noise_scales:
             dof_pos = 0.03
-            dof_vel = 1.5
+            # dof_vel = 1.5
+            dof_vel = 0.1
             lin_vel = 0.1
             ang_vel = 0.3
             gravity = 0.05
@@ -229,7 +230,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10  # original 10
+        disc_grad_penalty = 5  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
         # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
