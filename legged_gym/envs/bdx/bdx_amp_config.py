@@ -35,9 +35,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
 # MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
-MOTION_FILES = glob.glob(
-    "datasets/bdx/placo_moves_amp_for_hardware_format_only_forward/*"
-)
+MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -161,26 +159,26 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -0.01
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
-        curriculum = False
+        curriculum = True
         max_curriculum = 1.0
         num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            # lin_vel_x = [-0.1, 0.1]  # min max [m/s]
-            # lin_vel_y = [-0.1, 0.1]  # min max [m/s]
-            # ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
-            # heading = [-3.14, 3.14]
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
-            lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            lin_vel_x = [-0.1, 0.1]  # min max [m/s]
+            lin_vel_y = [-0.1, 0.1]  # min max [m/s]
+            ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
             heading = [-3.14, 3.14]
+            # lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
@@ -210,7 +208,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.01  # original 10
+        disc_grad_penalty = 1.0  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
         # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
