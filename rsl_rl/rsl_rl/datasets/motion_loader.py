@@ -12,7 +12,6 @@ from rsl_rl.utils import utils
 
 
 class AMPLoader:
-
     POS_SIZE = 3
     ROT_SIZE = 4
     JOINT_POS_SIZE = 15
@@ -392,7 +391,7 @@ class AMPLoader:
                 blend_root_pos,
                 blend_root_rot,
                 blend_joints,
-                blend_tar_toe_pos,
+                # blend_tar_toe_pos,
                 blend_linear_vel,
                 blend_angular_vel,
                 blend_joints_vel,
