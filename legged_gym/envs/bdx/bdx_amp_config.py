@@ -201,6 +201,11 @@ class BDXAMPCfg(LeggedRobotCfg):
             ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
             heading = [-3.14, 3.14]
 
+    class viewer(LeggedRobotCfg.viewer):
+        ref_env = 0
+        pos = [0, 0, 1]  # [m]
+        lookat = [11.0, 5, 3.0]  # [m]
+
 
 class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     runner_class_name = "AMPOnPolicyRunner"
