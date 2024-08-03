@@ -123,7 +123,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         added_mass_range = [-0.05, 0.05]
         push_robots = True
         push_interval_s = 15
-        max_push_vel_xy = 0.3
+        max_push_vel_xy = 0.1  # 0.3
         randomize_gains = True
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
@@ -159,16 +159,16 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.01
+            action_rate = -0.01  # 0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
-        curriculum = True
+        curriculum = True  # False
         max_curriculum = 1.0
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = False  # if true: compute ang vel command from heading error
+        heading_command = True  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [-0.1, 0.1]  # min max [m/s]
@@ -202,7 +202,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
 
-        amp_reward_coef = 2.0
+        amp_reward_coef = 3.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.3
