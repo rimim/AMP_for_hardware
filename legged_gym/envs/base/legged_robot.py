@@ -41,10 +41,10 @@ from torch import Tensor
 
 from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
+
 # from legged_gym.utilities.bdx_motion_data import MotionLib
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
-                                   wrap_to_pi)
+from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
 from legged_gym.utils.terrain import Terrain
 from rsl_rl.datasets.motion_loader import AMPLoader
 
@@ -126,6 +126,14 @@ class LeggedRobot(BaseTask):
         Args:
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
+
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
         # step physics and render each frame
@@ -487,7 +495,10 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 0] = props["lower"][i].item()
                 self.dof_pos_limits[i, 1] = props["upper"][i].item()
                 self.dof_vel_limits[i] = props["velocity"][i].item()
-                self.torque_limits[i] = props["effort"][i].item()
+                if not self.cfg.control.override_effort:
+                    self.torque_limits[i] = props["effort"][i].item()
+                else:
+                    self.torque_limits[i] = self.cfg.control.effort
                 # soft limits
                 m = (self.dof_pos_limits[i, 0] + self.dof_pos_limits[i, 1]) / 2
                 r = self.dof_pos_limits[i, 1] - self.dof_pos_limits[i, 0]
@@ -629,6 +640,7 @@ class LeggedRobot(BaseTask):
         self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(
             0.5, 1.5, (len(env_ids), self.num_dof), device=self.device
         )
+        # self.dof_pos[env_ids] = self.default_dof_pos
         self.dof_vel[env_ids] = 0.0
 
         env_ids_int32 = env_ids.to(dtype=torch.int32)
@@ -699,6 +711,7 @@ class LeggedRobot(BaseTask):
         self.root_states[env_ids, 7:13] = torch_rand_float(
             -0.5, 0.5, (len(env_ids), 6), device=self.device
         )  # [7:10]: lin vel, [10:13]: ang vel
+
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(
             self.sim,
@@ -974,9 +987,10 @@ class LeggedRobot(BaseTask):
         self.default_dof_pos = self.default_dof_pos.unsqueeze(0)
 
         if self.cfg.domain_rand.randomize_gains:
-            self.randomized_p_gains, self.randomized_d_gains = (
-                self.compute_randomized_gains(self.num_envs)
-            )
+            (
+                self.randomized_p_gains,
+                self.randomized_d_gains,
+            ) = self.compute_randomized_gains(self.num_envs)
 
     def compute_randomized_gains(self, num_envs):
         p_mult = (
