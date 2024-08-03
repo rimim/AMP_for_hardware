@@ -712,6 +712,10 @@ class LeggedRobot(BaseTask):
             -0.5, 0.5, (len(env_ids), 6), device=self.device
         )  # [7:10]: lin vel, [10:13]: ang vel
 
+        # self.root_states[env_ids, 3:7] = torch.Tensor([0.0, 0.08, 0.0, 1.0]).to(
+        #     self.device
+        # )
+
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(
             self.sim,
@@ -971,19 +975,22 @@ class LeggedRobot(BaseTask):
             name = self.dof_names[i]
             angle = self.cfg.init_state.default_joint_angles[name]
             self.default_dof_pos[i] = angle
-            found = False
-            for dof_name in self.cfg.control.stiffness.keys():
-                if dof_name in name:
-                    self.p_gains[i] = self.cfg.control.stiffness[dof_name]
-                    self.d_gains[i] = self.cfg.control.damping[dof_name]
-                    found = True
-            if not found:
-                self.p_gains[i] = 0.0
-                self.d_gains[i] = 0.0
-                if self.cfg.control.control_type in ["P", "V"]:
-                    print(
-                        f"PD gain of joint {name} were not defined, setting them to zero"
-                    )
+            self.p_gains[i] = self.cfg.control.stiffness_all
+            self.d_gains[i] = self.cfg.control.damping_all
+
+            # found = False
+            # for dof_name in self.cfg.control.stiffness.keys():
+            #     if dof_name in name:
+            #         self.p_gains[i] = self.cfg.control.stiffness_all
+            #         self.d_gains[i] = self.cfg.control.damping_all
+            #         found = True
+            # if not found:
+            #     self.p_gains[i] = 0.0
+            #     self.d_gains[i] = 0.0
+            #     if self.cfg.control.control_type in ["P", "V"]:
+            #         print(
+            #             f"PD gain of joint {name} were not defined, setting them to zero"
+            #         )
         self.default_dof_pos = self.default_dof_pos.unsqueeze(0)
 
         if self.cfg.domain_rand.randomize_gains:

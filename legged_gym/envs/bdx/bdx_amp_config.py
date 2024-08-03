@@ -54,7 +54,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         amp_motion_files = MOTION_FILES
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.175]  # x,y,z [m]
+        pos = [0.0, 0.0, 0.18]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "right_hip_yaw": -0.03676731090962078,  # [rad]
             "right_hip_roll": -0.030315211140564333,  # [rad]
@@ -76,48 +76,17 @@ class BDXAMPCfg(LeggedRobotCfg):
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        override_effort = False
-        effort = 0.9  # Nm
-        stiffness = {
-            "left_hip_yaw": 4.0,
-            "left_hip_roll": 4.0,
-            "left_hip_pitch": 4.0,
-            "left_knee": 4.0,
-            "left_ankle": 4.0,
-            "right_hip_yaw": 4.0,
-            "right_hip_roll": 4.0,
-            "right_hip_pitch": 4.0,
-            "right_knee": 4.0,
-            "right_ankle": 4.0,
-            "neck_pitch": 4.0,
-            "head_pitch": 4.0,
-            "head_yaw": 4.0,
-            "left_antenna": 4.0,
-            "right_antenna": 4.0,
-        }  # [N*m/rad]
+        override_effort = True
+        effort = 0.52  # Nm
+        # effort = 20  # Nm
 
-        damping = {
-            "left_hip_yaw": 0.1,
-            "left_hip_roll": 0.1,
-            "left_hip_pitch": 0.1,
-            "left_knee": 0.1,
-            "left_ankle": 0.1,
-            "right_hip_yaw": 0.1,
-            "right_hip_roll": 0.1,
-            "right_hip_pitch": 0.1,
-            "right_knee": 0.1,
-            "right_ankle": 0.1,
-            "neck_pitch": 0.1,
-            "head_pitch": 0.1,
-            "head_yaw": 0.1,
-            "left_antenna": 0.1,
-            "right_antenna": 0.1,
-        }  # [N*m*s/rad]
+        stiffness_all = 4.0  # [N*m/rad]
+        damping_all = 0.05  # [N*m*s/rad]
+
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 1
-        # action_scale = 0.25
+        action_scale = 0.25
+
         # decimation: Number of control action updates @ sim DT per policy DT
-        # decimation = 1
         decimation = 6
 
     class terrain(LeggedRobotCfg.terrain):
