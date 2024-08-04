@@ -78,7 +78,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 4.0  # [N*m/rad]
-        damping_all = 0.05  # [N*m*s/rad]
+        damping_all = 0.1  # [N*m*s/rad]
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
@@ -157,7 +157,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -10.0
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -169,14 +169,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            # lin_vel_x = [0.0, 0.1]  # min max [m/s]
-            # lin_vel_y = [-0.1, 0.1]  # min max [m/s]
-            # ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
-            # heading = [-3.14, 3.14]
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
-            lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            lin_vel_x = [0.0, 0.1]  # min max [m/s]
+            lin_vel_y = [-0.1, 0.1]  # min max [m/s]
+            ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
             heading = [-3.14, 3.14]
+            # lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
