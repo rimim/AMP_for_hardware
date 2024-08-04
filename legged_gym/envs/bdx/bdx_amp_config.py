@@ -34,8 +34,6 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
 MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
-# print(MOTION_FILES)
-exit()
 
 
 class BDXAMPCfg(LeggedRobotCfg):
