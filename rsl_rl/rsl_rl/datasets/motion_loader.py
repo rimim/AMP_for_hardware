@@ -130,10 +130,11 @@ class AMPLoader:
             traj_idxs = self.weighted_traj_idx_sample_batch(num_preload_transitions)
             times = self.traj_time_sample_batch(traj_idxs)
             self.preloaded_s = self.get_full_frame_at_time_batch(traj_idxs, times)
-            self.preloaded_s_next = self.get_full_frame_at_time_batch(
-                traj_idxs, times + self.time_between_frames
-            )
-            print(f"Finished preloading")
+            self.preloaded_s_next = self.get_full_frame_at_time_batch(traj_idxs, times + self.time_between_frames)
+
+            print(self.get_joint_pose_batch(self.preloaded_s).mean(dim=0))
+            print(f'Finished preloading')
+
 
         self.all_trajectories_full = torch.vstack(self.trajectories_full)
 
@@ -458,58 +459,74 @@ class AMPLoader:
     def num_motions(self):
         return len(self.trajectory_names)
 
+    @staticmethod
     def get_root_pos(pose):
         return pose[AMPLoader.ROOT_POS_START_IDX : AMPLoader.ROOT_POS_END_IDX]
 
+    @staticmethod
     def get_root_pos_batch(poses):
         return poses[:, AMPLoader.ROOT_POS_START_IDX : AMPLoader.ROOT_POS_END_IDX]
 
+    @staticmethod
     def get_root_rot(pose):
         return pose[AMPLoader.ROOT_ROT_START_IDX : AMPLoader.ROOT_ROT_END_IDX]
 
+    @staticmethod
     def get_root_rot_batch(poses):
         return poses[:, AMPLoader.ROOT_ROT_START_IDX : AMPLoader.ROOT_ROT_END_IDX]
 
+    @staticmethod
     def get_joint_pose(pose):
         return pose[AMPLoader.JOINT_POSE_START_IDX : AMPLoader.JOINT_POSE_END_IDX]
 
+    @staticmethod
     def get_joint_pose_batch(poses):
         return poses[:, AMPLoader.JOINT_POSE_START_IDX : AMPLoader.JOINT_POSE_END_IDX]
 
+    @staticmethod
     def get_tar_toe_pos_local(pose):
         return pose[
             AMPLoader.TAR_TOE_POS_LOCAL_START_IDX : AMPLoader.TAR_TOE_POS_LOCAL_END_IDX
         ]
 
+    @staticmethod
     def get_tar_toe_pos_local_batch(poses):
         return poses[
             :,
             AMPLoader.TAR_TOE_POS_LOCAL_START_IDX : AMPLoader.TAR_TOE_POS_LOCAL_END_IDX,
         ]
 
+    @staticmethod
     def get_linear_vel(pose):
         return pose[AMPLoader.LINEAR_VEL_START_IDX : AMPLoader.LINEAR_VEL_END_IDX]
 
+    @staticmethod
     def get_linear_vel_batch(poses):
         return poses[:, AMPLoader.LINEAR_VEL_START_IDX : AMPLoader.LINEAR_VEL_END_IDX]
 
+    @staticmethod
     def get_angular_vel(pose):
         return pose[AMPLoader.ANGULAR_VEL_START_IDX : AMPLoader.ANGULAR_VEL_END_IDX]
 
+    @staticmethod
     def get_angular_vel_batch(poses):
         return poses[:, AMPLoader.ANGULAR_VEL_START_IDX : AMPLoader.ANGULAR_VEL_END_IDX]
 
+    @staticmethod
     def get_joint_vel(pose):
         return pose[AMPLoader.JOINT_VEL_START_IDX : AMPLoader.JOINT_VEL_END_IDX]
 
+    @staticmethod
     def get_joint_vel_batch(poses):
         return poses[:, AMPLoader.JOINT_VEL_START_IDX : AMPLoader.JOINT_VEL_END_IDX]
 
+    @staticmethod
     def get_tar_toe_vel_local(pose):
         return pose[
             AMPLoader.TAR_TOE_VEL_LOCAL_START_IDX : AMPLoader.TAR_TOE_VEL_LOCAL_END_IDX
         ]
 
+    @staticmethod
     def get_tar_toe_vel_local_batch(poses):
         return poses[
             :,

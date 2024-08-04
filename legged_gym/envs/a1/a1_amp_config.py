@@ -31,7 +31,7 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-MOTION_FILES = glob.glob("datasets/mocap_motions/*")
+MOTION_FILES = glob.glob("datasets/mocap_motions_a1/*")
 
 
 class A1AMPCfg(LeggedRobotCfg):
@@ -44,22 +44,24 @@ class A1AMPCfg(LeggedRobotCfg):
         reference_state_initialization = True
         reference_state_initialization_prob = 0.85
         amp_motion_files = MOTION_FILES
+        ee_names = ["FL_foot", "FR_foot", "RL_foot", "RR_foot"]
+        get_commands_from_joystick = False
 
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.42]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
-            "FL_hip_joint": 0.0,  # [rad]
-            "RL_hip_joint": 0.0,  # [rad]
-            "FR_hip_joint": 0.0,  # [rad]
-            "RR_hip_joint": 0.0,  # [rad]
-            "FL_thigh_joint": 0.9,  # [rad]
-            "RL_thigh_joint": 0.9,  # [rad]
-            "FR_thigh_joint": 0.9,  # [rad]
-            "RR_thigh_joint": 0.9,  # [rad]
-            "FL_calf_joint": -1.8,  # [rad]
-            "RL_calf_joint": -1.8,  # [rad]
-            "FR_calf_joint": -1.8,  # [rad]
-            "RR_calf_joint": -1.8,  # [rad]
+            "leg0_FL_a_hip_joint": -0.15,  # [rad]
+            "leg0_FL_c_thigh_joint": 0.55,  # [rad]
+            "leg0_FL_d_calf_joint": -1.5,  # [rad]
+            "leg1_FR_a_hip_joint": 0.15,  # [rad]
+            "leg1_FR_c_thigh_joint": 0.55,  # [rad]
+            "leg1_FR_d_calf_joint": -1.5,  # [rad]
+            "leg2_RL_a_hip_joint": -0.15,  # [rad]
+            "leg2_RL_c_thigh_joint": 0.7,  # [rad]
+            "leg2_RL_d_calf_joint": -1.5,  # [rad]
+            "leg3_RR_a_hip_joint": 0.15,  # [rad]
+            "leg3_RR_c_thigh_joint": 0.7,  # [rad]
+            "leg3_RR_d_calf_joint": -1.5,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
@@ -175,4 +177,4 @@ class A1AMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        min_normalized_std = [0.05, 0.02, 0.05] * 4
+        min_normalized_std = [0.01, 0.01, 0.01] * 4

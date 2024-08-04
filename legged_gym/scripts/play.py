@@ -28,21 +28,22 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
-from legged_gym import LEGGED_GYM_ROOT_DIR
 import os
 
 import isaacgym
-from legged_gym.envs import *
-from legged_gym.utils import get_args, export_policy_as_jit, task_registry, Logger
-
 import numpy as np
 import torch
+
+from legged_gym import LEGGED_GYM_ROOT_DIR
+from legged_gym.envs import *
+from legged_gym.utils import Logger, export_policy_as_jit, get_args, task_registry
 
 
 def play(args):
     env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
     # override some parameters for testing
-    env_cfg.env.num_envs = min(env_cfg.env.num_envs, 8)
+    env_cfg.env.num_envs = min(env_cfg.env.num_envs, 50)
+    env_cfg.env.get_commands_from_joystick = True
     env_cfg.terrain.num_rows = 5
     env_cfg.terrain.num_cols = 5
     env_cfg.terrain.curriculum = False
