@@ -12,6 +12,7 @@ from rsl_rl.utils import utils
 
 
 class AMPLoader:
+    # bdx
     POS_SIZE = 3
     ROT_SIZE = 4
     JOINT_POS_SIZE = 15
@@ -20,6 +21,16 @@ class AMPLoader:
     ANGULAR_VEL_SIZE = 3
     JOINT_VEL_SIZE = 15
     TAR_TOE_VEL_LOCAL_SIZE = 6
+
+    # A1
+    # POS_SIZE = 3
+    # ROT_SIZE = 4
+    # JOINT_POS_SIZE = 12
+    # TAR_TOE_POS_LOCAL_SIZE = 12
+    # LINEAR_VEL_SIZE = 3
+    # ANGULAR_VEL_SIZE = 3
+    # JOINT_VEL_SIZE = 12
+    # TAR_TOE_VEL_LOCAL_SIZE = 12
 
     ROOT_POS_START_IDX = 0
     ROOT_POS_END_IDX = ROOT_POS_START_IDX + POS_SIZE
@@ -130,11 +141,12 @@ class AMPLoader:
             traj_idxs = self.weighted_traj_idx_sample_batch(num_preload_transitions)
             times = self.traj_time_sample_batch(traj_idxs)
             self.preloaded_s = self.get_full_frame_at_time_batch(traj_idxs, times)
-            self.preloaded_s_next = self.get_full_frame_at_time_batch(traj_idxs, times + self.time_between_frames)
+            self.preloaded_s_next = self.get_full_frame_at_time_batch(
+                traj_idxs, times + self.time_between_frames
+            )
 
             print(self.get_joint_pose_batch(self.preloaded_s).mean(dim=0))
-            print(f'Finished preloading')
-
+            print(f"Finished preloading")
 
         self.all_trajectories_full = torch.vstack(self.trajectories_full)
 

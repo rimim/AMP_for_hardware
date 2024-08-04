@@ -67,8 +67,11 @@ class A1AMPCfg(LeggedRobotCfg):
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        stiffness = {"joint": 80.0}  # [N*m/rad]
-        damping = {"joint": 1.0}  # [N*m*s/rad]
+        override_effort = False
+        # stiffness = {"joint": 80.0}  # [N*m/rad]
+        # damping = {"joint": 1.0}  # [N*m*s/rad]
+        stiffness_all = 80.0  # [N*m/rad]
+        damping_all = 1.0  # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
@@ -176,5 +179,6 @@ class A1AMPCfgPPO(LeggedRobotCfgPPO):
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
+        disc_grad_penalty = 10.0
 
         min_normalized_std = [0.01, 0.01, 0.01] * 4

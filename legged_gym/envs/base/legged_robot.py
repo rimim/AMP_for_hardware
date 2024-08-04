@@ -100,16 +100,16 @@ class LeggedRobot(BaseTask):
         self._prepare_reward_function()
         self.init_done = True
 
-        if self.cfg.env.reference_state_initialization:
-            self.amp_loader = AMPLoader(
-                motion_files=self.cfg.env.amp_motion_files,
-                device=self.device,
-                time_between_frames=self.dt,
-            )
+        # if self.cfg.env.reference_state_initialization:
+        self.amp_loader = AMPLoader(
+            motion_files=self.cfg.env.amp_motion_files,
+            device=self.device,
+            time_between_frames=self.dt,
+        )
 
-            # self.motion_lib = MotionLib(
-            #     self.cfg.env.amp_motion_file, self.device, sample_dt=self.sim_params.dt
-            # )
+        # self.motion_lib = MotionLib(
+        #     self.cfg.env.amp_motion_file, self.device, sample_dt=self.sim_params.dt
+        # )
 
     def reset(self):
         """Reset all robots"""
@@ -424,21 +424,24 @@ class LeggedRobot(BaseTask):
 
     def get_amp_observations(self):
         joint_pos = self.dof_pos
-        foot_pos = []
-        with torch.no_grad():
-            for i, chain_ee in enumerate(self.chain_ee):
-                foot_pos.append(
-                    chain_ee.forward_kinematics(
-                        joint_pos[:, i * 3 : i * 3 + 3]
-                    ).get_matrix()[:, :3, 3]
-                )
-        foot_pos = torch.cat(foot_pos, dim=-1)
+        # foot_pos = []
+        # with torch.no_grad():
+        #     for i, chain_ee in enumerate(self.chain_ee):
+        #         foot_pos.append(
+        #             chain_ee.forward_kinematics(
+        #                 joint_pos[:, i * 3 : i * 3 + 3]
+        #             ).get_matrix()[:, :3, 3]
+        #         )
+        # foot_pos = torch.cat(foot_pos, dim=-1)
         base_lin_vel = self.base_lin_vel
         base_ang_vel = self.base_ang_vel
         joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
+
+        dummy_foot_pos = torch.zeros((self.num_envs, 6)).to(self.device)
         return torch.cat(
-            (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos), dim=-1
+            (joint_pos, dummy_foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos),
+            dim=-1,
         )
 
     def create_sim(self):
