@@ -35,7 +35,10 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
 # MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
-MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
+# MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
+MOTION_FILES = glob.glob(
+    "datasets/bdx/placo_moves_amp_for_hardware_format_no_backward_no_side/*"
+)
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -117,25 +120,24 @@ class BDXAMPCfg(LeggedRobotCfg):
         substeps = 1
 
     class domain_rand:
-        randomize_friction = True
+        randomize_friction = False
         friction_range = [0.8, 1.2]
-        randomize_base_mass = True
+        randomize_base_mass = False
         added_mass_range = [-0.05, 0.05]
-        push_robots = True
+        push_robots = False
         push_interval_s = 15
         max_push_vel_xy = 0.1  # 0.3
-        randomize_gains = True
+        randomize_gains = False
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
 
     class noise:
-        add_noise = True
+        add_noise = False
         noise_level = 1.0  # scales other values
 
         class noise_scales:
             dof_pos = 0.03
-            # dof_vel = 1.5
-            dof_vel = 0.1
+            dof_vel = 0.1  # 1.5
             lin_vel = 0.1
             ang_vel = 0.3
             gravity = 0.05
@@ -152,26 +154,26 @@ class BDXAMPCfg(LeggedRobotCfg):
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.0002
+            torques = 0.0  # -0.0002
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
-            feet_air_time = 1.0
+            feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -1.0  # 0
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
-        curriculum = True  # False
+        curriculum = False  # False
         max_curriculum = 0.1
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = True  # if true: compute ang vel command from heading error
+        heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.1, 0.1]  # min max [m/s]
+            lin_vel_x = [0.0, 0.1]  # min max [m/s]
             lin_vel_y = [-0.1, 0.1]  # min max [m/s]
             ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
             heading = [-3.14, 3.14]
@@ -216,12 +218,6 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         #     0.02,
         #     0.02,
         # ]  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.02] * 15
 
-        pass
-        pass
-        pass
-        pass
-        pass
-        pass
-        pass
         pass
