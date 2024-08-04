@@ -146,8 +146,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0
+            tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -163,7 +165,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             dof_pos_limits = 0.0
 
     class commands:
-        curriculum = True  # False
+        curriculum = False  # False
         max_curriculum = 0.2
         num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
@@ -207,7 +209,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 1  # original 10
+        disc_grad_penalty = 0.01  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
         # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
