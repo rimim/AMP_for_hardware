@@ -32,7 +32,10 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
+# MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
+MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
+# print(MOTION_FILES)
+exit()
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -169,14 +172,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.2, 0.2]  # min max [m/s]
-            lin_vel_y = [-0.2, 0.2]  # min max [m/s]
-            ang_vel_yaw = [-0.2, 0.2]  # min max [rad/s]
-            heading = [-3.14, 3.14]
-            # lin_vel_x = [0.1, 0.1]  # min max [m/s]
-            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # lin_vel_x = [-0.2, 0.2]  # min max [m/s]
+            # lin_vel_y = [-0.2, 0.2]  # min max [m/s]
+            # ang_vel_yaw = [-0.2, 0.2]  # min max [rad/s]
             # heading = [-3.14, 3.14]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
