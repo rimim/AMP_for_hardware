@@ -625,7 +625,7 @@ class LeggedRobot(BaseTask):
 
         # set small commands to zero
         self.commands[env_ids, :2] *= (
-            torch.norm(self.commands[env_ids, :2], dim=1) > 0.2
+            torch.norm(self.commands[env_ids, :2], dim=1) > 0.01
         ).unsqueeze(1)
 
     def _compute_torques(self, actions):
