@@ -91,10 +91,10 @@ class AMPOnPolicyRunner:
 
         # self.discr: AMPDiscriminator = AMPDiscriminator()
         alg_class = eval(self.cfg["algorithm_class_name"])  # PPO
-        min_std = torch.tensor(self.cfg["min_normalized_std"], device=self.device) * (
-            torch.abs(self.env.dof_pos_limits[:, 1] - self.env.dof_pos_limits[:, 0])
-        )
-        # min_std = None
+        # min_std = torch.tensor(self.cfg["min_normalized_std"], device=self.device) * (
+        #     torch.abs(self.env.dof_pos_limits[:, 1] - self.env.dof_pos_limits[:, 0])
+        # )
+        min_std = None
         self.alg: PPO = alg_class(
             actor_critic,
             discriminator,
