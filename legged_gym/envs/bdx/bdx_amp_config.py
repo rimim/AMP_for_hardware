@@ -33,12 +33,7 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-# MOTION_FILES = glob.glob("datasets/bdx/mujoco_moves/*")
-# MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
-# MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
-MOTION_FILES = glob.glob(
-    "datasets/bdx/placo_moves_amp_for_hardware_format_only_forward/*"
-)
+MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -204,7 +199,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
 
-        amp_reward_coef = 2.0  # 2.0
+        amp_reward_coef = 100.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.3
