@@ -63,7 +63,6 @@ class AMPPPO:
         min_std=None,
         disc_grad_penalty=10.0,
     ):
-
         self.device = device
 
         self.desired_kl = desired_kl
@@ -212,7 +211,6 @@ class AMPPPO:
         for sample, sample_amp_policy, sample_amp_expert in zip(
             generator, amp_policy_generator, amp_expert_generator
         ):
-
             (
                 obs_batch,
                 critic_obs_batch,
@@ -322,7 +320,7 @@ class AMPPPO:
             )
             amp_loss = 0.5 * (expert_loss + policy_loss)
             grad_pen_loss = self.discriminator.compute_grad_pen(
-                expert_state, expert_next_state, lambda_=10
+                expert_state, expert_next_state, lambda_=self.disc_grad_penalty
             )
             # Compute total loss.
             loss = (
