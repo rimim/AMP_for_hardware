@@ -37,7 +37,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 # MOTION_FILE = "datasets/bdx/dataset_bdx.yaml"
 # MOTION_FILES = glob.glob("datasets/bdx/placo_moves_amp_for_hardware_format/*")
 MOTION_FILES = glob.glob(
-    "datasets/bdx/placo_moves_amp_for_hardware_format_no_backward_no_side/*"
+    "datasets/bdx/placo_moves_amp_for_hardware_format_only_forward/*"
 )
 
 
@@ -111,9 +111,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
@@ -173,14 +173,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.0, 0.1]  # min max [m/s]
-            lin_vel_y = [-0.1, 0.1]  # min max [m/s]
-            ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
-            heading = [-3.14, 3.14]
-            # lin_vel_x = [0.1, 0.1]  # min max [m/s]
-            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # lin_vel_x = [0.0, 0.1]  # min max [m/s]
+            # lin_vel_y = [-0.1, 0.1]  # min max [m/s]
+            # ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
             # heading = [-3.14, 3.14]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
@@ -210,7 +210,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.01  # original 10
+        disc_grad_penalty = 10  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
         # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
