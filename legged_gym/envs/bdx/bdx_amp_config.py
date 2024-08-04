@@ -166,7 +166,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         max_curriculum = 0.2
         num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = True  # if true: compute ang vel command from heading error
+        heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [-0.2, 0.2]  # min max [m/s]
