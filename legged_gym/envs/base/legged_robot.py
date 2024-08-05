@@ -459,8 +459,14 @@ class LeggedRobot(BaseTask):
         # self.fv.pushFrame(fv_utils.make_pose(right_foot_pos, [0, 0, 0]), "right")
 
         foot_pos = torch.cat(foot_pos, dim=-1)
-        base_lin_vel = self.base_lin_vel
-        base_ang_vel = self.base_ang_vel
+        # Weird, using this yields stupid large values
+        # base_lin_vel = self.base_lin_vel
+        # base_ang_vel = self.base_ang_vel
+
+        # Recomputing them on the fly
+        base_lin_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
+        base_ang_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
+
         joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
 
