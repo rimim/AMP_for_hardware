@@ -175,15 +175,16 @@ def play(args):
         # print("data", base_lin_vel_data[0])
         # print("diff", abs(base_lin_vel_data[0] - base_lin_vel_obs))
 
-        # base_ang_vel_data = env.amp_loader.get_angular_vel_batch(
-        #     env.amp_loader.get_full_frame_at_time_batch(
-        #         np.array([traj_idx]), np.array([t])
-        #     )
-        # )
-        # base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
-        # print("obs", base_ang_vel_obs)
-        # print("data", base_ang_vel_data[0])
-        # print("diff", abs(base_ang_vel_data[0] - base_ang_vel_obs))
+        base_ang_vel_data = env.amp_loader.get_angular_vel_batch(
+            env.amp_loader.get_full_frame_at_time_batch(
+                np.array([traj_idx]), np.array([t])
+            )
+        )
+        base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
+        # base_ang_vel_obs = env.base_ang_vel[0]
+        print("obs", base_ang_vel_obs)
+        print("data", base_ang_vel_data[0])
+        print("diff", abs(base_ang_vel_data[0] - base_ang_vel_obs))
 
         env.step(actions.detach())
 
