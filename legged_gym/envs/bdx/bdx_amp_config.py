@@ -77,11 +77,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.52  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 10.0  # [N*m/rad]
-        damping_all = 5  # [N*m*s/rad]
+        stiffness_all = 4.0  # [N*m/rad]
+        damping_all = 0.1  # [N*m*s/rad]
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 1.0
+        action_scale = 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
@@ -145,8 +145,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0.1 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.1 * (0.5 * 1.0 / (0.005 * 6))
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -175,7 +175,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             # lin_vel_y = [-0.2, 0.2]  # min max [m/s]
             # ang_vel_yaw = [-0.2, 0.2]  # min max [rad/s]
             # heading = [-3.14, 3.14]
-            lin_vel_x = [0.2, 0.2]  # min max [m/s]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [-3.14, 3.14]

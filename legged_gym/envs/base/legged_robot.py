@@ -678,7 +678,7 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): Environemnt ids
         """
         self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(
-            0.1, 1.5, (len(env_ids), self.num_dof), device=self.device
+            0.9, 1.1, (len(env_ids), self.num_dof), device=self.device
         )
         # self.dof_pos[env_ids] = self.default_dof_pos
         self.dof_vel[env_ids] = 0.0
@@ -749,7 +749,7 @@ class LeggedRobot(BaseTask):
             self.root_states[env_ids, :3] += self.env_origins[env_ids]
         # base velocities
         self.root_states[env_ids, 7:13] = torch_rand_float(
-            -0.1, 0.1, (len(env_ids), 6), device=self.device
+            -0.01, 0.01, (len(env_ids), 6), device=self.device
         )  # [7:10]: lin vel, [10:13]: ang vel
 
         # self.root_states[env_ids, 3:7] = torch.Tensor([0.0, 0.08, 0.0, 1.0]).to(
