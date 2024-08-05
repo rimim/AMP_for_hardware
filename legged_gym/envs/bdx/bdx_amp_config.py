@@ -78,11 +78,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.52  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 4.0  # [N*m/rad]
-        damping_all = 0.1  # [N*m*s/rad]
+        stiffness_all = 10.0  # [N*m/rad]
+        damping_all = 0.5  # [N*m*s/rad]
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25
+        action_scale = 1.0
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
@@ -217,6 +217,6 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         #     0.02,
         #     0.02,
         # ]  # WARNING TOTALLY PIFFED
-        # min_normalized_std = [0.02] * 15
+        min_normalized_std = [0.02] * 15
 
         pass
