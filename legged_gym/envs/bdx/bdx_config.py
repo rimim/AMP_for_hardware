@@ -30,20 +30,21 @@
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
+MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
+
 
 class BDXRoughCfg(LeggedRobotCfg):
-
     class env(LeggedRobotCfg.env):
-        # num_envs = 5480
-        num_envs = 16
+        num_envs = 8
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 51
         num_privileged_obs = 57
         num_actions = 15
         env_spacing = 1.0
         reference_state_initialization = False
-        # reference_state_initialization_prob = 0.85
-        # amp_motion_files = MOTION_FILES
+        ee_names = ["left_foot", "right_foot"]
+        get_commands_from_joystick = False
+        amp_motion_files = MOTION_FILES
 
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.175]  # x,y,z [m]
@@ -68,57 +69,35 @@ class BDXRoughCfg(LeggedRobotCfg):
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        stiffness = {
-            "left_hip_yaw": 10.0,
-            "left_hip_roll": 10.0,
-            "left_hip_pitch": 10.0,
-            "left_knee": 10.0,
-            "left_ankle": 10.0,
-            "right_hip_yaw": 10.0,
-            "right_hip_roll": 10.0,
-            "right_hip_pitch": 10.0,
-            "right_knee": 10.0,
-            "right_ankle": 10.0,
-            "neck_pitch": 10.0,
-            "head_pitch": 10.0,
-            "head_yaw": 10.0,
-            "left_antenna": 10.0,
-            "right_antenna": 10.0,
-        }  # [N*m/rad]
+        override_effort = True
+        effort = 0.52  # Nm
+        stiffness_all = 10.0  # [N*m/rad]
+        damping_all = 0.5  # [N*m*s/rad]
 
-        damping = {
-            "left_hip_yaw": 0.5,
-            "left_hip_roll": 0.5,
-            "left_hip_pitch": 0.5,
-            "left_knee": 0.5,
-            "left_ankle": 0.5,
-            "right_hip_yaw": 0.5,
-            "right_hip_roll": 0.5,
-            "right_hip_pitch": 0.5,
-            "right_knee": 0.5,
-            "right_ankle": 0.5,
-            "neck_pitch": 0.5,
-            "head_pitch": 0.5,
-            "head_yaw": 0.5,
-            "left_antenna": 0.5,
-            "right_antenna": 0.5,
-        }  # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
         # action_scale = 1
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 1
-        # decimation = 6
+        decimation = 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
         measure_heights = False
+        static_friction = 5.0
+        dynamic_friction = 5.0
 
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
         foot_name = "foot"
-        penalize_contacts_on = ["left_knee" "right_knee"]
-        terminate_after_contacts_on = ["body_module"]
+        penalize_contacts_on = []
+        terminate_after_contacts_on = [
+            "body_module",
+            "head",
+            "left_antenna",
+            "right_antenna",
+            "leg_module",
+            "leg_module_2",
+        ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 

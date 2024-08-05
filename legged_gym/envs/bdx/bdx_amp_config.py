@@ -38,7 +38,6 @@ MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
 
 class BDXAMPCfg(LeggedRobotCfg):
     class env(LeggedRobotCfg.env):
-        # num_envs = 5480
         num_envs = 8
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 51  # TODO what ?
