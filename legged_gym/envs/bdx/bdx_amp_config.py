@@ -78,7 +78,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 10.0  # [N*m/rad]
-        damping_all = 0.5  # [N*m*s/rad]
+        damping_all = 5  # [N*m*s/rad]
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 1.0
