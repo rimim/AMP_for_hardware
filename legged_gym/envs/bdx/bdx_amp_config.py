@@ -145,10 +145,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
-            # tracking_lin_vel = 0
-            # tracking_ang_vel = 0
+            # tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            # tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 0
+            tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -208,10 +208,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10.0  # original 10
+        disc_grad_penalty = 0.1  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
+        # min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
 
         pass
