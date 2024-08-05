@@ -170,8 +170,11 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        print("x vel obs", env.get_amp_observations()[0, 21 : 21 + 3][0])
-        print("x vel data", base_lin_vel_data[0][0])
+        print("z obs ang vel", env.get_base_ang_vel()[:, 2])
+        print("z data ang vel", base_lin_vel_data[0][2])
+
+        # print("x vel obs", env.get_amp_observations()[0, 21 : 21 + 3][0])
+        # print("x vel data", base_lin_vel_data[0][0])
         # base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
         # print("obs", base_lin_vel_obs)
         # print("data", base_lin_vel_data[0])
