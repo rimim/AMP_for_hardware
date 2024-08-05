@@ -145,8 +145,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.1 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.1 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -159,7 +159,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -211,11 +211,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         disc_grad_penalty = 10.0  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
-        # min_normalized_std = [0.05, 0.02, 0.05] * 4 + [
-        #     0.02,
-        #     0.02,
-        #     0.02,
-        # ]  # WARNING TOTALLY PIFFED
-        min_normalized_std = [0.02] * 15
+
+        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
 
         pass
