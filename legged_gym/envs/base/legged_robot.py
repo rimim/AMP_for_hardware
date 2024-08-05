@@ -30,8 +30,9 @@
 
 import os
 from time import time
-from FramesViewer.viewer import Viewer
-import FramesViewer.utils as fv_utils
+
+# from FramesViewer.viewer import Viewer
+# import FramesViewer.utils as fv_utils
 from typing import Dict, Tuple
 from warnings import WarningMessage
 
@@ -91,8 +92,8 @@ class LeggedRobot(BaseTask):
                 ).to(device=sim_device)
             )
 
-        self.fv = Viewer()
-        self.fv.start()
+        # self.fv = Viewer()
+        # self.fv.start()
         self._get_commands_from_joystick = self.cfg.env.get_commands_from_joystick
         if self._get_commands_from_joystick:
             pygame.init()
@@ -448,14 +449,14 @@ class LeggedRobot(BaseTask):
             #             joint_pos[:, i * 5 : i * 5 + 5]
             #         ).get_matrix()[:, :3, 3]
             #     )
-        cpu_foot_pos = []
-        for fp in foot_pos:
-            cpu_foot_pos.append(fp.cpu().numpy()[0])
+        # cpu_foot_pos = []
+        # for fp in foot_pos:
+        #     cpu_foot_pos.append(fp.cpu().numpy()[0])
 
-        left_foot_pos = cpu_foot_pos[0]
-        right_foot_pos = cpu_foot_pos[1]
-        self.fv.pushFrame(fv_utils.make_pose(left_foot_pos, [0, 0, 0]), "left")
-        self.fv.pushFrame(fv_utils.make_pose(right_foot_pos, [0, 0, 0]), "right")
+        # left_foot_pos = cpu_foot_pos[0]
+        # right_foot_pos = cpu_foot_pos[1]
+        # self.fv.pushFrame(fv_utils.make_pose(left_foot_pos, [0, 0, 0]), "left")
+        # self.fv.pushFrame(fv_utils.make_pose(right_foot_pos, [0, 0, 0]), "right")
 
         foot_pos = torch.cat(foot_pos, dim=-1)
         base_lin_vel = self.base_lin_vel
