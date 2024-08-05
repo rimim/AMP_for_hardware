@@ -391,6 +391,12 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
 
+        self.base_lin_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
+        self.base_ang_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
         self.privileged_obs_buf = torch.cat(
             (
                 self.base_lin_vel * self.obs_scales.lin_vel,
@@ -464,15 +470,26 @@ class LeggedRobot(BaseTask):
         # base_ang_vel = self.base_ang_vel
 
         # Recomputing them on the fly
-        base_lin_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
+        self.base_lin_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
+        self.base_ang_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
 
         joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
 
         # foot_pos = torch.zeros((self.num_envs, 6)).to(self.device)
         return torch.cat(
-            (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos),
+            (
+                joint_pos,
+                foot_pos,
+                self.base_lin_vel,
+                self.base_ang_vel,
+                joint_vel,
+                z_pos,
+            ),
             dim=-1,
         )
 
@@ -1475,10 +1492,17 @@ class LeggedRobot(BaseTask):
     # ------------ reward functions----------------
     def _reward_lin_vel_z(self):
         # Penalize z axis base linear velocity
+
+        self.base_lin_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
         return torch.square(self.base_lin_vel[:, 2])
 
     def _reward_ang_vel_xy(self):
         # Penalize xy axes base angular velocity
+        self.base_ang_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
         return torch.sum(torch.square(self.base_ang_vel[:, :2]), dim=1)
 
     def _reward_orientation(self):
@@ -1558,6 +1582,9 @@ class LeggedRobot(BaseTask):
 
     def _reward_tracking_lin_vel(self):
         # Tracking of linear velocity commands (xy axes)
+        self.base_lin_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
         lin_vel_error = torch.sum(
             torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1
         )
@@ -1565,6 +1592,9 @@ class LeggedRobot(BaseTask):
 
     def _reward_tracking_ang_vel(self):
         # Tracking of angular velocity commands (yaw)
+        self.base_ang_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
         ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
         return torch.exp(-ang_vel_error / self.cfg.rewards.tracking_sigma)
 
