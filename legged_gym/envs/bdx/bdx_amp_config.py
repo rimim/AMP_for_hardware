@@ -44,7 +44,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         num_privileged_obs = 57
         num_actions = 15
         env_spacing = 1.0
-        reference_state_initialization = True
+        reference_state_initialization = False
         reference_state_initialization_prob = 0.85
         amp_motion_files = MOTION_FILES
         ee_names = ["left_foot", "right_foot"]
