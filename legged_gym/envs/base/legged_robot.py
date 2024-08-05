@@ -37,6 +37,7 @@ import pygame
 import torch
 from isaacgym import gymapi, gymtorch, gymutil
 from isaacgym.torch_utils import *
+from torch._C import set_flush_denormal
 from legged_gym.utils.math import wrap_to_pi
 from torch import Tensor
 
@@ -425,23 +426,23 @@ class LeggedRobot(BaseTask):
 
     def get_amp_observations(self):
         joint_pos = self.dof_pos
-        # foot_pos = []
-        # with torch.no_grad():
-        #     for i, chain_ee in enumerate(self.chain_ee):
-        #         foot_pos.append(
-        #             chain_ee.forward_kinematics(
-        #                 joint_pos[:, i * 3 : i * 3 + 3]
-        #             ).get_matrix()[:, :3, 3]
-        #         )
-        # foot_pos = torch.cat(foot_pos, dim=-1)
+        foot_pos = []
+        with torch.no_grad():
+            for i, chain_ee in enumerate(self.chain_ee):
+                foot_pos.append(
+                    chain_ee.forward_kinematics(
+                        joint_pos[:, i * 5 : i * 5 + 5]
+                    ).get_matrix()[:, :3, 3]
+                )
+        foot_pos = torch.cat(foot_pos, dim=-1)
         base_lin_vel = self.base_lin_vel
         base_ang_vel = self.base_ang_vel
         joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
 
-        dummy_foot_pos = torch.zeros((self.num_envs, 6)).to(self.device)
+        # foot_pos = torch.zeros((self.num_envs, 6)).to(self.device)
         return torch.cat(
-            (joint_pos, dummy_foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos),
+            (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos),
             dim=-1,
         )
 
