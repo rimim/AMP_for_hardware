@@ -74,11 +74,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.52  # Nm
+        effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 4.0  # [N*m/rad]
-        damping_all = 0.1  # [N*m*s/rad]
+        stiffness_all = 10.0  # 4 [N*m/rad]
+        damping_all = 0.5  # 0.1 [N*m*s/rad]
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
@@ -145,28 +145,28 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.0002
+            torques = 0.0
             dof_vel = 0.0
             dof_acc = 0.0
-            base_height = 0.5
-            feet_air_time = 1.0
+            base_height = 0.0
+            feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -1.0
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
@@ -202,7 +202,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
 
-        amp_reward_coef = 20.0  # 2.0
+        amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.3
@@ -212,6 +212,6 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        # min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
 
         pass
