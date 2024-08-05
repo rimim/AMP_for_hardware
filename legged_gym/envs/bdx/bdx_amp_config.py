@@ -145,8 +145,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
