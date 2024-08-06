@@ -135,61 +135,79 @@ def play(args):
             len(env_ids_int32),
         )
         print("---")
-        # foot_pos_amp = env.amp_loader.get_tar_toe_pos_local_batch(
-        #     env.amp_loader.get_full_frame_at_time_batch(
-        #         np.array([traj_idx]), np.array([t])
-        #     )
+        foot_pos_amp = env.amp_loader.get_tar_toe_pos_local_batch(
+            env.amp_loader.get_full_frame_at_time_batch(
+                np.array([traj_idx]), np.array([t])
+            )
+        )
+        amp_foot_obs = env.get_amp_observations()[0, 15 : 15 + 6]
+        # print("foot obs", amp_foot_obs)
+        # print("foot data", foot_pos_amp[0])
+        # print(
+        #     "foot diff",
+        #     torch.round(abs(foot_pos_amp[0] - amp_foot_obs), decimals=2).cpu().numpy(),
         # )
-        # amp_foot_obs = env.get_amp_observations()[0, 15 : 15 + 6]
-        # print("obs", amp_foot_obs)
-        # print("data", foot_pos_amp[0])
-        # print("diff", abs(foot_pos_amp[0] - amp_foot_obs))
+        # print("")
 
-        # dof_pos_data = env.amp_loader.get_joint_pose_batch(
-        #     env.amp_loader.get_full_frame_at_time_batch(
-        #         np.array([traj_idx]), np.array([t])
-        #     )
+        dof_pos_data = env.amp_loader.get_joint_pose_batch(
+            env.amp_loader.get_full_frame_at_time_batch(
+                np.array([traj_idx]), np.array([t])
+            )
+        )
+        dof_pos_obs = env.get_amp_observations()[0, 0:15]
+        # print("dof pos obs", dof_pos_obs)
+        # print("dof pos data", dof_pos_data[0])
+        # print(
+        #     "dof pos diff",
+        #     torch.round(abs(dof_pos_data[0] - dof_pos_obs), decimals=2).cpu().numpy(),
         # )
-        # dof_pos_obs = env.get_amp_observations()[0, 0:15]
-        # print("obs", dof_pos_obs)
-        # print("data", dof_pos_data[0])
-        # print("diff", abs(dof_pos_data[0] - dof_pos_obs))
+        # print("")
 
-        # dof_vel_data = env.amp_loader.get_joint_vel_batch(
-        #     env.amp_loader.get_full_frame_at_time_batch(
-        #         np.array([traj_idx]), np.array([t])
-        #     )
+        dof_vel_data = env.amp_loader.get_joint_vel_batch(
+            env.amp_loader.get_full_frame_at_time_batch(
+                np.array([traj_idx]), np.array([t])
+            )
+        )
+        dof_vel_obs = env.get_amp_observations()[0, 27 : 27 + 15]
+        # print("dof vel obs", torch.round(dof_vel_obs, decimals=3))
+        # print("dof vel data", torch.round(dof_vel_data[0], decimals=3))
+        # print(
+        #     "dof vel diff",
+        #     torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
         # )
-        # dof_vel_obs = env.get_amp_observations()[0, 27 : 27 + 15]
-        # print("obs", torch.round(dof_vel_obs, decimals=3))
-        # print("data", torch.round(dof_vel_data[0], decimals=3))
-        # print("diff", torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=3))
+        # print("")
 
         base_lin_vel_data = env.amp_loader.get_linear_vel_batch(
             env.amp_loader.get_full_frame_at_time_batch(
                 np.array([traj_idx]), np.array([t])
             )
         )
-        print("z obs ang vel", env.base_ang_vel[:, 2])
-        print("z data ang vel", base_lin_vel_data[0][2])
+        base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
+        print("base lin vel obs", base_lin_vel_obs)
+        print("base lin vel data", base_lin_vel_data[0])
+        print(
+            "base lin vel diff",
+            torch.round(abs(base_lin_vel_data[0] - base_lin_vel_obs), decimals=2)
+            .cpu()
+            .numpy(),
+        )
+        print("")
 
-        # print("x vel obs", env.get_amp_observations()[0, 21 : 21 + 3][0])
-        # print("x vel data", base_lin_vel_data[0][0])
-        # base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
-        # print("obs", base_lin_vel_obs)
-        # print("data", base_lin_vel_data[0])
-        # print("diff", abs(base_lin_vel_data[0] - base_lin_vel_obs))
-
-        # base_ang_vel_data = env.amp_loader.get_angular_vel_batch(
-        #     env.amp_loader.get_full_frame_at_time_batch(
-        #         np.array([traj_idx]), np.array([t])
-        #     )
-        # )
-        # base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
-        # # base_ang_vel_obs = env.base_ang_vel[0]
-        # print("obs", base_ang_vel_obs)
-        # print("data", base_ang_vel_data[0])
-        # print("diff", abs(base_ang_vel_data[0] - base_ang_vel_obs))
+        base_ang_vel_data = env.amp_loader.get_angular_vel_batch(
+            env.amp_loader.get_full_frame_at_time_batch(
+                np.array([traj_idx]), np.array([t])
+            )
+        )
+        base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
+        # base_ang_vel_obs = env.base_ang_vel[0]
+        print("base ang vel obs", base_ang_vel_obs)
+        print("base ang vel data", base_ang_vel_data[0])
+        print(
+            "base ang vel diff",
+            torch.round(abs(base_ang_vel_data[0] - base_ang_vel_obs), decimals=2)
+            .cpu()
+            .numpy(),
+        )
 
         env.step(actions.detach())
 

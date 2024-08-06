@@ -357,10 +357,14 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
 
+        base_quat = self.root_states[:, 3:7]
+        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+
         self.privileged_obs_buf = torch.cat(
             (
-                self.base_lin_vel * self.obs_scales.lin_vel,
-                self.base_ang_vel * self.obs_scales.ang_vel,
+                base_lin_vel * self.obs_scales.lin_vel,
+                base_ang_vel * self.obs_scales.ang_vel,
                 self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
@@ -396,34 +400,42 @@ class LeggedRobot(BaseTask):
             self.obs_buf = torch.clone(self.privileged_obs_buf)
 
     def get_amp_observations(self):
-        joint_pos = self.dof_pos
         foot_pos = []
         with torch.no_grad():
             # BDX
             foot_pos.append(
                 self.chain_ee[0]
-                .forward_kinematics(joint_pos[:, 0:5])
+                .forward_kinematics(self.dof_pos[:, 0:5])
                 .get_matrix()[:, :3, 3]
             )
             foot_pos.append(
                 self.chain_ee[1]
-                .forward_kinematics(joint_pos[:, 10:15])
+                .forward_kinematics(self.dof_pos[:, 10:15])
                 .get_matrix()[:, :3, 3]
             )
             # A1
             # for i, chain_ee in enumerate(self.chain_ee):
             #     foot_pos.append(
             #         chain_ee.forward_kinematics(
-            #             joint_pos[:, i * 3 : i * 3 + 3]
+            #             self.dof_pos[:, i * 3 : i * 3 + 3]
             #         ).get_matrix()[:, :3, 3]
             #     )
         foot_pos = torch.cat(foot_pos, dim=-1)
-        base_lin_vel = self.base_lin_vel
-        base_ang_vel = self.base_ang_vel
-        joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
+
+        base_quat = self.root_states[:, 3:7]
+        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
         return torch.cat(
-            (joint_pos, foot_pos, base_lin_vel, base_ang_vel, joint_vel, z_pos), dim=-1
+            (
+                self.dof_pos,
+                foot_pos,
+                base_lin_vel,
+                base_ang_vel,
+                self.dof_vel,
+                z_pos,
+            ),
+            dim=-1,
         )
 
     def create_sim(self):
