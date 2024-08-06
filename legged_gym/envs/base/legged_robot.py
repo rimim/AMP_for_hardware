@@ -1489,7 +1489,7 @@ class LeggedRobot(BaseTask):
             (self.feet_air_time - 0.5) * first_contact, dim=1
         )  # reward only on first contact with the ground
         rew_airTime *= (
-            torch.norm(self.commands[:, :2], dim=1) > 0.1
+            torch.norm(self.commands[:, :2], dim=1) > 0.01
         )  # no reward for zero command
         self.feet_air_time *= ~contact_filt
         return rew_airTime
@@ -1505,7 +1505,7 @@ class LeggedRobot(BaseTask):
     def _reward_stand_still(self):
         # Penalize motion at zero commands
         return torch.sum(torch.abs(self.dof_pos - self.default_dof_pos), dim=1) * (
-            torch.norm(self.commands[:, :2], dim=1) < 0.1
+            torch.norm(self.commands[:, :2], dim=1) < 0.01
         )
 
     def _reward_feet_contact_forces(self):

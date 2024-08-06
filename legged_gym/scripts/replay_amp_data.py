@@ -12,6 +12,8 @@ from isaacgym import gymtorch, gymapi, gymutil
 
 import numpy as np
 import torch
+from FramesViewer.viewer import Viewer
+import FramesViewer.utils as fv_utils
 
 
 def play(args):
@@ -66,6 +68,9 @@ def play(args):
 
     t = 0.0
     traj_idx = 0
+
+    fv = Viewer()
+    fv.start()
 
     while traj_idx < len(env.amp_loader.trajectory_lens):
         actions = torch.zeros(
@@ -148,6 +153,26 @@ def play(args):
         #     torch.round(abs(foot_pos_amp[0] - amp_foot_obs), decimals=2).cpu().numpy(),
         # )
         # print("")
+
+        # data_left_foot_pos = foot_pos_amp[0, 0:3].cpu().numpy()
+        # data_right_foot_pos = foot_pos_amp[0, 3:6].cpu().numpy()
+        # data_left_foot_pose = fv_utils.make_pose(
+        #     data_left_foot_pos, np.array([0, 0, 0])
+        # )
+        # data_right_foot_pose = fv_utils.make_pose(
+        #     data_right_foot_pos, np.array([0, 0, 0])
+        # )
+        # obs_left_foot_pos = amp_foot_obs[0:3].cpu().numpy()
+        # obs_right_foot_pos = amp_foot_obs[3:6].cpu().numpy()
+        # obs_left_foot_pose = fv_utils.make_pose(obs_left_foot_pos, np.array([0, 0, 0]))
+        # obs_right_foot_pose = fv_utils.make_pose(
+        #     obs_right_foot_pos, np.array([0, 0, 0])
+        # )
+
+        # fv.pushFrame(data_left_foot_pose, "left_foot")
+        # fv.pushFrame(data_right_foot_pose, "right_foot")
+        # fv.pushFrame(obs_left_foot_pose, "left_foot_obs")
+        # fv.pushFrame(obs_right_foot_pose, "right_foot_obs")
 
         dof_pos_data = env.amp_loader.get_joint_pose_batch(
             env.amp_loader.get_full_frame_at_time_batch(
