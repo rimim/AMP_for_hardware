@@ -32,9 +32,9 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-# MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
+MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
 # MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
-MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward_faster.txt"]
+# MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward_faster.txt"]
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -78,8 +78,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.5  # 0.1 [N*m*s/rad]
+        stiffness_all = 4.0  # 4 [N*m/rad]
+        damping_all = 0.1  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -184,8 +184,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.01 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.01 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -210,14 +210,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            # lin_vel_x = [-0.1, 0.1]  # min max [m/s]
-            # lin_vel_y = [-0.1, 0.1]  # min max [m/s]
-            # ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
-            # heading = [-3.14, 3.14]
-            lin_vel_x = [0.5, 0.5]  # min max [m/s]
-            lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            lin_vel_x = [-0.15, 0.15]  # min max [m/s]
+            lin_vel_y = [-0.15, 0.15]  # min max [m/s]
+            ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             heading = [-3.14, 3.14]
+            # lin_vel_x = [0.5, 0.5]  # min max [m/s]
+            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
@@ -247,7 +247,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 5  # original 10
+        disc_grad_penalty = 10  # original 10
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
