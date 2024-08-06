@@ -32,8 +32,8 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-# MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
-MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
+MOTION_FILES = glob.glob("datasets/bdx/placo_moves/*")
+# MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -106,6 +106,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
+        default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+        disable_gravity = False
+        fix_base_link = False  # fixe the base of the robot
 
     # class normalization(LeggedRobotCfg.normalization):
     #     clip_observations = 5.0

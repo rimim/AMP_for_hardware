@@ -133,18 +133,6 @@ class LeggedRobot(BaseTask):
         )
         return obs, privileged_obs
 
-    def get_base_lin_vel(self):
-        base_quat = self.root_states[:, 3:7]
-        return quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-
-    def get_base_ang_vel(self):
-        base_quat = self.root_states[:, 3:7]
-        return quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-
-    def get_projected_gravity(self):
-        base_quat = self.root_states[:, 3:7]
-        projected_gravity = quat_rotate_inverse(base_quat, self.gravity_vec)
-
     def step(self, actions):
         """Apply actions, simulate, call self.post_physics_step()
 
@@ -222,16 +210,16 @@ class LeggedRobot(BaseTask):
         self.common_step_counter += 1
 
         # prepare quantities
-        # self.base_quat[:] = self.root_states[:, 3:7]
-        # self.base_lin_vel[:] = quat_rotate_inverse(
-        #     self.base_quat, self.root_states[:, 7:10]
-        # )
-        # self.base_ang_vel[:] = quat_rotate_inverse(
-        #     self.base_quat, self.root_states[:, 10:13]
-        # )
-        # self.projected_gravity[:] = quat_rotate_inverse(
-        #     self.base_quat, self.gravity_vec
-        # )
+        self.base_quat[:] = self.root_states[:, 3:7]
+        self.base_lin_vel[:] = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
+        self.base_ang_vel[:] = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
+        self.projected_gravity[:] = quat_rotate_inverse(
+            self.base_quat, self.gravity_vec
+        )
 
         self._post_physics_step_callback()
 
@@ -403,15 +391,11 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
 
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        projected_gravity = quat_rotate_inverse(base_quat, self.gravity_vec)
         self.privileged_obs_buf = torch.cat(
             (
-                base_lin_vel * self.obs_scales.lin_vel,
-                base_ang_vel * self.obs_scales.ang_vel,
-                projected_gravity,
+                self.base_lin_vel * self.obs_scales.lin_vel,
+                self.base_ang_vel * self.obs_scales.ang_vel,
+                self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
                 self.dof_vel * self.obs_scales.dof_vel,
@@ -449,6 +433,7 @@ class LeggedRobot(BaseTask):
         joint_pos = self.dof_pos
         foot_pos = []
         with torch.no_grad():
+            # BDX
             foot_pos.append(
                 self.chain_ee[0]
                 .forward_kinematics(joint_pos[:, 0:5])
@@ -459,10 +444,12 @@ class LeggedRobot(BaseTask):
                 .forward_kinematics(joint_pos[:, 10:15])
                 .get_matrix()[:, :3, 3]
             )
+
+            # A1
             # for i, chain_ee in enumerate(self.chain_ee):
             #     foot_pos.append(
             #         chain_ee.forward_kinematics(
-            #             joint_pos[:, i * 5 : i * 5 + 5]
+            #             joint_pos[:, i * 3 : i * 3 + 3]
             #         ).get_matrix()[:, :3, 3]
             #     )
         # cpu_foot_pos = []
@@ -480,9 +467,9 @@ class LeggedRobot(BaseTask):
         # base_ang_vel = self.base_ang_vel
 
         # Recomputing them on the fly
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+        # base_quat = self.root_states[:, 3:7]
+        # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
 
         joint_vel = self.dof_vel
         z_pos = self.root_states[:, 2:3]
@@ -492,8 +479,8 @@ class LeggedRobot(BaseTask):
             (
                 joint_pos,
                 foot_pos,
-                base_lin_vel,
-                base_ang_vel,
+                self.base_lin_vel,
+                self.base_ang_vel,
                 joint_vel,
                 z_pos,
             ),
@@ -696,6 +683,7 @@ class LeggedRobot(BaseTask):
         Returns:
             [torch.Tensor]: Torques sent to the simulation
         """
+
         # pd controller
         actions_scaled = actions * self.cfg.control.action_scale
         control_type = self.cfg.control.control_type
@@ -980,7 +968,7 @@ class LeggedRobot(BaseTask):
         self.dof_state = gymtorch.wrap_tensor(dof_state_tensor)
         self.dof_pos = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 0]
         self.dof_vel = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 1]
-        base_quat = self.root_states[:, 3:7]
+        self.base_quat = self.root_states[:, 3:7]
 
         self.contact_forces = gymtorch.wrap_tensor(net_contact_forces).view(
             self.num_envs, -1, 3
@@ -1051,13 +1039,14 @@ class LeggedRobot(BaseTask):
             device=self.device,
             requires_grad=False,
         )
-        # self.base_lin_vel = quat_rotate_inverse(
-        #     self.base_quat, self.root_states[:, 7:10]
-        # )
-        # self.base_ang_vel = quat_rotate_inverse(
-        #     self.base_quat, self.root_states[:, 10:13]
-        # )
-        # self.projected_gravity = quat_rotate_inverse(self.base_quat, self.gravity_vec)
+
+        self.base_lin_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 7:10]
+        )
+        self.base_ang_vel = quat_rotate_inverse(
+            self.base_quat, self.root_states[:, 10:13]
+        )
+        self.projected_gravity = quat_rotate_inverse(self.base_quat, self.gravity_vec)
 
         if self.cfg.terrain.measure_heights:
             self.height_points = self._init_height_points()
@@ -1503,21 +1492,15 @@ class LeggedRobot(BaseTask):
     # ------------ reward functions----------------
     def _reward_lin_vel_z(self):
         # Penalize z axis base linear velocity
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        return torch.square(base_lin_vel[:, 2])
+        return torch.square(self.base_lin_vel[:, 2])
 
     def _reward_ang_vel_xy(self):
         # Penalize xy axes base angular velocity
-        base_quat = self.root_states[:, 3:7]
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        return torch.sum(torch.square(base_ang_vel[:, :2]), dim=1)
+        return torch.sum(torch.square(self.base_ang_vel[:, :2]), dim=1)
 
     def _reward_orientation(self):
         # Penalize non flat base orientation
-        base_quat = self.root_states[:, 3:7]
-        projected_gravity = quat_rotate_inverse(base_quat, self.gravity_vec)
-        return torch.sum(torch.square(projected_gravity[:, :2]), dim=1)
+        return torch.sum(torch.square(self.projected_gravity[:, :2]), dim=1)
 
     def _reward_base_height(self):
         # Penalize base height away from target
@@ -1592,18 +1575,14 @@ class LeggedRobot(BaseTask):
 
     def _reward_tracking_lin_vel(self):
         # Tracking of linear velocity commands (xy axes)
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         lin_vel_error = torch.sum(
-            torch.square(self.commands[:, :2] - base_lin_vel[:, :2]), dim=1
+            torch.square(self.commands[:, :2] - self.base_lin_vel[:, :2]), dim=1
         )
         return torch.exp(-lin_vel_error / self.cfg.rewards.tracking_sigma)
 
     def _reward_tracking_ang_vel(self):
         # Tracking of angular velocity commands (yaw)
-        base_quat = self.root_states[:, 3:7]
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        ang_vel_error = torch.square(self.commands[:, 2] - base_ang_vel[:, 2])
+        ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
         return torch.exp(-ang_vel_error / self.cfg.rewards.tracking_sigma)
 
     def _reward_feet_air_time(self):
