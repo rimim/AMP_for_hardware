@@ -35,7 +35,6 @@ MOTION_FILES = glob.glob("datasets/mocap_motions_a1/*")
 
 
 class A1AMPCfg(LeggedRobotCfg):
-
     class env(LeggedRobotCfg.env):
         num_envs = 5480
         include_history_steps = None  # Number of steps of history to include.
@@ -68,10 +67,11 @@ class A1AMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = False
-        # stiffness = {"joint": 80.0}  # [N*m/rad]
-        # damping = {"joint": 1.0}  # [N*m*s/rad]
-        stiffness_all = 80.0  # [N*m/rad]
-        damping_all = 1.0  # [N*m*s/rad]
+        stiffness = {"joint": 80.0}  # [N*m/rad]
+        damping = {"joint": 1.0}  # [N*m*s/rad]
+        # stiffness_all = 80.0  # [N*m/rad]
+        # damping_all = 1.0  # [N*m*s/rad]
+
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
