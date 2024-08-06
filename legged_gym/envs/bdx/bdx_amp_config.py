@@ -32,9 +32,9 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
+# MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
 # MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
-# MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward_faster.txt"]
+MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward_faster.txt"]
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -184,8 +184,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -194,8 +194,8 @@ class BDXAMPCfg(LeggedRobotCfg):
             torques = 0.0
             dof_vel = 0.0
             dof_acc = 0.0
-            base_height = 0.0
-            feet_air_time = 0.0
+            base_height = 1.0
+            feet_air_time = 1.0
             collision = 0.0
             feet_stumble = 0.0
             action_rate = 0.0
@@ -210,14 +210,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.15, 0.15]  # min max [m/s]
-            lin_vel_y = [-0.15, 0.15]  # min max [m/s]
-            ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
-            heading = [-3.14, 3.14]
-            # lin_vel_x = [0.5, 0.5]  # min max [m/s]
-            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # lin_vel_x = [-0.15, 0.15]  # min max [m/s]
+            # lin_vel_y = [-0.15, 0.15]  # min max [m/s]
+            # ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             # heading = [-3.14, 3.14]
+            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
