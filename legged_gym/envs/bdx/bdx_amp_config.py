@@ -184,8 +184,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -194,11 +194,11 @@ class BDXAMPCfg(LeggedRobotCfg):
             torques = 0.0
             dof_vel = 0.0
             dof_acc = 0.0
-            base_height = 1.0
-            feet_air_time = 1.0
+            base_height = 0.0
+            feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -1.0
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
