@@ -103,7 +103,6 @@ class AMPOnPolicyRunner:
             device=self.device,
             min_std=min_std,
             disc_grad_penalty=train_cfg["runner"]["disc_grad_penalty"],
-            disc_coef=train_cfg["algorithm"]["disc_coef"],
             **self.alg_cfg,
         )
         self.num_steps_per_env = self.cfg["num_steps_per_env"]
