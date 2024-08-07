@@ -235,6 +235,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         num_learning_epochs = 5
         num_mini_batches = 4
         disc_coef = 5  # TUNE ?
+        bounds_loss_coef = 10
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""

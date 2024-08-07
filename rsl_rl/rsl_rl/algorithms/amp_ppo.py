@@ -63,6 +63,7 @@ class AMPPPO:
         min_std=None,
         disc_grad_penalty=10.0,
         disc_coef=5,
+        bounds_loss_coef=None,
     ):
         self.device = device
 
@@ -115,6 +116,7 @@ class AMPPPO:
         self.use_clipped_value_loss = use_clipped_value_loss
         self.disc_grad_penalty = disc_grad_penalty
         self.disc_coef = disc_coef
+        self.bounds_loss_coef = bounds_loss_coef
 
     def init_storage(
         self,
@@ -181,6 +183,20 @@ class AMPPPO:
         aug_last_critic_obs = last_critic_obs.detach()
         last_values = self.actor_critic.evaluate(aug_last_critic_obs).detach()
         self.storage.compute_returns(last_values, self.gamma, self.lam)
+
+    def bound_loss(self, mu):
+        if self.bounds_loss_coef is not None:
+            soft_bound = 1.0
+            mu_loss_high = (
+                torch.maximum(mu - soft_bound, torch.tensor(0, device=self.device)) ** 2
+            )
+            mu_loss_low = (
+                torch.minimum(mu + soft_bound, torch.tensor(0, device=self.device)) ** 2
+            )
+            b_loss = (mu_loss_low + mu_loss_high).sum()
+        else:
+            b_loss = 0
+        return b_loss
 
     def update(self):
         mean_value_loss = 0
@@ -324,12 +340,18 @@ class AMPPPO:
             grad_pen_loss = self.discriminator.compute_grad_pen(
                 expert_state, expert_next_state, lambda_=self.disc_grad_penalty
             )
+
+            b_loss = self.bound_loss(mu_batch)
+            bounds_loss_coef = (
+                self.bounds_loss_coef if self.bounds_loss_coef is not None else 0.0
+            )
             # Compute total loss.
             loss = (
                 surrogate_loss
                 + self.value_loss_coef * value_loss
                 - self.entropy_coef * entropy_batch.mean()
                 + self.disc_coef * (amp_loss + grad_pen_loss)
+                + bounds_loss_coef * b_loss
             )
 
             # Gradient step
