@@ -320,15 +320,14 @@ class AMPPPO:
             )
             amp_loss = 0.5 * (expert_loss + policy_loss)
             grad_pen_loss = self.discriminator.compute_grad_pen(
-                expert_state, expert_next_state, lambda_=self.disc_grad_penalty
+                expert_state, expert_next_state, lambda_=10
             )
             # Compute total loss.
             loss = (
                 surrogate_loss
                 + self.value_loss_coef * value_loss
                 - self.entropy_coef * entropy_batch.mean()
-                + amp_loss
-                + grad_pen_loss
+                + self.disc_grad_penalty * (amp_loss + grad_pen_loss)
             )
 
             # Gradient step
