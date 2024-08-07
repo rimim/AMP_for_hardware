@@ -85,7 +85,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.5  # 0.1 [N*m*s/rad]
+        damping_all = 0.05  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
