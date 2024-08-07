@@ -234,6 +234,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5
         num_mini_batches = 4
+        disc_coef = 5  # TUNE ?
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -248,7 +249,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10  # original 10
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
