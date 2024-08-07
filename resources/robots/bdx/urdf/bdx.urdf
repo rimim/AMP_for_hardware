@@ -1198,7 +1198,7 @@
         <child link="foot_module" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.570796326794896558" upper="1.570796326794896558"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="right_knee" type="revolute">
         <origin xyz="-0.065000000000000890399 -1.8409752888803865289e-16 2.3592239273284576484e-16" rpy="1.1102230529243367767e-16 2.2204460492507932999e-16 -1.1500818382616808057e-13" />
@@ -1206,7 +1206,7 @@
         <child link="leg_module_2" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-2.0943951023931952626" upper="2.0943951023931952626"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="right_hip_pitch" type="revolute">
         <origin xyz="0.025000000000000646705 -0.024500000000000743405 -0.013499999999999783007" rpy="1.5707963267948972241 -9.4876329561990965088e-14 -3.141592653589793116" />
@@ -1214,7 +1214,7 @@
         <child link="leg_module" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-0.52359877559829881566" upper="1.570796326794896558"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="right_hip_roll" type="revolute">
         <origin xyz="-0.033999999999999905298 0.011499999999999989397 0.011499999999999895722" rpy="-1.5707963267948958919 -1.570796326794896336 0" />
@@ -1222,7 +1222,7 @@
         <child link="right_hip_pitch_roll_module" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.570796326794896558" upper="0.43633231299858238339"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="right_hip_yaw" type="revolute">
         <origin xyz="0.00012710048502765305023 -0.031603896430576608467 0.023078922950959548932" rpy="3.1415926535897304994 -1.5078389055347532112e-14 1.5707963267948974462" />
@@ -1230,7 +1230,7 @@
         <child link="double_u_module" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-0.69813170079773179122" upper="0.69813170079773179122"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <link name="double_u_module_2">
         <visual>
@@ -1766,7 +1766,7 @@
         <child link="foot_module_2" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.570796326794896558" upper="1.570796326794896558"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="left_knee" type="revolute">
         <origin xyz="-0.064999999999998281375 -5.8763757748714340323e-17 0" rpy="5.970893051203023059e-16 -1.4853578868213746426e-14 -7.8207310266750229308e-08" />
@@ -1774,7 +1774,7 @@
         <child link="leg_module_4" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-2.0943951023931952626" upper="2.0943951023931952626"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="left_hip_pitch" type="revolute">
         <origin xyz="0.025000000000000459355 -0.0015000000000000013323 -0.0095000000000003380352" rpy="-1.57079632679489678 7.8207331219164669488e-08 -3.141592653589793116" />
@@ -1782,7 +1782,7 @@
         <child link="leg_module_3" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-0.52359877559829881566" upper="1.570796326794896558"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="left_hip_roll" type="revolute">
         <origin xyz="0.034000000000001168177 -0.0115000000000000345 0.011499999999999996336" rpy="1.570796326794896558 -1.570796326794896558 0" />
@@ -1790,7 +1790,7 @@
         <child link="left_hip_pitch_roll_module" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.570796326794896558" upper="0.43633231299858238339"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="left_hip_yaw" type="revolute">
         <origin xyz="0.00012710048502760968214 0.018396103569423397778 0.023078922950960291394" rpy="3.1415926535897309435 -1.5078389055347532112e-14 1.5707963267948974462" />
@@ -1798,7 +1798,7 @@
         <child link="double_u_module_2" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-0.69813170079773179122" upper="0.69813170079773179122"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <link name="head_link">
         <visual>
@@ -2192,7 +2192,7 @@
         <child link="left_antenna_assembly" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.1344640137963142301" upper="2.0943951023931952626"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <link name="right_antenna_assembly">
         <visual>
@@ -2252,7 +2252,7 @@
         <child link="right_antenna_assembly" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-2.0943951023931952626" upper="1.1344640137963142301"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="head_yaw" type="revolute">
         <origin xyz="0.037999999999999423128 3.4694469519536141888e-17 -0.011500000000000006745" rpy="1.570796326794896558 1.6085177185030839443e-15 -1.570796326794896558" />
@@ -2260,7 +2260,7 @@
         <child link="head_assembly" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-2.0943951023931952626" upper="2.0943951023931952626"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="head_pitch" type="revolute">
         <origin xyz="3.4694469519536141888e-18 -0.064999999999999114042 3.4694469519536141888e-18" rpy="3.1415926535897926719 -1.6569800610870191142e-15 -1.570796326794896336" />
@@ -2268,7 +2268,7 @@
         <child link="head_pitch_yaw" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-0.69813170079773179122" upper="0.69813170079773179122"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
     <joint name="neck_pitch" type="revolute">
         <origin xyz="0.030627100485025756521 -0.018103896430577130772 0.055078922950960805538" rpy="-1.570796326794881459 -6.2505556286397272481e-14 1.0547118733946938852e-15" />
@@ -2276,6 +2276,6 @@
         <child link="head_link" />
         <axis xyz="0 0 1"/>
         <limit effort="0.52" velocity="10.7" lower="-1.3089969389957472057" upper="0.1745329251994329478"/>
-        <joint_properties friction="0.0"/>
+        <joint_properties friction="0.1"/>
     </joint>
 </robot>

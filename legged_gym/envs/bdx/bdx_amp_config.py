@@ -53,6 +53,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         episode_length_s = 5  # episode length in seconds
 
     class init_state(LeggedRobotCfg.init_state):
+        # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.18]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "right_hip_yaw": -0.03676731090962078,  # [rad]
@@ -79,8 +80,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.1  # 0.1 [N*m*s/rad]
+        stiffness_all = 1.0  # 4 [N*m/rad]
+        damping_all = 0.05  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -118,7 +119,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25
+        # action_scale = 0.25
+        action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
