@@ -33,7 +33,7 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
+MOTION_FILES = ["datasets/bdx/new_placo_moves_faster/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
@@ -235,6 +235,11 @@ class BDXAMPCfg(LeggedRobotCfg):
 class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     runner_class_name = "AMPOnPolicyRunner"
 
+    class policy(LeggedRobotCfgPPO.policy):
+        actor_hidden_dims = [1024, 512]  # [512, 256, 128]
+        critic_hidden_dims = [1024, 512]  # [512, 256, 128]
+        activation = "relu"  # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
+
     class algorithm(LeggedRobotCfgPPO.algorithm):
         entropy_coef = 0.0  # 0.001
         amp_replay_buffer_size = 1000000
@@ -244,6 +249,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         bounds_loss_coef = 10
         # learning_rate = 1.0e-3  # 5.e-4
         learning_rate = 5.0e-5  # 5.e-4
+        schedule = "constant"  # could be adaptive, fixed
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -252,7 +258,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
 
-        amp_reward_coef = 1.0  # 2.0
+        amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.5  # 0.3
