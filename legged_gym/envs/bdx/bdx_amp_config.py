@@ -225,7 +225,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [-3.14, 3.14]
-s
+
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
         pos = [0, 0, 1]  # [m]
