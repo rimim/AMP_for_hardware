@@ -32,9 +32,9 @@ import glob
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
-# MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
+MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 # MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
-MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
+# MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
@@ -51,7 +51,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         env_spacing = 1.0
         reference_state_initialization = False
         reference_state_initialization_prob = 0.85
-        amp_motion_files = MOTION_FILES
+        amp_motion_files = MOTION_FILESs
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
         episode_length_s = 5  # episode length in seconds
@@ -191,10 +191,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
-            tracking_lin_vel = 0
-            tracking_ang_vel = 0
+            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
+            # tracking_lin_vel = 0
+            # tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -212,19 +212,19 @@ class BDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            # lin_vel_x = [-0.15, 0.15]  # min max [m/s]
-            # lin_vel_y = [-0.15, 0.15]  # min max [m/s]
-            # ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
-            # heading = [-3.14, 3.14]
-            lin_vel_x = [0.1, 0.2]  # min max [m/s]
-            lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            lin_vel_x = [-0.15, 0.15]  # min max [m/s]
+            lin_vel_y = [0, 0]  # min max [m/s]
+            ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             heading = [-3.14, 3.14]
+            # lin_vel_x = [0.1, 0.2]  # min max [m/s]
+            # lin_vel_y = [0.0, 0.0]  # min max [m/s]
+            # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
+            # heading = [-3.14, 3.14]
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
@@ -253,7 +253,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.0  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
