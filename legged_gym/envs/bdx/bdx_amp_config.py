@@ -51,7 +51,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         env_spacing = 1.0
         reference_state_initialization = False
         reference_state_initialization_prob = 0.85
-        amp_motion_files = MOTION_FILESs
+        amp_motion_files = MOTION_FILES
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
         episode_length_s = 5  # episode length in seconds
