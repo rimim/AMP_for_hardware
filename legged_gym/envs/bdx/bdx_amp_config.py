@@ -85,7 +85,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.5  # 0.1 [N*m*s/rad]
+        damping_all = 0.05  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -127,7 +127,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6
+        decimation = 4  # 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -158,7 +158,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.005
+        dt = 0.005  # 0.005
         substeps = 1
 
     class domain_rand:

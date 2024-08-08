@@ -138,6 +138,7 @@ class LeggedRobot(BaseTask):
         #     device=self.device,
         #     requires_grad=False,
         # )
+
         # targ = torch.tensor(1 * np.sin(2 * np.pi * 0.2 * time())).to(self.device)
         # print("target", targ)
         # actions[:, 2] = targ
@@ -369,9 +370,15 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
 
+        # self.gym.refresh_actor_root_state_tensor(self.sim)
         base_quat = self.root_states[:, 3:7]
         base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+        # print(base_quat[0])
+        # print(base_lin_vel[0])
+        # print(base_ang_vel[0])
+        # print(self.base_ang_vel[0])
+        # print("--")
 
         self.privileged_obs_buf = torch.cat(
             (
