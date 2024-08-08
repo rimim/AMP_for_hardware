@@ -198,14 +198,14 @@ class BDXAMPCfg(LeggedRobotCfg):
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = 0.0
-            dof_vel = 0.0
+            torques = -0.01
+            dof_vel = -0.01
             dof_acc = 0.0
-            base_height = 0.0
+            base_height = 0.01
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -217,7 +217,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0, 0.15]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             heading = [-3.14, 3.14]
