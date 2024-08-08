@@ -54,7 +54,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         amp_motion_files = MOTION_FILES
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
-        episode_length_s = 5  # episode length in seconds
+        episode_length_s = 8  # episode length in seconds
 
     class init_state(LeggedRobotCfg.init_state):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
