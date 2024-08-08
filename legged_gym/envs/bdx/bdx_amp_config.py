@@ -127,7 +127,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 4  # 6
+        decimation = 6  # 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -158,7 +158,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.005  # 0.005
+        dt = 0.005
         substeps = 1
 
     class domain_rand:
@@ -242,6 +242,8 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         num_mini_batches = 32  # 4
         disc_coef = 5  # TUNE ?
         bounds_loss_coef = 10
+        # learning_rate = 1.0e-3  # 5.e-4
+        learning_rate = 5.0e-4  # 5.e-4
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
