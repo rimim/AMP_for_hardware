@@ -217,7 +217,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            lin_vel_x = [0.3, 0.3]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
             heading = [0, 0]
@@ -247,9 +247,9 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         num_mini_batches = 32  # 4
         disc_coef = 5  # TUNE ?
         bounds_loss_coef = 10
-        # learning_rate = 1.0e-3  # 5.e-4
-        learning_rate = 5.0e-5  # 5.e-4
-        schedule = "constant"  # could be adaptive, fixed
+        # # learning_rate = 1.0e-3  # 5.e-4
+        # learning_rate = 5.0e-5  # 5.e-4
+        # schedule = "constant"  # could be adaptive, fixed
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -261,10 +261,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.5  # 0.3
+        amp_task_reward_lerp = 0.2s  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10  # original 10 # TUNE ?
+        disc_grad_penalty = 0.001  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
