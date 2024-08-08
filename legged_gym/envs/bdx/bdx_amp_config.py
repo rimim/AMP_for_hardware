@@ -132,8 +132,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
         measure_heights = False
-        static_friction = 10.0  # 5
-        dynamic_friction = 10.0  # 5
+        static_friction = 5.0  # 5
+        dynamic_friction = 5.0  # 5
 
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/bdx/urdf/bdx.urdf"
@@ -252,13 +252,13 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
 
-        amp_reward_coef = 2.0  # 2.0
+        amp_reward_coef = 1.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
         amp_task_reward_lerp = 0.5  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.1  # original 10 # TUNE ?
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
