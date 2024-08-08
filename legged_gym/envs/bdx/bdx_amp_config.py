@@ -243,7 +243,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         disc_coef = 5  # TUNE ?
         bounds_loss_coef = 10
         # learning_rate = 1.0e-3  # 5.e-4
-        learning_rate = 5.0e-4  # 5.e-4
+        learning_rate = 5.0e-5  # 5.e-4
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
