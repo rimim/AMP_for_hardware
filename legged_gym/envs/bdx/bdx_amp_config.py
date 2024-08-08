@@ -81,11 +81,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.6  # Nm
+        effort = 1.0  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 4.0  # 4 [N*m/rad]
-        damping_all = 0.01  # 0.1 [N*m*s/rad]
+        stiffness_all = 10.0  # 4 [N*m/rad]
+        damping_all = 0.5  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -191,21 +191,21 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
-            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
-            # tracking_lin_vel = 0
-            # tracking_ang_vel = 0
+            # tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            # tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
+            tracking_lin_vel = 0
+            tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.01
-            dof_vel = -0.01
+            torques = 0.0
+            dof_vel = 0.0
             dof_acc = 0.0
-            base_height = 0.01
+            base_height = 0.0
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.1
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -253,10 +253,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.0  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        disc_grad_penalty = 0.1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
