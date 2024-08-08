@@ -35,6 +35,10 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 # MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
 # MOTION_FILES = ["datasets/bdx/placo_moves/bdx_walk_forward.txt"]
 MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
+# MOTION_FILES = [
+#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
+#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
+# ]
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -53,6 +57,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         episode_length_s = 5  # episode length in seconds
 
     class init_state(LeggedRobotCfg.init_state):
+        # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.18]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "right_hip_yaw": -0.03676731090962078,  # [rad]
@@ -79,8 +84,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 4.0  # 4 [N*m/rad]
-        damping_all = 0.1  # 0.1 [N*m*s/rad]
+        stiffness_all = 10.0  # 4 [N*m/rad]
+        damping_all = 0.05  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -119,6 +124,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
+        # action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
@@ -147,9 +153,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    # class normalization(LeggedRobotCfg.normalization):
-    #     clip_observations = 5.0
-    #     clip_actions = 1.0
+    class normalization(LeggedRobotCfg.normalization):
+        clip_observations = 5.0
+        clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
@@ -185,10 +191,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
-            # tracking_lin_vel = 0
-            # tracking_ang_vel = 0
+            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0
+            tracking_ang_vel = 0
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -215,11 +221,11 @@ class BDXAMPCfg(LeggedRobotCfg):
             # lin_vel_y = [-0.15, 0.15]  # min max [m/s]
             # ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             # heading = [-3.14, 3.14]
-            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0.1, 0.2]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [-3.14, 3.14]
-
+s
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
         pos = [0, 0, 1]  # [m]
@@ -247,10 +253,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.0  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        disc_grad_penalty = 1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
