@@ -236,12 +236,12 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     runner_class_name = "AMPOnPolicyRunner"
 
     class algorithm(LeggedRobotCfgPPO.algorithm):
-        entropy_coef = 0.01
+        entropy_coef = 0.0  # 0.001
         amp_replay_buffer_size = 1000000
-        num_learning_epochs = 5
-        num_mini_batches = 4
+        num_learning_epochs = 2  # 5
+        num_mini_batches = 32  # 4
         disc_coef = 5  # TUNE ?
-        bounds_loss_coef = 0
+        bounds_loss_coef = 10
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
