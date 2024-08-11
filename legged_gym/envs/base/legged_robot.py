@@ -131,14 +131,14 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        # actions = torch.zeros(
-        #     self.num_envs,
-        #     self.num_actions,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
-
+        ############## DISABLE ACTIONS
+        actions = torch.zeros(
+            self.num_envs,
+            self.num_actions,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
         # targ = torch.tensor(1 * np.sin(2 * np.pi * 0.2 * time())).to(self.device)
         # print("target", targ)
         # actions[:, 2] = targ
@@ -429,7 +429,7 @@ class LeggedRobot(BaseTask):
             )
             foot_pos.append(
                 self.chain_ee[1]
-                .forward_kinematics(self.dof_pos[:, 10:15])
+                .forward_kinematics(self.dof_pos[:, 9:14])
                 .get_matrix()[:, :3, 3]
             )
             # A1
@@ -973,6 +973,7 @@ class LeggedRobot(BaseTask):
         self.default_dof_pos = torch.zeros(
             self.num_dof, dtype=torch.float, device=self.device, requires_grad=False
         )
+        print(f"self.num_dofs: {self.num_dofs}")
         for i in range(self.num_dofs):
             name = self.dof_names[i]
             angle = self.cfg.init_state.default_joint_angles[name]
@@ -985,6 +986,7 @@ class LeggedRobot(BaseTask):
                 if dof_name in name:
                     self.p_gains[i] = self.cfg.control.stiffness[dof_name]
                     self.d_gains[i] = self.cfg.control.damping[dof_name]
+                    print(f"{dof_name}: kp=={self.p_gains[i]} kd={self.d_gains[i]}")
                     found = True
             if not found:
                 self.p_gains[i] = 0.0
@@ -1150,6 +1152,9 @@ class LeggedRobot(BaseTask):
         # save body names from the asset
         body_names = self.gym.get_asset_rigid_body_names(robot_asset)
         self.dof_names = self.gym.get_asset_dof_names(robot_asset)
+        print("================================================")
+        print(self.dof_names)
+        print("================================================")
         self.num_bodies = len(body_names)
         self.num_dofs = len(self.dof_names)
         feet_names = [s for s in body_names if self.cfg.asset.foot_name in s]

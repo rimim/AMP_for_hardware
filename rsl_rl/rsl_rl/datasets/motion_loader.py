@@ -15,11 +15,11 @@ class AMPLoader:
     # bdx
     POS_SIZE = 3
     ROT_SIZE = 4
-    JOINT_POS_SIZE = 15
+    JOINT_POS_SIZE = 14
     TAR_TOE_POS_LOCAL_SIZE = 6
     LINEAR_VEL_SIZE = 3
     ANGULAR_VEL_SIZE = 3
-    JOINT_VEL_SIZE = 15
+    JOINT_VEL_SIZE = 14
     TAR_TOE_VEL_LOCAL_SIZE = 6
 
     # A1

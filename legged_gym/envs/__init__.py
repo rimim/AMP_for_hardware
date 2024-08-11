@@ -39,8 +39,12 @@ from .a1.a1_config import A1RoughCfg, A1RoughCfgPPO
 from .base.legged_robot import LeggedRobot
 from .bdx.bdx_amp_config import BDXAMPCfg, BDXAMPCfgPPO
 from .bdx.bdx_config import BDXRoughCfg, BDXRoughCfgPPO
+from .go_bdx.go_bdx_amp_config import GOBDXAMPCfg, GOBDXAMPCfgPPO
+from .go_bdx.go_bdx_config import GOBDXRoughCfg, GOBDXRoughCfgPPO
 
 task_registry.register("a1", LeggedRobot, A1RoughCfg(), A1RoughCfgPPO())
 task_registry.register("a1_amp", LeggedRobot, A1AMPCfg(), A1AMPCfgPPO())
 task_registry.register("bdx_amp", LeggedRobot, BDXAMPCfg(), BDXAMPCfgPPO())
 task_registry.register("bdx", LeggedRobot, BDXRoughCfg(), BDXRoughCfgPPO())
+task_registry.register("go_bdx_amp", LeggedRobot, GOBDXAMPCfg(), GOBDXAMPCfgPPO())
+task_registry.register("go_bdx", LeggedRobot, GOBDXRoughCfg(), GOBDXRoughCfgPPO())

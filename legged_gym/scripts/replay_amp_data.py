@@ -69,8 +69,8 @@ def play(args):
     t = 0.0
     traj_idx = 0
 
-    fv = Viewer()
-    fv.start()
+    # fv = Viewer()
+    # fv.start()
 
     while traj_idx < len(env.amp_loader.trajectory_lens):
         actions = torch.zeros(
@@ -154,25 +154,25 @@ def play(args):
         # )
         # print("")
 
-        data_left_foot_pos = foot_pos_amp[0, 0:3].cpu().numpy()
-        data_right_foot_pos = foot_pos_amp[0, 3:6].cpu().numpy()
-        data_left_foot_pose = fv_utils.make_pose(
-            data_left_foot_pos, np.array([0, 0, 0])
-        )
-        data_right_foot_pose = fv_utils.make_pose(
-            data_right_foot_pos, np.array([0, 0, 0])
-        )
-        obs_left_foot_pos = amp_foot_obs[0:3].cpu().numpy()
-        obs_right_foot_pos = amp_foot_obs[3:6].cpu().numpy()
-        obs_left_foot_pose = fv_utils.make_pose(obs_left_foot_pos, np.array([0, 0, 0]))
-        obs_right_foot_pose = fv_utils.make_pose(
-            obs_right_foot_pos, np.array([0, 0, 0])
-        )
+        # data_left_foot_pos = foot_pos_amp[0, 0:3].cpu().numpy()
+        # data_right_foot_pos = foot_pos_amp[0, 3:6].cpu().numpy()
+        # data_left_foot_pose = fv_utils.make_pose(
+        #     data_left_foot_pos, np.array([0, 0, 0])
+        # )
+        # data_right_foot_pose = fv_utils.make_pose(
+        #     data_right_foot_pos, np.array([0, 0, 0])
+        # )
+        # obs_left_foot_pos = amp_foot_obs[0:3].cpu().numpy()
+        # obs_right_foot_pos = amp_foot_obs[3:6].cpu().numpy()
+        # obs_left_foot_pose = fv_utils.make_pose(obs_left_foot_pos, np.array([0, 0, 0]))
+        # obs_right_foot_pose = fv_utils.make_pose(
+        #     obs_right_foot_pos, np.array([0, 0, 0])
+        # )
 
-        fv.pushFrame(data_left_foot_pose, "left_foot")
-        fv.pushFrame(data_right_foot_pose, "right_foot")
-        fv.pushFrame(obs_left_foot_pose, "left_foot_obs")
-        fv.pushFrame(obs_right_foot_pose, "right_foot_obs")
+        # fv.pushFrame(data_left_foot_pose, "left_foot")
+        # fv.pushFrame(data_right_foot_pose, "right_foot")
+        # fv.pushFrame(obs_left_foot_pose, "left_foot_obs")
+        # fv.pushFrame(obs_right_foot_pose, "right_foot_obs")
 
         dof_pos_data = env.amp_loader.get_joint_pose_batch(
             env.amp_loader.get_full_frame_at_time_batch(
@@ -182,11 +182,11 @@ def play(args):
         dof_pos_obs = env.get_amp_observations()[0, 0:15]
         # print("dof pos obs", dof_pos_obs)
         # print("dof pos data", dof_pos_data[0])
-        print(
-            "dof pos diff",
-            torch.round(abs(dof_pos_data[0] - dof_pos_obs), decimals=2).cpu().numpy(),
-        )
-        print("")
+        # print(
+        #     "dof pos diff",
+        #     torch.round(abs(dof_pos_data[0] - dof_pos_obs), decimals=2).cpu().numpy(),
+        # )
+        # print("")
 
         dof_vel_data = env.amp_loader.get_joint_vel_batch(
             env.amp_loader.get_full_frame_at_time_batch(
@@ -196,11 +196,11 @@ def play(args):
         dof_vel_obs = env.get_amp_observations()[0, 27 : 27 + 15]
         # print("dof vel obs", torch.round(dof_vel_obs, decimals=3))
         # print("dof vel data", torch.round(dof_vel_data[0], decimals=3))
-        print(
-            "dof vel diff",
-            torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
-        )
-        print("")
+        # print(
+        #     "dof vel diff",
+        #     torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
+        # )
+        # print("")
 
         base_lin_vel_data = env.amp_loader.get_linear_vel_batch(
             env.amp_loader.get_full_frame_at_time_batch(
@@ -208,14 +208,14 @@ def play(args):
             )
         )
         base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
-        # print("base lin vel obs", base_lin_vel_obs)
-        # print("base lin vel data", base_lin_vel_data[0])
-        print(
-            "base lin vel diff",
-            torch.round(abs(base_lin_vel_data[0] - base_lin_vel_obs), decimals=2)
-            .cpu()
-            .numpy(),
-        )
+        print("base lin vel obs", base_lin_vel_obs)
+        print("base lin vel data", base_lin_vel_data[0])
+        # print(
+        #     "base lin vel diff",
+        #     torch.round(abs(base_lin_vel_data[0] - base_lin_vel_obs), decimals=2)
+        #     .cpu()
+        #     .numpy(),
+        # )
         print("")
 
         base_ang_vel_data = env.amp_loader.get_angular_vel_batch(
@@ -225,14 +225,14 @@ def play(args):
         )
         base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
         # base_ang_vel_obs = env.base_ang_vel[0]
-        # print("base ang vel obs", base_ang_vel_obs)
-        # print("base ang vel data", base_ang_vel_data[0])
-        print(
-            "base ang vel diff",
-            torch.round(abs(base_ang_vel_data[0] - base_ang_vel_obs), decimals=2)
-            .cpu()
-            .numpy(),
-        )
+        print("base ang vel obs", base_ang_vel_obs)
+        print("base ang vel data", base_ang_vel_data[0])
+        # print(
+        #     "base ang vel diff",
+        #     torch.round(abs(base_ang_vel_data[0] - base_ang_vel_obs), decimals=2)
+        #     .cpu()
+        #     .numpy(),
+        # )
 
         env.step(actions.detach())
 
