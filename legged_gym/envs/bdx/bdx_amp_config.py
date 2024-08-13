@@ -33,7 +33,7 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-MOTION_FILES = ["datasets/bdx/new_placo_moves_faster/bdx_walk_forward_medium.txt"]
+MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
@@ -81,11 +81,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.52  # Nm
+        effort = 0.9  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.05  # 0.1 [N*m*s/rad]
+        stiffness_all = 40.0  # 4 [N*m/rad]
+        damping_all = 3  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
@@ -127,7 +127,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6  # 6
+        decimation = 4  # 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -153,9 +153,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 5.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
@@ -191,14 +191,14 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            # tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
-            # tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
-            tracking_lin_vel = 1.0
-            tracking_ang_vel = 0.5
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            # tracking_lin_vel = 1.0
+            # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.000025
+            torques = 0.0
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
@@ -212,12 +212,12 @@ class BDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = False  # if true: compute ang vel command from heading error
+        heading_command = True  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.3, 0.3]  # min max [m/s]
+            lin_vel_x = [0.15, 0.15]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
             heading = [0, 0]
@@ -235,18 +235,18 @@ class BDXAMPCfg(LeggedRobotCfg):
 class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     runner_class_name = "AMPOnPolicyRunner"
 
-    class policy(LeggedRobotCfgPPO.policy):
-        actor_hidden_dims = [1024, 512]  # [512, 256, 128]
-        critic_hidden_dims = [1024, 512]  # [512, 256, 128]
-        activation = "relu"  # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
+    # class policy(LeggedRobotCfgPPO.policy):
+    #     actor_hidden_dims = [1024, 512]  # [512, 256, 128]
+    #     critic_hidden_dims = [1024, 512]  # [512, 256, 128]
+    #     activation = "relu"  # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
 
     class algorithm(LeggedRobotCfgPPO.algorithm):
-        entropy_coef = 0.0  # 0.001
+        entropy_coef = 0.005  # 0.001
         amp_replay_buffer_size = 1000000
-        num_learning_epochs = 2  # 5
-        num_mini_batches = 32  # 4
+        num_learning_epochs = 5  # 5
+        num_mini_batches = 4  # 4
         disc_coef = 5  # TUNE ?
-        bounds_loss_coef = 10
+        bounds_loss_coef = 0
         # # learning_rate = 1.0e-3  # 5.e-4
         # learning_rate = 5.0e-5  # 5.e-4
         # schedule = "constant"  # could be adaptive, fixed
@@ -264,10 +264,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.001  # original 10 # TUNE ?
+        disc_grad_penalty = 1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.01] * 15  # WARNING TOTALLY PIFFED
 
         pass
