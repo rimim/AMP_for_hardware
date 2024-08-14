@@ -132,13 +132,13 @@ class LeggedRobot(BaseTask):
         """
 
         ############## DISABLE ACTIONS
-        actions = torch.zeros(
-            self.num_envs,
-            self.num_actions,
-            dtype=torch.float,
-            device=self.device,
-            requires_grad=False,
-        )
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
         # targ = torch.tensor(1 * np.sin(2 * np.pi * 0.2 * time())).to(self.device)
         # print("target", targ)
         # actions[:, 2] = targ

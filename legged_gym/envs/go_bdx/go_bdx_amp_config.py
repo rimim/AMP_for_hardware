@@ -84,7 +84,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #effort = 0.6  # Nm
         #effort = 20  # Nm
 
-        stiffness_all = 100  # 4 [N*m/rad]
+        stiffness_all = 30  # 4 [N*m/rad]
         damping_all = 0.5  # 0.1 [N*m*s/rad]
         stiffness = {
             "right_hip_yaw": stiffness_all,
@@ -130,8 +130,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
         measure_heights = False
-        static_friction = 10.0  # 5
-        dynamic_friction = 10.0  # 5
+        static_friction = 5.0  # 5
+        dynamic_friction = 5.0  # 5
 
     class asset(LeggedRobotCfg.asset):
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/go_bdx/go_bdx.urdf"
@@ -164,7 +164,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class domain_rand:
         randomize_friction = False
         friction_range = [0.25, 1.75]
-        randomize_base_mass = True
+        randomize_base_mass = False
         added_mass_range = [-1.0, 1.0]
         push_robots = False
         push_interval_s = 15
@@ -217,10 +217,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-1.0, 2.0]  # min max [m/s]
-            lin_vel_y = [-0.3, 0.3]  # min max [m/s]
-            ang_vel_yaw = [-1.57, 1.57]  # min max [rad/s]
-            heading = [-3.14, 3.14]
+            lin_vel_x = [0.3, 0.3]  # min max [m/s]
+            lin_vel_y = [0, 0]  # min max [m/s]
+            ang_vel_yaw = [0, 0]  # min max [rad/s]
+            heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
