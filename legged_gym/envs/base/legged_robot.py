@@ -33,6 +33,7 @@ from time import time
 from warnings import WarningMessage
 import numpy as np
 import os
+import pickle
 
 from isaacgym.torch_utils import *
 from isaacgym import gymtorch, gymapi, gymutil
@@ -108,6 +109,8 @@ class LeggedRobot(BaseTask):
             device=self.device,
             time_between_frames=self.dt,
         )
+        if self.cfg.env.debug_save_obs:
+            self.saved_obs = []
 
     def reset(self):
         """Reset all robots"""
@@ -122,6 +125,7 @@ class LeggedRobot(BaseTask):
                 self.num_envs, self.num_actions, device=self.device, requires_grad=False
             )
         )
+
         return obs, privileged_obs
 
     def step(self, actions):
@@ -139,9 +143,9 @@ class LeggedRobot(BaseTask):
         #     requires_grad=False,
         # )
 
-        # targ = torch.tensor(1 * np.sin(2 * np.pi * 0.2 * time())).to(self.device)
-        # print("target", targ)
-        # actions[:, 2] = targ
+        # target = torch.tensor(1 * np.sin(2 * np.pi * 1 * time())).to(self.device)
+
+        # actions[:, 2] = target
 
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
@@ -174,6 +178,11 @@ class LeggedRobot(BaseTask):
                 self.privileged_obs_buf, -clip_obs, clip_obs
             )
 
+        if self.cfg.env.debug_save_obs:
+            self.saved_obs.append(policy_obs[0].cpu().numpy())
+            print(len(self.saved_obs))
+            pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
+
         return (
             policy_obs,
             self.privileged_obs_buf,
@@ -191,6 +200,7 @@ class LeggedRobot(BaseTask):
             )
         else:
             policy_obs = self.obs_buf
+
         return policy_obs
 
     def post_physics_step(self):
@@ -387,6 +397,7 @@ class LeggedRobot(BaseTask):
                 self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
+                # self.dof_pos,  # TODO
                 self.dof_vel * self.obs_scales.dof_vel,
                 self.actions,
             ),
@@ -413,6 +424,7 @@ class LeggedRobot(BaseTask):
             ) * self.noise_scale_vec
 
         # Remove velocity observations from policy observation.
+        # TODO add ang vel ?
         if self.num_obs == self.num_privileged_obs - 6:
             self.obs_buf = self.privileged_obs_buf[:, 6:]
         else:

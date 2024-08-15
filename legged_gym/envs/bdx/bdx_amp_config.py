@@ -55,16 +55,12 @@ class BDXAMPCfg(LeggedRobotCfg):
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
         episode_length_s = 8  # episode length in seconds
+        debug_save_obs = False
 
     class init_state(LeggedRobotCfg.init_state):
-        # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.18]  # x,y,z [m]
+        # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
-            "right_hip_yaw": -0.03676731090962078,  # [rad]
-            "right_hip_roll": -0.030315211140564333,  # [rad]
-            "right_hip_pitch": 0.4065815100399598,  # [rad]
-            "right_knee": -1.0864064934571644,  # [rad]
-            "right_ankle": 0.5932324840794684,  # [rad]
             "left_hip_yaw": -0.03485756878823724,  # [rad]
             "left_hip_roll": 0.052286054888550475,  # [rad]
             "left_hip_pitch": 0.36623601032755765,  # [rad]
@@ -75,23 +71,23 @@ class BDXAMPCfg(LeggedRobotCfg):
             "head_yaw": 0,  # [rad]
             "left_antenna": 0.0,  # [rad]
             "right_antenna": 0.0,  # [rad]
+            "right_hip_yaw": -0.03676731090962078,  # [rad]
+            "right_hip_roll": -0.030315211140564333,  # [rad]
+            "right_hip_pitch": 0.4065815100399598,  # [rad]
+            "right_knee": -1.0864064934571644,  # [rad]
+            "right_ankle": 0.5932324840794684,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.9  # Nm
+        effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 40.0  # 4 [N*m/rad]
-        damping_all = 3  # 0.1 [N*m*s/rad]
+        stiffness_all = 10.0  # 4 [N*m/rad]
+        damping_all = 0.01  # 0.1 [N*m*s/rad]
         stiffness = {
-            "right_hip_yaw": stiffness_all,
-            "right_hip_roll": stiffness_all,
-            "right_hip_pitch": stiffness_all,
-            "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
             "left_hip_pitch": stiffness_all,
@@ -100,16 +96,16 @@ class BDXAMPCfg(LeggedRobotCfg):
             "neck_pitch": stiffness_all,
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
-            "left_antenna": stiffness_all,
-            "right_antenna": stiffness_all,
+            "left_antenna": 1,
+            "right_antenna": 1,
+            "right_hip_yaw": stiffness_all,
+            "right_hip_roll": stiffness_all,
+            "right_hip_pitch": stiffness_all,
+            "right_knee": stiffness_all,
+            "right_ankle": stiffness_all,
         }
 
         damping = {
-            "right_hip_yaw": damping_all,
-            "right_hip_roll": damping_all,
-            "right_hip_pitch": damping_all,
-            "right_knee": damping_all,
-            "right_ankle": damping_all,
             "left_hip_yaw": damping_all,
             "left_hip_roll": damping_all,
             "left_hip_pitch": damping_all,
@@ -120,6 +116,11 @@ class BDXAMPCfg(LeggedRobotCfg):
             "head_yaw": damping_all,
             "left_antenna": damping_all,
             "right_antenna": damping_all,
+            "right_hip_yaw": damping_all,
+            "right_hip_roll": damping_all,
+            "right_hip_pitch": damping_all,
+            "right_knee": damping_all,
+            "right_ankle": damping_all,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -127,7 +128,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 4  # 6
+        decimation = 6  # 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -153,9 +154,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    # class normalization(LeggedRobotCfg.normalization):
-    #     clip_observations = 5.0
-    #     clip_actions = 5.0
+    class normalization(LeggedRobotCfg.normalization):
+        clip_observations = 5.0
+        clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
@@ -191,14 +192,14 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 0.05 * (1.5 * 1.0 / (0.005 * 6))
+            tracking_ang_vel = 0.05 * (0.5 * 1.0 / (0.005 * 6))
             # tracking_lin_vel = 1.0
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = 0.0
+            torques = -0.000025
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
@@ -212,9 +213,9 @@ class BDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
-        heading_command = True  # if true: compute ang vel command from heading error
+        heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [0.15, 0.15]  # min max [m/s]
@@ -241,15 +242,12 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     #     activation = "relu"  # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
 
     class algorithm(LeggedRobotCfgPPO.algorithm):
-        entropy_coef = 0.005  # 0.001
+        entropy_coef = 0.001  # 0.001
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5  # 5
         num_mini_batches = 4  # 4
         disc_coef = 5  # TUNE ?
-        bounds_loss_coef = 0
-        # # learning_rate = 1.0e-3  # 5.e-4
-        # learning_rate = 5.0e-5  # 5.e-4
-        # schedule = "constant"  # could be adaptive, fixed
+        # bounds_loss_coef = 10
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -261,13 +259,13 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.2  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 1  # original 10 # TUNE ?
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.01] * 15  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
 
         pass
