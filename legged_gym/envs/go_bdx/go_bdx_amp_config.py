@@ -61,11 +61,6 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.0]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
-            "right_hip_yaw": 0.0,  # [rad]
-            "right_hip_roll": 0.0,  # [rad]
-            "right_hip_pitch": 0.0,  # [rad]
-            "right_knee": 0.0,  # [rad]
-            "right_ankle": 0.0,  # [rad]
             "left_hip_yaw": 0.0,  # [rad]
             "left_hip_roll": 0.0,  # [rad]
             "left_hip_pitch": 0.0,  # [rad]
@@ -75,6 +70,11 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": 0.0,  # [rad]
             "head_yaw": 0.0,  # [rad]
             "head_roll": 0.0,  # [rad]
+            "right_hip_yaw": 0.0,  # [rad]
+            "right_hip_roll": 0.0,  # [rad]
+            "right_hip_pitch": 0.0,  # [rad]
+            "right_knee": 0.0,  # [rad]
+            "right_ankle": 0.0,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
@@ -87,11 +87,6 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         stiffness_all = 30  # 4 [N*m/rad]
         damping_all = 0.5  # 0.1 [N*m*s/rad]
         stiffness = {
-            "right_hip_yaw": stiffness_all,
-            "right_hip_roll": stiffness_all,
-            "right_hip_pitch": stiffness_all,
-            "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
             "left_hip_pitch": stiffness_all,
@@ -101,14 +96,14 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
             "head_roll": stiffness_all,
+            "right_hip_yaw": stiffness_all,
+            "right_hip_roll": stiffness_all,
+            "right_hip_pitch": stiffness_all,
+            "right_knee": stiffness_all,
+            "right_ankle": stiffness_all,
         }
 
         damping = {
-            "right_hip_yaw": damping_all,
-            "right_hip_roll": damping_all,
-            "right_hip_pitch": damping_all,
-            "right_knee": damping_all,
-            "right_ankle": damping_all,
             "left_hip_yaw": damping_all,
             "left_hip_roll": damping_all,
             "left_hip_pitch": damping_all,
@@ -118,6 +113,11 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": damping_all,
             "head_yaw": damping_all,
             "head_roll": damping_all,
+            "right_hip_yaw": damping_all,
+            "right_hip_roll": damping_all,
+            "right_hip_pitch": damping_all,
+            "right_knee": damping_all,
+            "right_ankle": damping_all,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -212,7 +212,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 1.0
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
