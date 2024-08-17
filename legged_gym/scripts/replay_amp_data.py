@@ -194,8 +194,6 @@ def play(args):
             )
         )
         dof_vel_obs = env.get_amp_observations()[0, 27 : 27 + 15]
-        # print("dof vel obs", torch.round(dof_vel_obs, decimals=3))
-        # print("dof vel data", torch.round(dof_vel_data[0], decimals=3))
         print(
             "dof vel diff",
             torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
