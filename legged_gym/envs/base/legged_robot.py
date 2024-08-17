@@ -28,29 +28,29 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
-from legged_gym import LEGGED_GYM_ROOT_DIR, envs
-from time import time
-from warnings import WarningMessage
-import numpy as np
 import os
 import pickle
+from time import time
+from typing import Dict, Tuple
+from warnings import WarningMessage
 
-from isaacgym.torch_utils import *
-from isaacgym import gymtorch, gymapi, gymutil
-
+import numpy as np
 import pygame
 import torch
+from isaacgym import gymapi, gymtorch, gymutil
+from isaacgym.torch_utils import *
 from torch import Tensor
-from typing import Tuple, Dict
 
-from legged_gym import LEGGED_GYM_ROOT_DIR
-from legged_gym.envs.base.base_task import BaseTask
-from legged_gym.utils.terrain import Terrain
-from legged_gym.utils.math import quat_apply_yaw, wrap_to_pi, torch_rand_sqrt_float
-from legged_gym.utils.helpers import class_to_dict
 import legged_gym.utils.kinematics.urdf as pk
-from .legged_robot_config import LeggedRobotCfg
+from legged_gym import LEGGED_GYM_ROOT_DIR, envs
+from legged_gym.envs.base.base_task import BaseTask
+from legged_gym.utils.helpers import class_to_dict
+from legged_gym.utils.math import (quat_apply_yaw, torch_rand_sqrt_float,
+                                   wrap_to_pi)
+from legged_gym.utils.terrain import Terrain
 from rsl_rl.datasets.motion_loader import AMPLoader
+
+from .legged_robot_config import LeggedRobotCfg
 
 
 class LeggedRobot(BaseTask):
@@ -771,6 +771,7 @@ class LeggedRobot(BaseTask):
         root_pos = AMPLoader.get_root_pos_batch(frames)
         root_pos[:, :2] = root_pos[:, :2] + self.env_origins[env_ids, :2]
         self.root_states[env_ids, :3] = root_pos
+
         root_orn = AMPLoader.get_root_rot_batch(frames)
         self.root_states[env_ids, 3:7] = root_orn
         self.root_states[env_ids, 7:10] = quat_rotate(
@@ -779,7 +780,6 @@ class LeggedRobot(BaseTask):
         self.root_states[env_ids, 10:13] = quat_rotate(
             root_orn, AMPLoader.get_angular_vel_batch(frames)
         )
-
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(
             self.sim,

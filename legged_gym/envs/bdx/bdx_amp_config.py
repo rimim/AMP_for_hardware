@@ -150,7 +150,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
-        default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+        # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
@@ -262,10 +262,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 1  # original 10 # TUNE ?
+        disc_grad_penalty = 5  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.01] * 15  # WARNING TOTALLY PIFFED
 
         pass
