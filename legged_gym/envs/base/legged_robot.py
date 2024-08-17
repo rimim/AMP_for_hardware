@@ -456,6 +456,12 @@ class LeggedRobot(BaseTask):
         base_quat = self.root_states[:, 3:7]
         base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+
+        if torch.any(torch.isnan(base_lin_vel)):
+            print("NAN base lin vel", print(base_lin_vel))
+        if torch.any(torch.isnan(base_ang_vel)):
+            print("NAN base ang vel", print(base_ang_vel))
+
         return torch.cat(
             (
                 self.dof_pos,
