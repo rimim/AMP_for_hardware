@@ -124,8 +124,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        # action_scale = 0.25
-        action_scale = 1
+        action_scale = 0.25  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6
@@ -259,10 +258,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.05  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 5  # original 10 # TUNE ?
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
