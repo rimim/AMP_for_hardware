@@ -33,7 +33,7 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt"]
+MOTION_FILES = ["datasets/bdx/new_placo_moves_faster/bdx_walk_forward_slow.txt"]
 # MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
