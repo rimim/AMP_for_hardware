@@ -34,7 +34,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 # MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt"]
-MOTION_FILES = ["datasets/bdx/new_placo_moves_faster/bdx_walk_forward_medium.txt"]
+MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
@@ -82,7 +82,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.9  # Nm
+        effort = 0.6  # Nm
         # effort = 20  # Nm
 
         stiffness_all = 5.0  # 4 [N*m/rad]
@@ -124,7 +124,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25  # 0.25
+        action_scale = 0.5  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6
@@ -261,7 +261,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 8  # original 10 # TUNE ?
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
