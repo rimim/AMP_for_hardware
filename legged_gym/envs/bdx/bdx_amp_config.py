@@ -82,7 +82,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.6  # Nm
+        effort = 0.9  # Nm
         # effort = 20  # Nm
 
         stiffness_all = 5.0  # 4 [N*m/rad]
