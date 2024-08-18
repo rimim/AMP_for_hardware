@@ -33,7 +33,7 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-MOTION_FILES = ["datasets/bdx/new_placo_moves_faster/bdx_walk_forward_slow.txt"]
+MOTION_FILES = ["datasets/bdx/slower_placo_moves/bdx_walk_forward.txt"]
 # MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
@@ -191,14 +191,14 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
-            tracking_lin_vel = 1.0
-            tracking_ang_vel = 0.5
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            # tracking_lin_vel = 1.0
+            # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.000025  # 0
+            torques = (0,)  # -0.000025
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
