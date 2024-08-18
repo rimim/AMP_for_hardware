@@ -33,8 +33,8 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-# MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt"]
-MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
+MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt"]
+# MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
@@ -124,7 +124,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.5  # 0.25
+        action_scale = 0.25  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6
@@ -217,7 +217,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
             heading = [0, 0]
@@ -243,8 +243,8 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     class algorithm(LeggedRobotCfgPPO.algorithm):
         entropy_coef = 0.001  # 0.001
         amp_replay_buffer_size = 1000000
-        num_learning_epochs = 5  # 5
-        num_mini_batches = 4  # 4
+        num_learning_epochs = 5
+        num_mini_batches = 4
         disc_coef = 5  # TUNE ?
         # bounds_loss_coef = 10
 
@@ -265,6 +265,6 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.01] * 15  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.02] * 15  # WARNING TOTALLY PIFFED
 
         pass
