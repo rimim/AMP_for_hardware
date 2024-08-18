@@ -9,6 +9,7 @@ function usage() {
 
 # name: Optional display name for task in README.md and index.html (default same as <task>)
 # video: Optional video file name for task (default same as <task>.mp4)
+INTERVAL_MINUTES=0
 
 # Parse the arguments
 while [[ "$1" =~ ^-- ]]; do
@@ -50,6 +51,10 @@ if ! [[ "$INTERVAL_MINUTES" =~ ^[0-9]+$ ]]; then
     echo "Error: Interval minutes must be a positive integer."
     exit 1
 fi
+if (( INTERVAL_MINUTES > 0 && INTERVAL_MINUTES < 10 )); then
+    echo "Error: Interval minutes must be greater than 10 minutes"
+    exit 1
+fi
 INTERVAL_SECONDS=$((INTERVAL_MINUTES * 60))
 
 if [[ -z "$VIDEO_FILE" ]]; then
@@ -74,7 +79,7 @@ if [[ ! "$GITURL" =~ $VALID_FORMAT ]]; then
   exit 1
 fi
 
-LOCAL_AMP_DIR=$(dirname "$0")
+LOCAL_AMP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Ensure that the first part is "git@github.com"
 if [[ "$GITURL" != git@github.com:* ]]; then
@@ -137,11 +142,12 @@ if [ ! -d "$GITREPO"/.git ]; then
 fi
 LOCAL_TASK_REPO="$LOCAL_AMP_DIR"/"$GITREPO"
 
-REMOTE_USER_SERVER=${REMOTE_USER}@{REMOTE_SERVER}
+REMOTE_USER_SERVER=${REMOTE_USER}@${REMOTE_SERVER}
 REMOTE_TASK_DIR=$REMOTE_DIR/logs/${TASK}
 LOCAL_TASK_DIR="$LOCAL_AMP_DIR"/logs/${TASK}
-while true
+while true;
 do
+  echo Fetching checkpoint from ${REMOTE_USER_SERVER}
   ssh ${REMOTE_USER_SERVER} 'find '$REMOTE_TASK_DIR' -type d -print -exec stat --format="%Y %n" {} \; | sort -n | tail -1 | cut -d" " -f2' || exit
   LAST_CHECKPOINT_DIR=$(ssh ${REMOTE_USER_SERVER} 'find '$REMOTE_TASK_DIR' -type d -exec stat --format="%Y %n" {} \; | sort -n | tail -1 | cut -d" " -f2')
   LATEST_CHECKPOINT=$(ssh ${REMOTE_USER_SERVER} "find '$LAST_CHECKPOINT_DIR' -name '*.pt' -type f -exec stat --format='%Y %n' {} \; | sort -n | tail -1 | cut -d' ' -f2")
@@ -150,11 +156,20 @@ do
   echo Latest checkpoint: $CHECKPOINT from ${REMOTE_USER_SERVER}
 
   if [ "$CHECKPOINT" != "$LAST_CHECKPOINT" ]; then
+    cd "$LOCAL_TASK_REPO" || exit
+    git reset HEAD .
+    git restore .
+    git clean -fd
+    git checkout main || exit
+
     cd "$LOCAL_AMP_DIR" || exit
     rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
     python legged_gym/scripts/record_policy.py --task=$TASK_NAME || exit
 
     ffmpeg -y -i record.mp4 -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart $LOCAL_TASK_REPO/$VIDEO_FILE || exit
+
+    cd "$LOCAL_TASK_REPO" || exit
+    git checkout main || exit
 
     # Destructive action:
     #  Create a temp_branch
@@ -163,8 +178,6 @@ do
     #  Rename temp branch to main branch
     #  Prune
     cd "$LOCAL_TASK_REPO"
-    git checkout main || exit
-
     git checkout --orphan "temp_branch" || exit
     git add "$VIDEO_FILE" || exit
     createREADME || exit
@@ -181,7 +194,7 @@ do
       sed -i "s|<h1>.*</h1>|<h1>Latest $TASK_NAME Video - $CHECKPOINT</h1>|" index.html || exit
       git add index.html || exit
       git commit -m "Commit $CHECKPOINT" || exit
-      git push || exit
+      git push origin gh-pages || exit
     else
       # Create github pages
       git checkout --orphan gh-pages || exit
@@ -190,12 +203,18 @@ do
       git add index.html || exit
       git commit -m "Commit $CHECKPOINT" || exit
       git push origin gh-pages || exit
-    endif
+    fi 
 
     git checkout main || exit
 
     cd "$LOCAL_AMP_DIR" || exit
     LAST_CHECKPOINT=$CHECKPOINT
   fi
+  # Check if INTERVAL_MINUTES is equal to 0
+  if [ "$INTERVAL_MINUTES" -eq 0 ]; then
+    echo Success
+    exit 0
+  fi
+  echo Waiting $INTERVAL_MINUTES minutes ...
   sleep "$INTERVAL_SECONDS"
 done
