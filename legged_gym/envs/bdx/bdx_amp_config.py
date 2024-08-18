@@ -141,7 +141,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         penalize_contacts_on = []
         terminate_after_contacts_on = [
             "body_module",
-            # "head",
+            "head",
             "left_antenna",
             "right_antenna",
             # "leg_module",
