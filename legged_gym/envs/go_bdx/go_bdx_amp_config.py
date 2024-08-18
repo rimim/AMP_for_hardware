@@ -46,9 +46,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #num_envs = 8000
         num_envs = 8
         include_history_steps = None  # Number of steps of history to include.
-        num_observations = 48  # TODO what ?
-        num_privileged_obs = 54
-        num_actions = 14
+        num_observations = 54  # 3+3+3+16+16+16
+        num_privileged_obs = 60  # 3+3+4+3+16+16+16
+        num_actions = 16
         env_spacing = 2.5
         reference_state_initialization = False
         reference_state_initialization_prob = 0.85
@@ -75,6 +75,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_pitch": 0.0,  # [rad]
             "right_knee": 0.0,  # [rad]
             "right_ankle": 0.0,  # [rad]
+            "left_antenna": 0.0,  # [rad]
+            "right_antenna": 0.0,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
@@ -101,6 +103,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_pitch": stiffness_all,
             "right_knee": stiffness_all,
             "right_ankle": stiffness_all,
+            "left_antenna": stiffness_all,
+            "right_antenna": stiffness_all,
         }
 
         damping = {
@@ -118,6 +122,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_pitch": damping_all,
             "right_knee": damping_all,
             "right_ankle": damping_all,
+            "left_antenna": damping_all,
+            "right_antenna": damping_all,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -260,6 +266,6 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
-        min_normalized_std = [0.02] * 14  # WARNING TOTALLY PIFFED
+        min_normalized_std = [0.02] * 16  # WARNING TOTALLY PIFFED
 
         pass

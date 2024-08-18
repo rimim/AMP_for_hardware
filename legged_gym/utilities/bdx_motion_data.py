@@ -39,7 +39,7 @@ class LoopMode(enum.Enum):
 
 class MotionLib(object):
     def __init__(self, motion_file, device, sample_dt=None):
-        self._num_dof = 14
+        self._num_dof = 16
         self._device = device
         self._dataset_name_to_id = {}
         self._load_motions(motion_file)

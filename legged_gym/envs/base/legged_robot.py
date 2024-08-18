@@ -445,6 +445,24 @@ class LeggedRobot(BaseTask):
         base_quat = self.root_states[:, 3:7]
         base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+        # print(f"dof_pos: {self.dof_pos.size()}")
+        # print(f"foot_pos: {foot_pos.size()}")
+        # print(f"base_lin_vel: {base_lin_vel.size()}")
+        # print(f"base_ang_vel: {base_ang_vel.size()}")
+        # print(f"dof_vel: {self.dof_vel.size()}")
+        # print(f"z_pos: {z_pos.size()}")
+        # newarr = torch.cat(
+        #     (
+        #         self.dof_pos,
+        #         foot_pos,
+        #         base_lin_vel,
+        #         base_ang_vel,
+        #         self.dof_vel,
+        #         z_pos,
+        #     ),
+        #     dim=-1,
+        # )
+        # print(f"obs: {newarr}")
         return torch.cat(
             (
                 self.dof_pos,

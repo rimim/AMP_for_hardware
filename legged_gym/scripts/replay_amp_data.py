@@ -145,7 +145,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        amp_foot_obs = env.get_amp_observations()[0, 14 : 14 + 6]
+        amp_foot_obs = env.get_amp_observations()[0, 16 : 16 + 6]
         # print("foot obs", amp_foot_obs)
         # print("foot data", foot_pos_amp[0])
         # print(
@@ -179,7 +179,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        dof_pos_obs = env.get_amp_observations()[0, 0:14]
+        dof_pos_obs = env.get_amp_observations()[0, 0:16]
         # print("dof pos obs", dof_pos_obs)
         # print("dof pos data", dof_pos_data[0])
         # print(
@@ -193,7 +193,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        dof_vel_obs = env.get_amp_observations()[0, 26 : 26 + 14]
+        dof_vel_obs = env.get_amp_observations()[0, 28 : 28 + 16]
         # print("dof vel obs", torch.round(dof_vel_obs, decimals=3))
         # print("dof vel data", torch.round(dof_vel_data[0], decimals=3))
         print(
@@ -207,7 +207,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        base_lin_vel_obs = env.get_amp_observations()[0, 20 : 20 + 3]
+        base_lin_vel_obs = env.get_amp_observations()[0, 22 : 22 + 3]
         print("base lin vel obs", base_lin_vel_obs)
         print("base lin vel data", base_lin_vel_data[0])
         # print(
@@ -223,7 +223,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        base_ang_vel_obs = env.get_amp_observations()[0, 23 : 23 + 3]
+        base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
         # base_ang_vel_obs = env.base_ang_vel[0]
         print("base ang vel obs", base_ang_vel_obs)
         print("base ang vel data", base_ang_vel_data[0])
