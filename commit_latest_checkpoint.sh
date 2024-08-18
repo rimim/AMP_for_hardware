@@ -164,7 +164,7 @@ do
 
     cd "$LOCAL_AMP_DIR" || exit
     rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
-    python legged_gym/scripts/record_policy.py --task=$TASK || exit
+    python legged_gym/scripts/record_policy.py --task=$TASK --headless || exit
 
     ffmpeg -y -i record.mp4 -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart $LOCAL_TASK_REPO/$VIDEO_FILE || exit
 
