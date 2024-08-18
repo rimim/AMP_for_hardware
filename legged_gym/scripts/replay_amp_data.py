@@ -145,7 +145,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        amp_foot_obs = env.get_amp_observations()[0, 15 : 15 + 6]
+        amp_foot_obs = env.get_amp_observations()[0, 14 : 14 + 6]
         # print("foot obs", amp_foot_obs)
         # print("foot data", foot_pos_amp[0])
         # print(
@@ -179,7 +179,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        dof_pos_obs = env.get_amp_observations()[0, 0:15]
+        dof_pos_obs = env.get_amp_observations()[0, 0:14]
         # print("dof pos obs", dof_pos_obs)
         # print("dof pos data", dof_pos_data[0])
         # print(
@@ -193,21 +193,21 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        dof_vel_obs = env.get_amp_observations()[0, 27 : 27 + 15]
+        dof_vel_obs = env.get_amp_observations()[0, 26 : 26 + 14]
         # print("dof vel obs", torch.round(dof_vel_obs, decimals=3))
         # print("dof vel data", torch.round(dof_vel_data[0], decimals=3))
-        # print(
-        #     "dof vel diff",
-        #     torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
-        # )
-        # print("")
+        print(
+            "dof vel diff",
+            torch.round(abs(dof_vel_data[0] - dof_vel_obs), decimals=2).cpu().numpy(),
+        )
+        print("")
 
         base_lin_vel_data = env.amp_loader.get_linear_vel_batch(
             env.amp_loader.get_full_frame_at_time_batch(
                 np.array([traj_idx]), np.array([t])
             )
         )
-        base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
+        base_lin_vel_obs = env.get_amp_observations()[0, 20 : 20 + 3]
         print("base lin vel obs", base_lin_vel_obs)
         print("base lin vel data", base_lin_vel_data[0])
         # print(
@@ -223,7 +223,7 @@ def play(args):
                 np.array([traj_idx]), np.array([t])
             )
         )
-        base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
+        base_ang_vel_obs = env.get_amp_observations()[0, 23 : 23 + 3]
         # base_ang_vel_obs = env.base_ang_vel[0]
         print("base ang vel obs", base_ang_vel_obs)
         print("base ang vel data", base_ang_vel_data[0])
