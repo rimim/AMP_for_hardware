@@ -37,13 +37,8 @@ MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/slower_placo_moves/bdx_walk_forward_TEST_INVERTED_LEGS.txt"
 # ]
-# MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
-# MOTION_FILES = [
-#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
-#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
-# ]
 
-NO_FEET = True
+NO_FEET = True  # Do not use feet in the amp observations and data
 
 
 class BDXAMPCfg(LeggedRobotCfg):
@@ -266,7 +261,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.0  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 10  # original 10 # TUNE ?
