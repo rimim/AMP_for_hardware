@@ -158,7 +158,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
-        clip_actions = 2.0
+        clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
