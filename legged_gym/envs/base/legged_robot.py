@@ -107,6 +107,7 @@ class LeggedRobot(BaseTask):
             motion_files=self.cfg.env.amp_motion_files,
             device=self.device,
             time_between_frames=self.dt,
+            no_feet=self.cfg.env.no_feet,
         )
         if self.cfg.env.debug_save_obs:
             self.saved_obs = []
@@ -424,27 +425,32 @@ class LeggedRobot(BaseTask):
             self.obs_buf = torch.clone(self.privileged_obs_buf)
 
     def get_amp_observations(self):
-        foot_pos = []
-        with torch.no_grad():
-            # BDX
-            foot_pos.append(
-                self.chain_ee[0]
-                .forward_kinematics(self.dof_pos[:, 0:5])
-                .get_matrix()[:, :3, 3]
-            )
-            foot_pos.append(
-                self.chain_ee[1]
-                .forward_kinematics(self.dof_pos[:, 10:15])
-                .get_matrix()[:, :3, 3]
-            )
-            # A1
-            # for i, chain_ee in enumerate(self.chain_ee):
-            #     foot_pos.append(
-            #         chain_ee.forward_kinematics(
-            #             self.dof_pos[:, i * 3 : i * 3 + 3]
-            #         ).get_matrix()[:, :3, 3]
-            #     )
-        foot_pos = torch.cat(foot_pos, dim=-1)
+        if not self.cfg.env.no_feet:
+            foot_pos = []
+            with torch.no_grad():
+                # BDX
+                foot_pos.append(
+                    self.chain_ee[0]
+                    .forward_kinematics(self.dof_pos[:, 0:5])
+                    .get_matrix()[:, :3, 3]
+                )
+                foot_pos.append(
+                    self.chain_ee[1]
+                    .forward_kinematics(self.dof_pos[:, 10:15])
+                    .get_matrix()[:, :3, 3]
+                )
+                # A1
+                # for i, chain_ee in enumerate(self.chain_ee):
+                #     foot_pos.append(
+                #         chain_ee.forward_kinematics(
+                #             self.dof_pos[:, i * 3 : i * 3 + 3]
+                #         ).get_matrix()[:, :3, 3]
+                #     )
+
+            foot_pos = torch.cat(foot_pos, dim=-1)
+        else:
+            foot_pos = torch.zeros((self.num_envs, 6)).to(self.device)
+
         z_pos = self.root_states[:, 2:3]
 
         base_quat = self.root_states[:, 3:7]

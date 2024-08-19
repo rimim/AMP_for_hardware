@@ -64,6 +64,7 @@ class AMPLoader:
         preload_transitions=False,
         num_preload_transitions=1000000,
         motion_files=glob.glob("datasets/motion_files2/*"),
+        no_feet=False,
     ):
         """Expert dataset provides AMP observations from Dog mocap dataset.
 
@@ -71,6 +72,7 @@ class AMPLoader:
         """
         self.device = device
         self.time_between_frames = time_between_frames
+        self.no_feet = no_feet
 
         # Values to store for each trajectory.
         self.trajectories = []
@@ -109,6 +111,16 @@ class AMPLoader:
                         device=device,
                     )
                 )
+                if self.no_feet:
+                    # set feet pos and vel to zero
+                    motion_data[
+                        :,
+                        AMPLoader.TAR_TOE_POS_LOCAL_START_IDX : AMPLoader.TAR_TOE_POS_LOCAL_END_IDX,
+                    ] = 0
+                    motion_data[
+                        :,
+                        AMPLoader.TAR_TOE_VEL_LOCAL_START_IDX : AMPLoader.TAR_TOE_VEL_LOCAL_END_IDX,
+                    ] = 0
                 self.trajectories_full.append(
                     torch.tensor(
                         motion_data[:, : AMPLoader.JOINT_VEL_END_IDX],

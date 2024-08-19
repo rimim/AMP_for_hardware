@@ -43,6 +43,8 @@ MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
 # ]
 
+NO_FEET = True
+
 
 class BDXAMPCfg(LeggedRobotCfg):
     class env(LeggedRobotCfg.env):
@@ -59,6 +61,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         get_commands_from_joystick = False
         episode_length_s = 8  # episode length in seconds
         debug_save_obs = False
+        no_feet = NO_FEET
 
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.175]  # x,y,z [m]
@@ -257,6 +260,8 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         algorithm_class_name = "AMPPPO"
         policy_class_name = "ActorCritic"
         max_iterations = 500000  # number of policy updates
+
+        no_feet = NO_FEET
 
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
