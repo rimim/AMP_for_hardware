@@ -61,7 +61,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         debug_save_obs = False
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.18]  # x,y,z [m]
+        pos = [0.0, 0.0, 0.175]  # x,y,z [m]
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "left_hip_yaw": -0.03485756878823724,  # [rad]
@@ -194,10 +194,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
-            # tracking_lin_vel = 1.0
-            # tracking_ang_vel = 0.5
+            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 1.0
+            tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -261,10 +261,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.0  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 8  # original 10 # TUNE ?
+        disc_grad_penalty = 10  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
