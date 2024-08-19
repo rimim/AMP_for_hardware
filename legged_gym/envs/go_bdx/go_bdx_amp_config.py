@@ -86,44 +86,46 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #effort = 0.6  # Nm
         #effort = 20  # Nm
 
-        stiffness_all = 30  # 4 [N*m/rad]
-        damping_all = 0.5  # 0.1 [N*m*s/rad]
+        stiffness_go1 = 30  # 4 [N*m/rad]
+        damping_go1 = 0.5  # 0.1 [N*m*s/rad]
+        stiffness_dx = 10  # 4 [N*m/rad]
+        damping_dx = 1.0  # 0.1 [N*m*s/rad]
         stiffness = {
-            "left_hip_yaw": stiffness_all,
-            "left_hip_roll": stiffness_all,
-            "left_hip_pitch": stiffness_all,
-            "left_knee": stiffness_all,
-            "left_ankle": stiffness_all,
-            "neck_pitch": stiffness_all,
-            "head_pitch": stiffness_all,
-            "head_yaw": stiffness_all,
-            "head_roll": stiffness_all,
-            "right_hip_yaw": stiffness_all,
-            "right_hip_roll": stiffness_all,
-            "right_hip_pitch": stiffness_all,
-            "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
-            "left_antenna": stiffness_all,
-            "right_antenna": stiffness_all,
+            "left_hip_yaw": stiffness_go1,
+            "left_hip_roll": stiffness_go1,
+            "left_hip_pitch": stiffness_go1,
+            "left_knee": stiffness_go1,
+            "left_ankle": stiffness_go1,
+            "neck_pitch": stiffness_dx,
+            "head_pitch": stiffness_dx,
+            "head_yaw": stiffness_dx,
+            "head_roll": stiffness_dx,
+            "right_hip_yaw": stiffness_go1,
+            "right_hip_roll": stiffness_go1,
+            "right_hip_pitch": stiffness_go1,
+            "right_knee": stiffness_go1,
+            "right_ankle": stiffness_go1,
+            "left_antenna": stiffness_dx,
+            "right_antenna": stiffness_dx,
         }
 
         damping = {
-            "left_hip_yaw": damping_all,
-            "left_hip_roll": damping_all,
-            "left_hip_pitch": damping_all,
-            "left_knee": damping_all,
-            "left_ankle": damping_all,
-            "neck_pitch": damping_all,
-            "head_pitch": damping_all,
-            "head_yaw": damping_all,
-            "head_roll": damping_all,
-            "right_hip_yaw": damping_all,
-            "right_hip_roll": damping_all,
-            "right_hip_pitch": damping_all,
-            "right_knee": damping_all,
-            "right_ankle": damping_all,
-            "left_antenna": damping_all,
-            "right_antenna": damping_all,
+            "left_hip_yaw": damping_go1,
+            "left_hip_roll": damping_go1,
+            "left_hip_pitch": damping_go1,
+            "left_knee": damping_go1,
+            "left_ankle": damping_go1,
+            "neck_pitch": damping_dx,
+            "head_pitch": damping_dx,
+            "head_yaw": damping_dx,
+            "head_roll": damping_dx,
+            "right_hip_yaw": damping_go1,
+            "right_hip_roll": damping_go1,
+            "right_hip_pitch": damping_go1,
+            "right_knee": damping_go1,
+            "right_ankle": damping_go1,
+            "left_antenna": damping_dx,
+            "right_antenna": damping_dx,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle

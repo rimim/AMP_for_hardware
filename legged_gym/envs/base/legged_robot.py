@@ -429,7 +429,7 @@ class LeggedRobot(BaseTask):
             )
             foot_pos.append(
                 self.chain_ee[1]
-                .forward_kinematics(self.dof_pos[:, 9:14])
+                .forward_kinematics(self.dof_pos[:, 11:16])
                 .get_matrix()[:, :3, 3]
             )
             # A1
