@@ -206,8 +206,8 @@ def play(args):
             )
         )
         base_lin_vel_obs = env.get_amp_observations()[0, 21 : 21 + 3]
-        print("base lin vel obs", base_lin_vel_obs)
-        print("base lin vel data", base_lin_vel_data[0])
+        # print("base lin vel obs", base_lin_vel_obs)
+        # print("base lin vel data", base_lin_vel_data[0])
         print(
             "base lin vel diff",
             torch.round(abs(base_lin_vel_data[0] - base_lin_vel_obs), decimals=2)
@@ -223,8 +223,8 @@ def play(args):
         )
         base_ang_vel_obs = env.get_amp_observations()[0, 24 : 24 + 3]
         # base_ang_vel_obs = env.base_ang_vel[0]
-        print("base ang vel obs", base_ang_vel_obs)
-        print("base ang vel data", base_ang_vel_data[0])
+        # print("base ang vel obs", base_ang_vel_obs)
+        # print("base ang vel data", base_ang_vel_data[0])
         print(
             "base ang vel diff",
             torch.round(abs(base_ang_vel_data[0] - base_ang_vel_obs), decimals=2)
