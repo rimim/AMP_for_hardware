@@ -380,14 +380,14 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
 
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+        # base_quat = self.root_states[:, 3:7]
+        # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
 
         self.privileged_obs_buf = torch.cat(
             (
-                base_lin_vel * self.obs_scales.lin_vel,
-                base_ang_vel * self.obs_scales.ang_vel,
+                self.base_lin_vel * self.obs_scales.lin_vel,
+                self.base_ang_vel * self.obs_scales.ang_vel,
                 self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
@@ -453,16 +453,16 @@ class LeggedRobot(BaseTask):
 
         z_pos = self.root_states[:, 2:3]
 
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
+        # base_quat = self.root_states[:, 3:7]
+        # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
 
         return torch.cat(
             (
                 self.dof_pos,
                 foot_pos,
-                base_lin_vel,
-                base_ang_vel,
+                self.base_lin_vel,
+                self.base_ang_vel,
                 self.dof_vel,
                 z_pos,
             ),
