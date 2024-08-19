@@ -127,7 +127,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 1.0  # 0.25
+        action_scale = 0.25  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6
@@ -158,7 +158,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
-        clip_actions = 1.0
+        clip_actions = 2.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
