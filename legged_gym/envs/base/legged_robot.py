@@ -445,12 +445,26 @@ class LeggedRobot(BaseTask):
         base_quat = self.root_states[:, 3:7]
         base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        # print(f"dof_pos: {self.dof_pos.size()}")
-        # print(f"foot_pos: {foot_pos.size()}")
-        # print(f"base_lin_vel: {base_lin_vel.size()}")
-        # print(f"base_ang_vel: {base_ang_vel.size()}")
-        # print(f"dof_vel: {self.dof_vel.size()}")
-        # print(f"z_pos: {z_pos.size()}")
+        # offset = 0
+        # offset_dof_pos = offset
+        # offset = offset + self.dof_pos.size(1)
+        # offset_foot_pos = offset
+        # offset = offset + foot_pos.size(1)
+        # offset_base_lin_vel = offset
+        # offset = offset + base_lin_vel.size(1)
+        # offset_base_ang_vel = offset
+        # offset = offset + base_ang_vel.size(1)
+        # offset_dof_vel = offset
+        # offset = offset + self.dof_vel.size(1)
+        # offset_z_pos = offset
+        # offset = offset + z_pos.size(1)
+
+        # print(f"dof_pos: {offset_dof_pos}:{offset_dof_pos+self.dof_pos.size(1)}")
+        # print(f"foot_pos: {offset_foot_pos}:{offset_foot_pos+foot_pos.size(1)}")
+        # print(f"base_lin_vel: {offset_base_lin_vel}:{offset_base_lin_vel+base_lin_vel.size(1)}")
+        # print(f"base_ang_vel: {offset_base_ang_vel}:{offset_base_ang_vel+base_ang_vel.size(1)}")
+        # print(f"dof_vel: {offset_dof_vel}:{offset_dof_vel+self.dof_vel.size(1)}")
+        # print(f"z_pos: {offset_z_pos}:{offset_z_pos+z_pos.size(1)}")
         # newarr = torch.cat(
         #     (
         #         self.dof_pos,
