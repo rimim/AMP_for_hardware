@@ -232,7 +232,7 @@ class BDXAMPCfg(LeggedRobotCfg):
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
         pos = [0, 0, 1]  # [m]
-        lookat = [11.0, 5, 3.0]  # [m]
+        lookat = [11.0, 5, 1.0]  # [m]
 
 
 class BDXAMPCfgPPO(LeggedRobotCfgPPO):
@@ -264,7 +264,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10  # original 10 # TUNE ?
+        disc_grad_penalty = 0.1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
