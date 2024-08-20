@@ -55,7 +55,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         amp_motion_files = MOTION_FILES
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
-        episode_length_s = 5  # episode length in seconds
+        episode_length_s = 8  # episode length in seconds
 
     class init_state(LeggedRobotCfg.init_state):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
@@ -132,8 +132,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        #action_scale = 0.25
-        action_scale = 1
+        action_scale = 0.25
+        ###### HACKHACK BEGIN
+        #action_scale = 1
+        ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
@@ -231,13 +233,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.3, 0.3] #[0.3, 0.3]  # min max [m/s]
-            ###### HACKHACK BEGIN
-            lin_vel_x = [0, 0] #[0.3, 0.3]  # min max [m/s]
-            ###### HACKHACK END
-            lin_vel_y = [0, 0]  # min max [m/s]
-            ang_vel_yaw = [0, 0]  # min max [rad/s]
-            heading = [0, 0]
+            lin_vel_x = [-1.0, 2.0]  # min max [m/s]
+            lin_vel_y = [-0.3, 0.3]  # min max [m/s]
+            ang_vel_yaw = [-1.57, 1.57]  # min max [rad/s]
+            heading = [-3.14, 3.14]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
