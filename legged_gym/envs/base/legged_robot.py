@@ -135,13 +135,24 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        # actions = torch.zeros(
-        #     self.num_envs,
-        #     self.num_actions,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
+        actions = torch.zeros(
+            self.num_envs,
+            self.num_actions,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
+
+        target_pos = self.amp_loader.get_joint_pose_batch(
+            self.amp_loader.get_full_frame_at_time_batch(
+                np.zeros(self.num_envs, dtype=np.int),
+                self.envs_times.cpu().numpy().flatten(),
+            )
+        )
+
+        target_pos[:] -= self.default_dof_pos
+
+        actions[:, :] = target_pos
 
         # actions[:] = self.default_dof_pos
 
@@ -184,6 +195,8 @@ class LeggedRobot(BaseTask):
             self.saved_obs.append(policy_obs[0].cpu().numpy())
             print(len(self.saved_obs))
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
+
+        self.envs_times[:] += self.dt
 
         return (
             policy_obs,
@@ -323,6 +336,8 @@ class LeggedRobot(BaseTask):
         # send timeout info to the algorithm
         if self.cfg.env.send_timeouts:
             self.extras["time_outs"] = self.time_out_buf
+
+        self.envs_times[env_ids] = 0.0
 
     def compute_reward(self):
         """Compute rewards
@@ -572,7 +587,7 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 1] = (
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
-                # props["damping"] = 0.1
+                props["friction"] = 0.01
         return props
 
     def _process_rigid_body_props(self, props, env_id):
@@ -678,10 +693,9 @@ class LeggedRobot(BaseTask):
             d_gains = self.d_gains
 
         if control_type == "P":
-            torques = (
-                p_gains * (actions_scaled + self.default_dof_pos - self.dof_pos)
-                - (d_gains * self.dof_vel
-            )
+            torques = p_gains * (
+                actions_scaled + self.default_dof_pos - self.dof_pos
+            ) - (d_gains * self.dof_vel)
         elif control_type == "V":
             torques = (
                 p_gains * (actions_scaled - self.dof_vel)
@@ -1257,6 +1271,14 @@ class LeggedRobot(BaseTask):
             self.termination_contact_indices[i] = self.gym.find_actor_rigid_body_handle(
                 self.envs[0], self.actor_handles[0], termination_contact_names[i]
             )
+
+        self.envs_times = torch.zeros(
+            self.num_envs,
+            1,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
