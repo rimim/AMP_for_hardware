@@ -53,7 +53,7 @@ def play(args):
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = False  # TODO
 
-    env_cfg.env.debug_save_obs = False
+    env_cfg.env.debug_save_obs = True
 
     train_cfg.runner.amp_num_preload_transitions = 1
 
