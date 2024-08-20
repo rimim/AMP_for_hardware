@@ -86,8 +86,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 5.0  # 4 [N*m/rad]
-        damping_all = 0.5  # 0.01 was ok [N*m*s/rad]
+        stiffness_all = 10.0  # 4 [N*m/rad]
+        damping_all = 0.1  # 0.01 was ok [N*m*s/rad]
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -150,7 +150,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
-        # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+        default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
@@ -159,7 +159,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.002
+        dt = 0.005
         substeps = 1
 
     class domain_rand:

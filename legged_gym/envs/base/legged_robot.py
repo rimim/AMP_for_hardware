@@ -145,9 +145,9 @@ class LeggedRobot(BaseTask):
 
         # actions[:] = self.default_dof_pos
 
-        # target = torch.tensor(1 * np.sin(2 * np.pi * 1 * time())).to(self.device)
+        # target = torch.tensor(0.2 * np.sin(2 * np.pi * 1 * time())).to(self.device)
 
-        # actions[:, 2] = target
+        # actions[:, :] += target
 
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
@@ -572,6 +572,7 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 1] = (
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
+                # props["damping"] = 0.1
         return props
 
     def _process_rigid_body_props(self, props, env_id):
@@ -679,7 +680,7 @@ class LeggedRobot(BaseTask):
         if control_type == "P":
             torques = (
                 p_gains * (actions_scaled + self.default_dof_pos - self.dof_pos)
-                - d_gains * self.dof_vel
+                - (d_gains * self.dof_vel
             )
         elif control_type == "V":
             torques = (
