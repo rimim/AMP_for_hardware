@@ -143,6 +143,8 @@ class LeggedRobot(BaseTask):
         #     requires_grad=False,
         # )
 
+        # actions[:] = self.default_dof_pos
+
         # target = torch.tensor(1 * np.sin(2 * np.pi * 1 * time())).to(self.device)
 
         # actions[:, 2] = target
