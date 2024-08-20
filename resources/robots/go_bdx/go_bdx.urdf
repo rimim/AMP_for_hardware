@@ -11,7 +11,7 @@
     </inertial>
   </link>
   <joint name="trunk_frame" type="fixed">
-    <origin xyz="-0.035 0 0.29" rpy="0 0 0" />
+    <origin xyz="-0.035 0 0.2695" rpy="0 0 0" />
     <parent link="pelvis" />
     <child link="trunk" />
     <axis xyz="0 0 0"/>
