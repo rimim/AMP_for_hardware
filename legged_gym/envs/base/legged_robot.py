@@ -190,7 +190,7 @@ class LeggedRobot(BaseTask):
             print(len(self.saved_obs))
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
-        self.envs_times[:] += self.dt * 1.5
+        self.envs_times[:] += self.dt
 
         return (
             policy_obs,
