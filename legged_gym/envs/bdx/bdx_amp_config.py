@@ -38,7 +38,7 @@ MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
 #     "datasets/bdx/slower_placo_moves/bdx_walk_forward_TEST_INVERTED_LEGS.txt"
 # ]
 
-NO_FEET = True  # Do not use feet in the amp observations and data
+NO_FEET = False  # Do not use feet in the amp observations and data
 
 
 class BDXAMPCfg(LeggedRobotCfg):
