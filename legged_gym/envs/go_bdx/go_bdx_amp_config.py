@@ -70,13 +70,13 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": 0.0,  # [rad]
             "head_yaw": 0.0,  # [rad]
             "head_roll": 0.0,  # [rad]
+            "left_antenna": 0.0,  # [rad]
+            "right_antenna": 0.0,  # [rad]
             "right_hip_yaw": 0.0,  # [rad]
             "right_hip_roll": 0.0,  # [rad]
             "right_hip_pitch": 0.0,  # [rad]
             "right_knee": 0.0,  # [rad]
             "right_ankle": 0.0,  # [rad]
-            "left_antenna": 0.0,  # [rad]
-            "right_antenna": 0.0,  # [rad]
         }
 
     class control(LeggedRobotCfg.control):
@@ -100,13 +100,13 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": stiffness_dx,
             "head_yaw": stiffness_dx,
             "head_roll": stiffness_dx,
+            "left_antenna": stiffness_dx,
+            "right_antenna": stiffness_dx,
             "right_hip_yaw": stiffness_go1,
             "right_hip_roll": stiffness_go1,
             "right_hip_pitch": stiffness_go1,
             "right_knee": stiffness_go1,
             "right_ankle": stiffness_go1,
-            "left_antenna": stiffness_dx,
-            "right_antenna": stiffness_dx,
         }
 
         damping = {
@@ -119,13 +119,13 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": damping_dx,
             "head_yaw": damping_dx,
             "head_roll": damping_dx,
+            "left_antenna": damping_dx,
+            "right_antenna": damping_dx,
             "right_hip_yaw": damping_go1,
             "right_hip_roll": damping_go1,
             "right_hip_pitch": damping_go1,
             "right_knee": damping_go1,
             "right_ankle": damping_go1,
-            "left_antenna": damping_dx,
-            "right_antenna": damping_dx,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
