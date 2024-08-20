@@ -55,7 +55,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
         episode_length_s = 8  # episode length in seconds
-        debug_save_obs = False
+        debug_save_obs = True
         no_feet = NO_FEET
 
     class init_state(LeggedRobotCfg.init_state):
@@ -87,7 +87,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.0  # 0.01 was ok [N*m*s/rad]
+        damping_all = 0.01  # 0.01 was ok [N*m*s/rad]
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -125,8 +125,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        # action_scale = 0.25  # 0.25
-        action_scale = 1.0  # 0.25
+        action_scale = 0.25  # 0.25
+        # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6

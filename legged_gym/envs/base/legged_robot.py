@@ -135,30 +135,24 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        actions = torch.zeros(
-            self.num_envs,
-            self.num_actions,
-            dtype=torch.float,
-            device=self.device,
-            requires_grad=False,
-        )
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
 
-        target_pos = self.amp_loader.get_joint_pose_batch(
-            self.amp_loader.get_full_frame_at_time_batch(
-                np.zeros(self.num_envs, dtype=np.int),
-                self.envs_times.cpu().numpy().flatten(),
-            )
-        )
+        # target_pos = self.amp_loader.get_joint_pose_batch(
+        #     self.amp_loader.get_full_frame_at_time_batch(
+        #         np.zeros(self.num_envs, dtype=np.int),
+        #         self.envs_times.cpu().numpy().flatten(),
+        #     )
+        # )
 
-        target_pos[:] -= self.default_dof_pos
+        # target_pos[:] -= self.default_dof_pos
 
-        actions[:, :] = target_pos
-
-        # actions[:] = self.default_dof_pos
-
-        # target = torch.tensor(0.2 * np.sin(2 * np.pi * 1 * time())).to(self.device)
-
-        # actions[:, :] += target
+        # actions[:, :] = target_pos
 
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
@@ -196,7 +190,7 @@ class LeggedRobot(BaseTask):
             print(len(self.saved_obs))
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
-        self.envs_times[:] += self.dt
+        self.envs_times[:] += self.dt * 1.5
 
         return (
             policy_obs,
