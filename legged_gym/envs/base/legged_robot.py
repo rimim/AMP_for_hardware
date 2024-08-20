@@ -131,6 +131,27 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
+        ###### HACKHACK BEGIN
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
+
+        # target_pos = self.amp_loader.get_joint_pose_batch(
+        #     self.amp_loader.get_full_frame_at_time_batch(
+        #         np.zeros(self.num_envs, dtype=int),
+        #         self.envs_times.cpu().numpy().flatten(),
+        #     )
+        # )
+
+        # target_pos[:] -= self.default_dof_pos
+
+        # actions[:, :] = target_pos
+        ###### HACKHACK END
+
         ############## DISABLE ACTIONS
         # actions = torch.zeros(
         #     self.num_envs,
@@ -173,6 +194,10 @@ class LeggedRobot(BaseTask):
             self.privileged_obs_buf = torch.clip(
                 self.privileged_obs_buf, -clip_obs, clip_obs
             )
+
+        ###### HACKHACK BEGIN
+        # self.envs_times[:] += self.dt
+        ###### HACKHACK END
 
         return (
             policy_obs,
@@ -261,6 +286,10 @@ class LeggedRobot(BaseTask):
         """
         if len(env_ids) == 0:
             return
+        ##### HACKHACK BEGIN
+        # self.envs_times[env_ids] = 0.0
+        ##### HACKHACK END
+
         # update curriculum
         if self.cfg.terrain.curriculum:
             self._update_terrain_curriculum(env_ids)
@@ -1279,6 +1308,15 @@ class LeggedRobot(BaseTask):
             self.termination_contact_indices[i] = self.gym.find_actor_rigid_body_handle(
                 self.envs[0], self.actor_handles[0], termination_contact_names[i]
             )
+        ###### HACKHACK BEGIN
+        # self.envs_times = torch.zeros(
+        #     self.num_envs,
+        #     1,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
+        ###### HACKHACK END
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.

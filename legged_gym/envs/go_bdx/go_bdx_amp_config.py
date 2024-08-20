@@ -60,6 +60,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class init_state(LeggedRobotCfg.init_state):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.0]  # x,y,z [m]
+        ###### HACKHACK BEGIN
+        #pos = [0.0, 0.0, 0.3]  # x,y,z [m]
+        ###### HACKHACK END
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "left_hip_yaw": 0.0,  # [rad]
             "left_hip_roll": 0.0,  # [rad]
@@ -88,7 +91,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         stiffness_go1 = 30  # 4 [N*m/rad]
         damping_go1 = 0.5  # 0.1 [N*m*s/rad]
-        stiffness_dx = 10  # 4 [N*m/rad]
+        stiffness_dx = 30  # 4 [N*m/rad]
         damping_dx = 1.0  # 0.1 [N*m*s/rad]
         stiffness = {
             "left_hip_yaw": stiffness_go1,
@@ -129,8 +132,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25
-        # action_scale = 1
+        #action_scale = 0.25
+        action_scale = 1
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6
@@ -160,6 +163,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
+        ###### HACKHACK BEGIN
+        #fix_base_link = True  # fixe the base of the robot
+        ###### HACKHACK END
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
@@ -220,12 +226,15 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 1.0
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.3, 0.3]  # min max [m/s]
+            lin_vel_x = [0.3, 0.3] #[0.3, 0.3]  # min max [m/s]
+            ###### HACKHACK BEGIN
+            lin_vel_x = [0, 0] #[0.3, 0.3]  # min max [m/s]
+            ###### HACKHACK END
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
             heading = [0, 0]
@@ -263,7 +272,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 10  # original 10 # TUNE ?
+        disc_grad_penalty = 1  # original 10 # TUNE ?
         #disc_grad_penalty = 0.01  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
