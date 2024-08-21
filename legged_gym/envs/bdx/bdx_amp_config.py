@@ -207,7 +207,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -262,10 +262,10 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.5  # 0.3
+        amp_task_reward_lerp = 0.1  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.02  # original 10 # TUNE ?
+        disc_grad_penalty = 1.0  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
