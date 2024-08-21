@@ -61,7 +61,7 @@ def play(args):
     camera_rot_per_sec = np.pi / 6
     img_idx = 0
 
-    video_duration = 10
+    video_duration = 5
     num_frames = int(video_duration / env.dt)
     print(f"gathering {num_frames} frames")
     video = None
@@ -72,7 +72,12 @@ def play(args):
     # fv = Viewer()
     # fv.start()
 
-    while traj_idx < len(env.amp_loader.trajectory_lens):
+    initial_distance = 3.5  # Desired starting distance from the robot
+    desired_distance = 1.5  # Desired distance from the robot
+    initial_height = 0.65   # Height of the camera
+
+    # while traj_idx < len(env.amp_loader.trajectory_lens):
+    for i in range(num_frames):
         actions = torch.zeros(
             (env_cfg.env.num_envs, env.num_actions), device=env.sim_device
         )
@@ -237,12 +242,27 @@ def play(args):
         env.step(actions.detach())
 
         # Reset camera position.
-        look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
-        camera_rot = (camera_rot + camera_rot_per_sec * env.dt) % (2 * np.pi)
-        camera_relative_position = 2.0 * np.array(
-            [np.cos(camera_rot), np.sin(camera_rot), 0.45]
-        )
-        env.set_camera(look_at + camera_relative_position, look_at)
+        if 'camera_position' not in locals():
+            camera_position = np.array([initial_distance, 0.0, initial_height])
+            smoothed_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
+        raw_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
+
+        # Calculate the rotation in the xy-plane (no pitch adjustment).
+        #camera_rot = (camera_rot + camera_rot_per_sec * env.dt) % (np.pi / 8)
+        desired_camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
+
+        # Separate smoothing factors for look_at and camera position.
+        alpha_look_at = 0.1  # Smoothing factor for look_at position
+        alpha_camera = 0.1  # Smoothing factor for camera position
+
+        # Smooth out the look_at movement.
+        smoothed_look_at = (1 - alpha_look_at) * smoothed_look_at + alpha_look_at * raw_look_at
+
+        # Smooth out the camera movement.
+        camera_position = (1 - alpha_camera) * camera_position + alpha_camera * desired_camera_position
+
+        # Set the camera to the new smoothed position.
+        env.set_camera(smoothed_look_at + camera_position, smoothed_look_at)
 
         if RECORD_FRAMES:
             frames_path = os.path.join(
@@ -278,6 +298,6 @@ def play(args):
 
 if __name__ == "__main__":
     EXPORT_POLICY = False
-    RECORD_FRAMES = False
+    RECORD_FRAMES = True
     args = get_args()
     play(args)

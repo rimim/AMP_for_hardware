@@ -69,23 +69,43 @@ def play(args):
         print('Exported policy as jit script to: ', path)
 
     camera_rot = 0
-    camera_rot_per_sec = np.pi / 6
+    camera_rot_per_sec = np.pi / 8
     img_idx = 0
 
     video_duration = 10
     num_frames = int(video_duration / env.dt)
     print(f'gathering {num_frames} frames')
     video = None
+    initial_distance = 3.5  # Desired starting distance from the robot
+    desired_distance = 1.5  # Desired distance from the robot
+    initial_height = 0.65   # Height of the camera
 
     for i in range(num_frames):
         actions = policy(obs.detach())
         obs, _, _, _, infos, _, _ = env.step(actions.detach())
 
         # Reset camera position.
-        look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
+        if 'camera_position' not in locals():
+            camera_position = np.array([initial_distance, 0.0, initial_height])
+            smoothed_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
+        raw_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
+
+        # Calculate the rotation in the xy-plane (no pitch adjustment).
         camera_rot = (camera_rot + camera_rot_per_sec * env.dt) % (2 * np.pi)
-        camera_relative_position = 1.2 * np.array([np.cos(camera_rot), np.sin(camera_rot), 0.45])
-        env.set_camera(look_at + camera_relative_position, look_at)
+        desired_camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
+
+        # Separate smoothing factors for look_at and camera position.
+        alpha_look_at = 0.1  # Smoothing factor for look_at position
+        alpha_camera = 0.1  # Smoothing factor for camera position
+
+        # Smooth out the look_at movement.
+        smoothed_look_at = (1 - alpha_look_at) * smoothed_look_at + alpha_look_at * raw_look_at
+
+        # Smooth out the camera movement.
+        camera_position = (1 - alpha_camera) * camera_position + alpha_camera * desired_camera_position
+
+        # Set the camera to the new smoothed position.
+        env.set_camera(smoothed_look_at + camera_position, smoothed_look_at)
 
         if RECORD_FRAMES:
             frames_path = os.path.join(LEGGED_GYM_ROOT_DIR, 'logs', train_cfg.runner.experiment_name, 'exported', 'frames')
