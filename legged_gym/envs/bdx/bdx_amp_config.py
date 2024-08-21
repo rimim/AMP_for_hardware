@@ -33,7 +33,18 @@ import glob
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
-MOTION_FILES = ["datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt"]
+MOTION_FILES = [
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_fast.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_slow.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_fast.txt",
+]
+
 # MOTION_FILES = [
 #     "datasets/bdx/slower_placo_moves/bdx_walk_forward_TEST_INVERTED_LEGS.txt"
 # ]
@@ -207,7 +218,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.1
+            action_rate = -0.5
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -219,9 +230,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0.1, 0.2]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
-            ang_vel_yaw = [0, 0]  # min max [rad/s]
+            ang_vel_yaw = [-0.3, 0.3]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]

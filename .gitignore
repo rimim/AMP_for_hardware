@@ -62,3 +62,4 @@ runs
 __pycache__
 
 *.pkl
+*.onnx
