@@ -87,13 +87,13 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 10.0  # 4 [N*m/rad]
-        damping_all = 0.2  # try 0.2
+        damping_all = 0.01  # try 0.2
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
             "left_hip_pitch": stiffness_all,
             "left_knee": stiffness_all,
-            "left_ankle": stiffness_all,
+            "left_ankle": stiffness_all * 3,
             "neck_pitch": stiffness_all,
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
@@ -103,7 +103,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             "right_hip_roll": stiffness_all,
             "right_hip_pitch": stiffness_all,
             "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
+            "right_ankle": stiffness_all * 3,
         }
 
         damping = {
@@ -125,8 +125,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        # action_scale = 0.25  # 0.25
-        action_scale = 1.0  # 0.25
+        action_scale = 0.25  # 0.25
+        # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 6  # 6
@@ -155,9 +155,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.002
@@ -207,7 +207,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.1
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -248,7 +248,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         num_learning_epochs = 5
         num_mini_batches = 4
         disc_coef = 5  # TUNE ?
-        bounds_loss_coef = 10
+        # bounds_loss_coef = 10
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -265,7 +265,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.1  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 1.0  # original 10 # TUNE ?
+        disc_grad_penalty = 0.01  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
