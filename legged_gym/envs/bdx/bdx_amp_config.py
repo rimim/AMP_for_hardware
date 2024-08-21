@@ -98,7 +98,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 8.0  # 4 [N*m/rad]
-        damping_all = 0.03  # try 0.2
+        damping_all = 0.05  # try 0.2
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -175,19 +175,19 @@ class BDXAMPCfg(LeggedRobotCfg):
         substeps = 1
 
     class domain_rand:
-        randomize_friction = False
-        friction_range = [0.8, 1.2]
-        randomize_base_mass = False
+        randomize_friction = True
+        friction_range = [0.9, 1.1]
+        randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
-        push_robots = False
+        push_robots = True
         push_interval_s = 15
-        max_push_vel_xy = 0.1  # 0.3
-        randomize_gains = False
+        max_push_vel_xy = 0.05  # 0.3
+        randomize_gains = True
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
 
     class noise:
-        add_noise = False
+        add_noise = True
         noise_level = 1.0  # scales other values
 
         class noise_scales:
@@ -273,7 +273,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.1  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?

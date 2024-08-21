@@ -154,6 +154,11 @@ class LeggedRobot(BaseTask):
 
         # actions[:, :] = target_pos
 
+        # print(self.projected_gravity[0])
+        # print(self.base_quat[0])
+        # print(self.gravity_vec[0])
+        # print("==")
+
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
         # step physics and render each frame
