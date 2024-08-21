@@ -89,10 +89,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #effort = 0.6  # Nm
         #effort = 20  # Nm
 
-        stiffness_go1 = 30  # 4 [N*m/rad]
-        damping_go1 = 0.5  # 0.1 [N*m*s/rad]
-        stiffness_dx = 30  # 4 [N*m/rad]
-        damping_dx = 1.0  # 0.1 [N*m*s/rad]
+        # Updated stiffness values
+        stiffness_go1 = 50  # for high-load joints
+        stiffness_dx = 10   # for low-load joints
+
         stiffness = {
             "left_hip_yaw": stiffness_go1,
             "left_hip_roll": stiffness_go1,
@@ -111,6 +111,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_knee": stiffness_go1,
             "right_ankle": stiffness_go1,
         }
+
+        # Updated damping values
+        damping_go1 = 5    # for high-load joints
+        damping_dx = 1     # for low-load joints
 
         damping = {
             "left_hip_yaw": damping_go1,
