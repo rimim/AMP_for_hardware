@@ -87,7 +87,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 8.0  # 4 [N*m/rad]
-        damping_all = 0.01  # try 0.2
+        damping_all = 0.03  # try 0.2
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -207,7 +207,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
 
