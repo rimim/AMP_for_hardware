@@ -135,13 +135,13 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        actions = torch.zeros(
-            self.num_envs,
-            self.num_actions,
-            dtype=torch.float,
-            device=self.device,
-            requires_grad=False,
-        )
+        # actions = torch.zeros(
+        #     self.num_envs,
+        #     self.num_actions,
+        #     dtype=torch.float,
+        #     device=self.device,
+        #     requires_grad=False,
+        # )
 
         # target_pos = self.amp_loader.get_joint_pose_batch(
         #     self.amp_loader.get_full_frame_at_time_batch(
