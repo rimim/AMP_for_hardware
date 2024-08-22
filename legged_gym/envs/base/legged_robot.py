@@ -135,13 +135,13 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        # actions = torch.zeros(
-        #     self.num_envs,
-        #     self.num_actions,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
+        actions = torch.zeros(
+            self.num_envs,
+            self.num_actions,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
 
         # target_pos = self.amp_loader.get_joint_pose_batch(
         #     self.amp_loader.get_full_frame_at_time_batch(
@@ -585,7 +585,8 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 1] = (
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
-                props["friction"] = 0.01
+                props["friction"] = 0.0002
+                # props["damping"] = 0.0001
         return props
 
     def _process_rigid_body_props(self, props, env_id):
