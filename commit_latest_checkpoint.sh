@@ -88,8 +88,8 @@ if ! [[ "$INTERVAL_MINUTES" =~ ^[0-9]+$ ]]; then
     echo "Error: Interval minutes must be a positive integer."
     exit 1
 fi
-if (( INTERVAL_MINUTES > 0 && INTERVAL_MINUTES < 10 )); then
-    echo "Error: Interval minutes must be greater than 10 minutes"
+if (( INTERVAL_MINUTES > 0 && INTERVAL_MINUTES < 5 )); then
+    echo "Error: Interval minutes must be greater than 5 minutes"
     exit 1
 fi
 INTERVAL_SECONDS=$((INTERVAL_MINUTES * 60))
@@ -162,8 +162,7 @@ do
   CHECKPOINT=$(basename $LATEST_CHECKPOINT)
   echo Latest checkpoint: $CHECKPOINT from ${REMOTE_USER_SERVER}
 
-  if [ "$CHECKPOINT" != "$LAST_CHECKPOINT" ]; then
-    cd "$LOCAL_AMP_DIR" || exit
+  if [ ! -f "$LOCAL_TASK_DIR"/"$LATEST_CHECKPOINT" ]; then
     rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
 
     if [ ! -z "$LOCAL_TASK_REPO" ]; then
