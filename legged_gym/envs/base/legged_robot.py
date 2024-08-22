@@ -135,13 +135,13 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        # actions = torch.zeros(
-        #     self.num_envs,
-        #     self.num_actions,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
+        actions = torch.zeros(
+            self.num_envs,
+            self.num_actions,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
 
         # target_pos = self.amp_loader.get_joint_pose_batch(
         #     self.amp_loader.get_full_frame_at_time_batch(
@@ -192,7 +192,6 @@ class LeggedRobot(BaseTask):
 
         if self.cfg.env.debug_save_obs:
             self.saved_obs.append(policy_obs[0].cpu().numpy())
-            print(len(self.saved_obs))
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
         self.envs_times[:] += self.dt
@@ -395,7 +394,7 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 0] = lin_vel_x
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
-
+            print(self.commands[0])
         # base_quat = self.root_states[:, 3:7]
         # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])

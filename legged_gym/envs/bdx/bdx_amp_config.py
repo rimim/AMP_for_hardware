@@ -34,15 +34,15 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_slow.txt",
     "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
     "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
     "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_fast.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_slow.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_fast.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_slow.txt",
     "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_medium.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_fast.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_fast.txt",
 ]
 
 # MOTION_FILES = [
@@ -97,8 +97,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 8.0  # 4 [N*m/rad]
-        damping_all = 0.05  # try 0.2
+        stiffness_all = 20.0  # 9 [N*m/rad]
+        damping_all = 0.05  # try 0.05
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -204,10 +204,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            # tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            # tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
-            tracking_lin_vel = 1.0
-            tracking_ang_vel = 0.5
+            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.002 * 6)
+            # tracking_lin_vel = 1.0
+            # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
@@ -225,14 +225,14 @@ class BDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
             lin_vel_x = [0.1, 0.2]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
-            ang_vel_yaw = [-0.3, 0.3]  # min max [rad/s]
+            ang_vel_yaw = [-0.2, 0.2]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
@@ -273,7 +273,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
