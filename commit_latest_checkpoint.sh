@@ -174,7 +174,7 @@ do
       git checkout main || exit
 
       cd "$LOCAL_AMP_DIR" || exit
-      python legged_gym/scripts/record_policy.py --task=$TASK --headless || exit
+      python legged_gym/scripts/record_policy.py --task=$TASK || exit
 
       ffmpeg -y -i record.mp4 -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart $LOCAL_TASK_REPO/$VIDEO_FILE || exit
 

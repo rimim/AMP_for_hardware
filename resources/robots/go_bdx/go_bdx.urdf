@@ -98,35 +98,35 @@
     <parent link="neck"/>
     <child link="head_body_pitch"/>
     <axis xyz="-0.0 -1.0 0.0"/>
-    <limit lower="-0.7853982" upper="0.7853982" effort="15" velocity="20"/>
+    <limit lower="-0.7853982" upper="0.7853982" effort="7.3" velocity="5.55"/>
   </joint>
   <joint name="head_yaw" type="revolute">
     <origin rpy="0 0 0" xyz="0.000299 0.0007 0.02897"/>
     <parent link="head_body_pitch"/>
     <child link="head_body_yaw"/>
     <axis xyz="-0.0 -0.0 1.0"/>
-    <limit lower="-0.7853982" upper="0.7853982" effort="15" velocity="20"/>
+    <limit lower="-0.7853982" upper="0.7853982" effort="7.3" velocity="5.55"/>
   </joint>
   <joint name="head_roll" type="revolute">
     <origin rpy="0 0 0" xyz="0.039892 0.0 0.02715"/>
     <parent link="head_body_yaw"/>
     <child link="head_body_roll"/>
     <axis xyz="1.0 -0.0 0.0"/>
-    <limit lower="-0.7853982" upper="0.7853982" effort="15" velocity="20"/>
+    <limit lower="-0.7853982" upper="0.7853982" effort="7.3" velocity="5.55"/>
   </joint>
   <joint name="left_antenna" type="revolute">
     <origin rpy="0 0 0" xyz="-0.16665 0.0683 0.001231"/>
     <parent link="head_body_roll"/>
     <child link="ear_left"/>
     <axis xyz="-0.0 -1.0 -0.0"/>
-    <limit lower="-0.7853982" upper="0.7853982" effort="15" velocity="20"/>
+    <limit lower="-0.7853982" upper="0.7853982" effort="0.2943" velocity="13.62"/>
   </joint>
   <joint name="right_antenna" type="revolute">
     <origin rpy="0 0 0" xyz="-0.16665 -0.0697 0.001231"/>
     <parent link="head_body_roll"/>
     <child link="ear_right"/>
     <axis xyz="-0.0 -1.0 -0.0"/>
-    <limit lower="-0.7853982" upper="0.7853982" effort="15" velocity="20"/>
+    <limit lower="-0.7853982" upper="0.7853982" effort="0.2943" velocity="13.62"/>
   </joint>
   <link name="pelvis">
     <inertial>
@@ -156,7 +156,7 @@
     </inertial>
   </link>
   <joint name="left_foot_frame" type="fixed">
-      <origin xyz="0.0 0.0 -0.075" rpy="0 0 0" />
+      <origin xyz="0.025 0.0 -0.0765" rpy="0 0 0" />
       <parent link="left_foot_link" />
       <child link="left_foot" />
       <axis xyz="0 0 0"/>
@@ -269,7 +269,7 @@
     </inertial>
   </link>
   <joint name="right_foot_frame" type="fixed">
-      <origin xyz="0.0 0.0 -0.075" rpy="0 0 0" />
+      <origin xyz="0.025 0.0 -0.0765" rpy="0 0 0" />
       <parent link="right_foot_link" />
       <child link="right_foot" />
       <axis xyz="0 0 0"/>

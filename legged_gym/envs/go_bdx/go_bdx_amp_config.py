@@ -90,8 +90,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #effort = 20  # Nm
 
         # Updated stiffness values
-        stiffness_go1 = 50  # for high-load joints
-        stiffness_dx = 10   # for low-load joints
+        stiffness_go1 = 40
+        stiffness_dx = 15
+        stiffness_antenna = 3
 
         stiffness = {
             "left_hip_yaw": stiffness_go1,
@@ -103,8 +104,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": stiffness_dx,
             "head_yaw": stiffness_dx,
             "head_roll": stiffness_dx,
-            "left_antenna": stiffness_dx,
-            "right_antenna": stiffness_dx,
+            "left_antenna": stiffness_antenna,
+            "right_antenna": stiffness_antenna,
             "right_hip_yaw": stiffness_go1,
             "right_hip_roll": stiffness_go1,
             "right_hip_pitch": stiffness_go1,
@@ -113,8 +114,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         }
 
         # Updated damping values
-        damping_go1 = 5    # for high-load joints
-        damping_dx = 1     # for low-load joints
+        damping_go1 = 0.5
+        damping_dx = 2
+        damping_antenna = 0.2
 
         damping = {
             "left_hip_yaw": damping_go1,
@@ -126,8 +128,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "head_pitch": damping_dx,
             "head_yaw": damping_dx,
             "head_roll": damping_dx,
-            "left_antenna": damping_dx,
-            "right_antenna": damping_dx,
+            "left_antenna": damping_antenna,
+            "right_antenna": damping_antenna,
             "right_hip_yaw": damping_go1,
             "right_hip_roll": damping_go1,
             "right_hip_pitch": damping_go1,
