@@ -140,8 +140,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        #action_scale = 0.75
-        action_scale = 0.75
+        #action_scale = 0.25
+        action_scale = 0.35
         ###### HACKHACK BEGIN
         #action_scale = 1
         ###### HACKHACK END
@@ -242,10 +242,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.1836, 0.1836]  # min max [m/s]
-            lin_vel_y = [0, 0]  # min max [m/s]
+            lin_vel_x = [-0.1836, 0.1836]  # min max [m/s]
+            lin_vel_y = [-0.1836, 0.1836]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
-            heading = [0, 0]
+            heading = [-3.14, 3.14]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
@@ -282,7 +282,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         #disc_grad_penalty = 1  # original 10 # TUNE ?
         # smaller penalty is needed for high-dynamic mocap
-        disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        disc_grad_penalty = 0.001  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
