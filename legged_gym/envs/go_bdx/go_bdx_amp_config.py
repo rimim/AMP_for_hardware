@@ -91,6 +91,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         # Updated stiffness values
         stiffness_go1 = 40
+        stiffness_ankles = 30
         stiffness_dx = 15
         stiffness_antenna = 3
 
@@ -99,7 +100,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "left_hip_roll": stiffness_go1,
             "left_hip_pitch": stiffness_go1,
             "left_knee": stiffness_go1,
-            "left_ankle": stiffness_go1,
+            "left_ankle": stiffness_ankles,
             "neck_pitch": stiffness_dx,
             "head_pitch": stiffness_dx,
             "head_yaw": stiffness_dx,
@@ -110,11 +111,12 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_roll": stiffness_go1,
             "right_hip_pitch": stiffness_go1,
             "right_knee": stiffness_go1,
-            "right_ankle": stiffness_go1,
+            "right_ankle": stiffness_ankles,
         }
 
         # Updated damping values
         damping_go1 = 0.5
+        damping_ankles = 0.5
         damping_dx = 2
         damping_antenna = 0.2
 
@@ -123,7 +125,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "left_hip_roll": damping_go1,
             "left_hip_pitch": damping_go1,
             "left_knee": damping_go1,
-            "left_ankle": damping_go1,
+            "left_ankle": damping_ankles,
             "neck_pitch": damping_dx,
             "head_pitch": damping_dx,
             "head_yaw": damping_dx,
@@ -134,12 +136,12 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_roll": damping_go1,
             "right_hip_pitch": damping_go1,
             "right_knee": damping_go1,
-            "right_ankle": damping_go1,
+            "right_ankle": damping_ankles,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
         #action_scale = 0.75
-        action_scale = 0.25
+        action_scale = 0.75
         ###### HACKHACK BEGIN
         #action_scale = 1
         ###### HACKHACK END
