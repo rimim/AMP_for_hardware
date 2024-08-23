@@ -91,7 +91,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         # Updated stiffness values
         stiffness_go1 = 40
-        stiffness_ankles = 30
+        stiffness_ankles = 40
         stiffness_dx = 15
         stiffness_antenna = 3
 
