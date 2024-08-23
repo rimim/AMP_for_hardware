@@ -72,7 +72,7 @@ def play(args):
     camera_rot_per_sec = np.pi / 8
     img_idx = 0
 
-    video_duration = 10
+    video_duration = 8
     num_frames = int(video_duration / env.dt)
     print(f'gathering {num_frames} frames')
     video = None

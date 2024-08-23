@@ -138,6 +138,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
+        #action_scale = 0.75
         action_scale = 0.25
         ###### HACKHACK BEGIN
         #action_scale = 1
@@ -277,8 +278,9 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 1  # original 10 # TUNE ?
-        #disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        #disc_grad_penalty = 1  # original 10 # TUNE ?
+        # smaller penalty is needed for high-dynamic mocap
+        disc_grad_penalty = 0.01  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
