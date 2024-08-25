@@ -98,7 +98,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 20  # Nm
 
         stiffness_all = 8  # 9 [N*m/rad]
-        damping_all = 0.04  # try 0.05
+        damping_all = 0.05  # try 0.05
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -140,7 +140,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6  # 6
+        decimation = 8  # 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -166,28 +166,28 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.002
+        dt = 0.002  # 0.002
         substeps = 1
 
     class domain_rand:
-        randomize_friction = True
+        randomize_friction = False
         friction_range = [0.95, 1.05]
         randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
         push_robots = False
         push_interval_s = 15
         max_push_vel_xy = 0.05  # 0.3
-        randomize_gains = True
+        randomize_gains = False
         stiffness_multiplier_range = [0.95, 1.05]
         damping_multiplier_range = [0.95, 1.05]
 
     class noise:
-        add_noise = True
+        add_noise = False
         noise_level = 1.0  # scales other values
 
         class noise_scales:
@@ -204,10 +204,10 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            # tracking_lin_vel = 1.5 * 1.0 / (0.002 * 6)
-            # tracking_ang_vel = 0.5 * 1.0 / (0.002 * 6)
-            tracking_lin_vel = 1.0
-            tracking_ang_vel = 0.5
+            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.002 * 6)
+            # tracking_lin_vel = 1.0
+            # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
