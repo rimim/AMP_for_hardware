@@ -33,6 +33,7 @@ from time import time
 from warnings import WarningMessage
 import numpy as np
 import os
+import pickle
 
 from isaacgym.torch_utils import *
 from isaacgym import gymtorch, gymapi, gymutil
@@ -53,6 +54,7 @@ from rsl_rl.datasets.motion_loader import AMPLoader
 
 
 class LeggedRobot(BaseTask):
+
     def __init__(
         self, cfg: LeggedRobotCfg, sim_params, physics_engine, sim_device, headless
     ):
@@ -108,6 +110,8 @@ class LeggedRobot(BaseTask):
             device=self.device,
             time_between_frames=self.dt,
         )
+        if self.cfg.env.debug_save_obs:
+            self.saved_obs = []
 
     def reset(self):
         """Reset all robots"""
@@ -131,26 +135,25 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        ###### HACKHACK BEGIN
-        # actions = torch.zeros(
-        #     self.num_envs,
-        #     self.num_actions,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
+        if self.cfg.env.debug_save_obs:
+            actions = torch.zeros(
+                self.num_envs,
+                self.num_actions,
+                dtype=torch.float,
+                device=self.device,
+                requires_grad=False,
+            )
 
-        # target_pos = self.amp_loader.get_joint_pose_batch(
-        #     self.amp_loader.get_full_frame_at_time_batch(
-        #         np.zeros(self.num_envs, dtype=int),
-        #         self.envs_times.cpu().numpy().flatten(),
-        #     )
-        # )
+            target_pos = self.amp_loader.get_joint_pose_batch(
+                self.amp_loader.get_full_frame_at_time_batch(
+                    np.zeros(self.num_envs, dtype=int),
+                    self.envs_times.cpu().numpy().flatten(),
+                )
+            )
 
-        # target_pos[:] -= self.default_dof_pos
+            target_pos[:] -= self.default_dof_pos
 
-        # actions[:, :] = target_pos
-        ###### HACKHACK END
+            actions[:, :] = target_pos
 
         ############## DISABLE ACTIONS
         # actions = torch.zeros(
@@ -195,9 +198,11 @@ class LeggedRobot(BaseTask):
                 self.privileged_obs_buf, -clip_obs, clip_obs
             )
 
-        ###### HACKHACK BEGIN
-        # self.envs_times[:] += self.dt
-        ###### HACKHACK END
+        if self.cfg.env.debug_save_obs:
+            self.envs_times[:] += self.dt
+
+            self.saved_obs.append(policy_obs[0].cpu().numpy())
+            pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
         return (
             policy_obs,
@@ -262,17 +267,27 @@ class LeggedRobot(BaseTask):
 
     def check_termination(self):
         """Check if environments need to be reset"""
-        self.reset_buf = torch.any(
+
+        contact_termination = torch.any(
             torch.norm(
                 self.contact_forces[:, self.termination_contact_indices, :], dim=-1
             )
             > 1.0,
             dim=1,
         )
-        self.time_out_buf = (
-            self.episode_length_buf > self.max_episode_length
-        )  # no terminal reward for time-outs
-        self.reset_buf |= self.time_out_buf
+
+        # Check for termination due to timeout
+        time_out_termination = self.episode_length_buf > self.max_episode_length
+
+        # Update reset buffer
+        self.reset_buf = contact_termination | time_out_termination
+
+        # Print reason for termination
+        # for i in range(self.reset_buf.size(0)):
+        #     if contact_termination[i]:
+        #         print(f"Environment {i} terminated due to excessive contact forces.")
+        #     elif time_out_termination[i]:
+        #         print(f"Environment {i} terminated due to timeout.")
 
     def reset_idx(self, env_ids):
         """Reset some environments.
@@ -286,9 +301,8 @@ class LeggedRobot(BaseTask):
         """
         if len(env_ids) == 0:
             return
-        ##### HACKHACK BEGIN
-        # self.envs_times[env_ids] = 0.0
-        ##### HACKHACK END
+        if self.cfg.env.debug_save_obs:
+            self.envs_times[env_ids] = 0.0
 
         # update curriculum
         if self.cfg.terrain.curriculum:
@@ -723,7 +737,18 @@ class LeggedRobot(BaseTask):
             p_gains = self.p_gains
             d_gains = self.d_gains
 
-        if control_type == "P":
+        self.joint_pos_target = actions_scaled + self.default_dof_pos
+
+        if control_type == "actuator_net":
+            self.joint_pos_err = self.dof_pos - self.joint_pos_target + self.motor_offsets
+            self.joint_vel = self.dof_vel
+            torques = self.actuator_network(self.joint_pos_err, self.joint_pos_err_last, self.joint_pos_err_last_last,
+                                            self.joint_vel, self.joint_vel_last, self.joint_vel_last_last)
+            self.joint_pos_err_last_last = torch.clone(self.joint_pos_err_last)
+            self.joint_pos_err_last = torch.clone(self.joint_pos_err)
+            self.joint_vel_last_last = torch.clone(self.joint_vel_last)
+            self.joint_vel_last = torch.clone(self.joint_vel)
+        elif control_type == "P":
             torques = (
                 p_gains * (actions_scaled + self.default_dof_pos - self.dof_pos)
                 - d_gains * self.dof_vel
@@ -1063,6 +1088,31 @@ class LeggedRobot(BaseTask):
                 self.randomized_p_gains,
                 self.randomized_d_gains,
             ) = self.compute_randomized_gains(self.num_envs)
+        if self.cfg.control.control_type == "actuator_net":
+            actuator_path = f'{os.path.dirname(os.path.dirname(os.path.realpath(__file__)))}/../../resources/actuator_nets/unitree_go1.pt'
+            actuator_network = torch.jit.load(actuator_path).to(self.device)
+
+            def eval_actuator_network(joint_pos, joint_pos_last, joint_pos_last_last, joint_vel, joint_vel_last,
+                                      joint_vel_last_last):
+                xs = torch.cat((joint_pos.unsqueeze(-1),
+                                joint_pos_last.unsqueeze(-1),
+                                joint_pos_last_last.unsqueeze(-1),
+                                joint_vel.unsqueeze(-1),
+                                joint_vel_last.unsqueeze(-1),
+                                joint_vel_last_last.unsqueeze(-1)), dim=-1)
+                torques = actuator_network(xs.view(self.num_envs * 16, 6))
+                return torques.view(self.num_envs, 16)
+
+            self.actuator_network = eval_actuator_network
+
+            self.joint_pos_err_last_last = torch.zeros((self.num_envs, 16), device=self.device)
+            self.joint_pos_err_last = torch.zeros((self.num_envs, 16), device=self.device)
+            self.joint_vel_last_last = torch.zeros((self.num_envs, 16), device=self.device)
+            self.joint_vel_last = torch.zeros((self.num_envs, 16), device=self.device)
+
+    def _init_custom_buffers__(self):
+        self.motor_offsets = torch.zeros(self.num_envs, self.num_dof, dtype=torch.float, device=self.device,
+                                         requires_grad=False)
 
     def compute_randomized_gains(self, num_envs):
         p_mult = (
@@ -1238,6 +1288,8 @@ class LeggedRobot(BaseTask):
         start_pose = gymapi.Transform()
         start_pose.p = gymapi.Vec3(*self.base_init_state[:3])
 
+        self._init_custom_buffers__()
+
         self._get_env_origins()
         env_lower = gymapi.Vec3(0.0, 0.0, 0.0)
         env_upper = gymapi.Vec3(0.0, 0.0, 0.0)
@@ -1308,15 +1360,14 @@ class LeggedRobot(BaseTask):
             self.termination_contact_indices[i] = self.gym.find_actor_rigid_body_handle(
                 self.envs[0], self.actor_handles[0], termination_contact_names[i]
             )
-        ###### HACKHACK BEGIN
-        # self.envs_times = torch.zeros(
-        #     self.num_envs,
-        #     1,
-        #     dtype=torch.float,
-        #     device=self.device,
-        #     requires_grad=False,
-        # )
-        ###### HACKHACK END
+        if self.cfg.env.debug_save_obs:
+            self.envs_times = torch.zeros(
+                self.num_envs,
+                1,
+                dtype=torch.float,
+                device=self.device,
+                requires_grad=False,
+            )
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.

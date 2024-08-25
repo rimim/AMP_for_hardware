@@ -52,6 +52,9 @@ def play(args):
     env_cfg.domain_rand.push_robots = False
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = True  # TODO
+    #env_cfg.control.control_type = "actuator_net"
+    if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+        env_cfg.env.debug_save_obs = True
 
     train_cfg.runner.amp_num_preload_transitions = 1
 

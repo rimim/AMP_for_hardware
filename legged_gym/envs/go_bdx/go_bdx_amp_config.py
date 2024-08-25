@@ -29,6 +29,7 @@
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
 import glob
+import os
 
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
@@ -56,13 +57,13 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
         episode_length_s = 8  # episode length in seconds
+        debug_save_obs = False
 
     class init_state(LeggedRobotCfg.init_state):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.0]  # x,y,z [m]
-        ###### HACKHACK BEGIN
-        #pos = [0.0, 0.0, 0.3]  # x,y,z [m]
-        ###### HACKHACK END
+        if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+            pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "left_hip_yaw": 0.0,  # [rad]
             "left_hip_roll": 0.0,  # [rad]
@@ -89,54 +90,41 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         #effort = 0.6  # Nm
         #effort = 20  # Nm
 
-        # Updated stiffness values
-        stiffness_go1 = 40
-        stiffness_ankles = 40
-        stiffness_dx = 15
-        stiffness_antenna = 3
-
         stiffness = {
-            "left_hip_yaw": stiffness_go1,
-            "left_hip_roll": stiffness_go1,
-            "left_hip_pitch": stiffness_go1,
-            "left_knee": stiffness_go1,
-            "left_ankle": stiffness_ankles,
-            "neck_pitch": stiffness_dx,
-            "head_pitch": stiffness_dx,
-            "head_yaw": stiffness_dx,
-            "head_roll": stiffness_dx,
-            "left_antenna": stiffness_antenna,
-            "right_antenna": stiffness_antenna,
-            "right_hip_yaw": stiffness_go1,
-            "right_hip_roll": stiffness_go1,
-            "right_hip_pitch": stiffness_go1,
-            "right_knee": stiffness_go1,
-            "right_ankle": stiffness_ankles,
+            "left_hip_yaw": 40,
+            "left_hip_roll": 40,
+            "left_hip_pitch": 40,
+            "left_knee": 40,
+            "left_ankle": 30,
+            "neck_pitch": 30,
+            "head_pitch": 15,
+            "head_yaw": 15,
+            "head_roll": 15,
+            "left_antenna": 3,
+            "right_antenna": 3,
+            "right_hip_yaw": 40,
+            "right_hip_roll": 40,
+            "right_hip_pitch": 40,
+            "right_knee": 40,
+            "right_ankle": 30,
         }
-
-        # Updated damping values
-        damping_go1 = 0.5
-        damping_ankles = 0.5
-        damping_dx = 2
-        damping_antenna = 0.2
-
         damping = {
-            "left_hip_yaw": damping_go1,
-            "left_hip_roll": damping_go1,
-            "left_hip_pitch": damping_go1,
-            "left_knee": damping_go1,
-            "left_ankle": damping_ankles,
-            "neck_pitch": damping_dx,
-            "head_pitch": damping_dx,
-            "head_yaw": damping_dx,
-            "head_roll": damping_dx,
-            "left_antenna": damping_antenna,
-            "right_antenna": damping_antenna,
-            "right_hip_yaw": damping_go1,
-            "right_hip_roll": damping_go1,
-            "right_hip_pitch": damping_go1,
-            "right_knee": damping_go1,
-            "right_ankle": damping_ankles,
+            "left_hip_yaw": 1.3,
+            "left_hip_roll": 1.3,
+            "left_hip_pitch": 1.3,
+            "left_knee": 1.3,
+            "left_ankle": 1.6,
+            "neck_pitch": 0.5,
+            "head_pitch": 2,
+            "head_yaw": 2,
+            "head_roll": 2,
+            "left_antenna": 0.2,
+            "right_antenna": 0.2,
+            "right_hip_yaw": 1.3,
+            "right_hip_roll": 1.3,
+            "right_hip_pitch": 1.3,
+            "right_knee": 1.3,
+            "right_ankle": 1.6,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
@@ -147,7 +135,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6
+        decimation = 12
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -174,9 +162,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
-        ###### HACKHACK BEGIN
-        #fix_base_link = True  # fixe the base of the robot
-        ###### HACKHACK END
+        if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+            fix_base_link = True  # fixe the base of the robot
 
     class normalization(LeggedRobotCfg.normalization):
         clip_observations = 5.0
@@ -242,10 +229,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.1836, 0.1836]  # min max [m/s]
-            lin_vel_y = [-0.1836, 0.1836]  # min max [m/s]
+            lin_vel_x = [0.0, 0.1836]  # min max [m/s]
+            lin_vel_y = [0, 0] #[-0.1836, 0.1836]  # min max [m/s]
             ang_vel_yaw = [0, 0]  # min max [rad/s]
-            heading = [-3.14, 3.14]
+            heading = [0, 0] #[-3.14, 3.14]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
