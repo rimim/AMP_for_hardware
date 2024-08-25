@@ -34,8 +34,8 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
@@ -97,14 +97,14 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.6  # Nm
         # effort = 20  # Nm
 
-        stiffness_all = 15  # 9 [N*m/rad]
-        damping_all = 0.03  # try 0.05
+        stiffness_all = 10  # 9 [N*m/rad]
+        damping_all = 0.01  # try 0.05
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
             "left_hip_pitch": stiffness_all,
             "left_knee": stiffness_all,
-            "left_ankle": stiffness_all,
+            "left_ankle": stiffness_all * 3,
             "neck_pitch": stiffness_all,
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
@@ -114,7 +114,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             "right_hip_roll": stiffness_all,
             "right_hip_pitch": stiffness_all,
             "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
+            "right_ankle": stiffness_all * 3,
         }
 
         damping = {
@@ -166,9 +166,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.002
@@ -211,21 +211,21 @@ class BDXAMPCfg(LeggedRobotCfg):
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = 0.0
-            torques = -0.00025  # -0.000025
+            torques = -0.000025  # -0.000025
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.01
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
         curriculum = False  # False
         max_curriculum = 0.2
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 

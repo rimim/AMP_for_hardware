@@ -585,7 +585,7 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 1] = (
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
-                props["friction"] = 0.0002
+                # props["friction"] = 0.0002
                 # props["damping"] = 0.0001
         return props
 
