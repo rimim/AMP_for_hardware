@@ -255,7 +255,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
     #     activation = "relu"  # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
 
     class algorithm(LeggedRobotCfgPPO.algorithm):
-        entropy_coef = 0.001  # 0.001
+        entropy_coef = 0.01  # 0.01
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5
         num_mini_batches = 4
