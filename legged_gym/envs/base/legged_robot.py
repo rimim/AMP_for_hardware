@@ -266,33 +266,17 @@ class LeggedRobot(BaseTask):
 
     def check_termination(self):
         """Check if environments need to be reset"""
-
-        contact_termination = torch.any(
+        self.reset_buf = torch.any(
             torch.norm(
                 self.contact_forces[:, self.termination_contact_indices, :], dim=-1
             )
             > 1.0,
             dim=1,
         )
-
-        # Check for termination due to timeout
-        time_out_termination = self.episode_length_buf > self.max_episode_length
-
-        # Update reset buffer
-        self.reset_buf = contact_termination | time_out_termination
-
-        # Print reason for termination
-        # contact_termination_count = 0
-        # time_out_termination_count = 0
-        # for i in range(self.reset_buf.size(0)):
-        #     if contact_termination[i]:
-        #         contact_termination_count = contact_termination_count + 1
-        #     elif time_out_termination[i]:
-        #         time_out_termination_count = time_out_termination_count + 1
-        # if contact_termination_count != 0:
-        #     print(f"{contact_termination_count} terminated due to excessive contact forces.")
-        # if time_out_termination_count != 0:
-        #     print(f"{time_out_termination_count} terminated due to timeout.")
+        self.time_out_buf = (
+            self.episode_length_buf > self.max_episode_length
+        )  # no terminal reward for time-outs
+        self.reset_buf |= self.time_out_buf
 
     def reset_idx(self, env_ids):
         """Reset some environments.
@@ -724,9 +708,8 @@ class LeggedRobot(BaseTask):
             p_gains = self.p_gains
             d_gains = self.d_gains
 
-        self.joint_pos_target = actions_scaled + self.default_dof_pos
-
         if control_type == "actuator_net":
+            self.joint_pos_target = actions_scaled + self.default_dof_pos
             self.joint_pos_err = self.dof_pos - self.joint_pos_target + self.motor_offsets
             self.joint_vel = self.dof_vel
             torques = self.actuator_network(self.joint_pos_err, self.joint_pos_err_last, self.joint_pos_err_last_last,
