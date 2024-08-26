@@ -1,6 +1,6 @@
 # BDX related Readme
 
-Follow the instructions below to install the necessary dependencies and run the code.
+Follow the instructions of the main readme to install the necessary dependencies and run the code.
 
 ## To train bdx :
 
