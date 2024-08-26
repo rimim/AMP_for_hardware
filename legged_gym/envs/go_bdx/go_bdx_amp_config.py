@@ -135,7 +135,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 12
+        decimation = 6
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -159,29 +159,29 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
-        default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
+        # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
         if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
             fix_base_link = True  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.005
+        dt = 0.002
         substeps = 1
 
     class domain_rand:
-        randomize_friction = True
+        randomize_friction = False
         friction_range = [0.25, 1.75]
-        randomize_base_mass = True
+        randomize_base_mass = False
         added_mass_range = [-1.0, 1.0]
-        push_robots = True
+        push_robots = False
         push_interval_s = 15
         max_push_vel_xy = 1.0
-        randomize_gains = True
+        randomize_gains = False
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
 
@@ -240,7 +240,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
-        pos = [0, 0, 1]  # [m]
+        pos = [-2, 0, 1]  # [m]
         lookat = [11.0, 5, 3.0]  # [m]
 
 
