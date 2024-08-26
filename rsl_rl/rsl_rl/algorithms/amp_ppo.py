@@ -346,19 +346,19 @@ class AMPPPO:
                 self.bounds_loss_coef if self.bounds_loss_coef is not None else 0.0
             )
             # Compute total loss.
-            loss = (
-                surrogate_loss
-                + self.value_loss_coef * value_loss
-                - self.entropy_coef * entropy_batch.mean()
-                + (amp_loss + grad_pen_loss)
-            )
             # loss = (
             #     surrogate_loss
             #     + self.value_loss_coef * value_loss
             #     - self.entropy_coef * entropy_batch.mean()
-            #     + self.disc_coef * (amp_loss + grad_pen_loss)
-            #     + bounds_loss_coef * b_loss
+            #     + (amp_loss + grad_pen_loss)
             # )
+            loss = (
+                surrogate_loss
+                + self.value_loss_coef * value_loss
+                - self.entropy_coef * entropy_batch.mean()
+                + self.disc_coef * (amp_loss + grad_pen_loss)
+                + bounds_loss_coef * b_loss
+            )
 
             # Gradient step
             self.optimizer.zero_grad()
