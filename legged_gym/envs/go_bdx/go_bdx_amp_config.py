@@ -129,7 +129,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         # action scale: target angle = actionScale * action + defaultAngle
         #action_scale = 0.25
-        action_scale = 0.35
+        action_scale = 1.0
         ###### HACKHACK BEGIN
         #action_scale = 1
         ###### HACKHACK END
@@ -252,7 +252,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5
         num_mini_batches = 4
-        disc_coef = 5  # TUNE ?
+        disc_coef = 1  # TUNE ?
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -269,7 +269,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         #disc_grad_penalty = 1  # original 10 # TUNE ?
         # smaller penalty is needed for high-dynamic mocap
-        disc_grad_penalty = 0.001  # original 10 # TUNE ?
+        disc_grad_penalty = 5  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
