@@ -282,11 +282,17 @@ class LeggedRobot(BaseTask):
         self.reset_buf = contact_termination | time_out_termination
 
         # Print reason for termination
+        contact_termination_count = 0
+        time_out_termination_count = 0
         for i in range(self.reset_buf.size(0)):
             if contact_termination[i]:
-                print(f"Environment {i} terminated due to excessive contact forces.")
+                contact_termination_count = contact_termination_count + 1
             elif time_out_termination[i]:
-                print(f"Environment {i} terminated due to timeout.")
+                time_out_termination_count = time_out_termination_count + 1
+        if contact_termination_count != 0:
+            print(f"{contact_termination_count} terminated due to excessive contact forces.")
+        if time_out_termination_count != 0:
+            print(f"{time_out_termination_count} terminated due to timeout.")
 
     def reset_idx(self, env_ids):
         """Reset some environments.
