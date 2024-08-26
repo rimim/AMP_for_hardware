@@ -181,7 +181,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
         push_robots = True
-        push_interval_s = 3
+        push_interval_s = 15
         max_push_vel_xy = 0.5  # 0.3
         randomize_gains = True
         stiffness_multiplier_range = [0.95, 1.05]
@@ -259,7 +259,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5
         num_mini_batches = 4
-        disc_coef = 1  # TUNE ?
+        disc_coef = 5  # TUNE ?
         # bounds_loss_coef = 10
 
     class runner(LeggedRobotCfgPPO.runner):
@@ -277,7 +277,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 5  # original 10 # TUNE ?
+        disc_grad_penalty = 0.1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
