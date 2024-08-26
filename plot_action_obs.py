@@ -3,8 +3,13 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+import argparse
 
-obses = pickle.load(open("saved_obs.pkl", "rb"))
+parser = argparse.ArgumentParser()
+parser.add_argument("-d", "--data", type=str, required=False, default="saved_obs.pkl")
+args = parser.parse_args()
+
+obses = pickle.load(open(args.data, "rb"))
 num_dofs = 15
 dof_poses = []  # (dof, num_obs)
 actions = []  # (dof, num_obs)

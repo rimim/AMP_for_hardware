@@ -35,7 +35,8 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
     # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_stand.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
@@ -104,7 +105,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             "left_hip_roll": stiffness_all,
             "left_hip_pitch": stiffness_all,
             "left_knee": stiffness_all,
-            "left_ankle": stiffness_all * 3,
+            "left_ankle": stiffness_all,
             "neck_pitch": stiffness_all,
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
@@ -114,7 +115,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             "right_hip_roll": stiffness_all,
             "right_hip_pitch": stiffness_all,
             "right_knee": stiffness_all,
-            "right_ankle": stiffness_all * 3,
+            "right_ankle": stiffness_all,
         }
 
         damping = {
@@ -179,7 +180,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         friction_range = [0.95, 1.05]
         randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
-        push_robots = False
+        push_robots = True
         push_interval_s = 15
         max_push_vel_xy = 0.05  # 0.3
         randomize_gains = True
@@ -230,7 +231,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0.0, 0.0]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
@@ -273,7 +274,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.1  # 0.3
+        amp_task_reward_lerp = 0.5  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
