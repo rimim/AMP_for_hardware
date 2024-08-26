@@ -170,7 +170,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.002
+        dt = 0.005
         substeps = 1
 
     class domain_rand:
