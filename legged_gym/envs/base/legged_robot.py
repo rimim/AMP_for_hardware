@@ -135,7 +135,7 @@ class LeggedRobot(BaseTask):
             actions (torch.Tensor): Tensor of shape (num_envs, num_actions_per_env)
         """
 
-        if self.cfg.env.debug_save_obs:
+        if self.cfg.env.debug_zero_action:
             actions = torch.zeros(
                 self.num_envs,
                 self.num_actions,

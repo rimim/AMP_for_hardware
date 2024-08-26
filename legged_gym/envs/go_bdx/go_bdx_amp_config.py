@@ -58,11 +58,12 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         get_commands_from_joystick = False
         episode_length_s = 8  # episode length in seconds
         debug_save_obs = False
+        debug_zero_action = False
 
     class init_state(LeggedRobotCfg.init_state):
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         pos = [0.0, 0.0, 0.0]  # x,y,z [m]
-        if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+        if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
             pos = [0.0, 0.0, 0.3]  # x,y,z [m]
         default_joint_angles = {  # = target angles [rad] when action = 0.0
             "left_hip_yaw": 0.0,  # [rad]
@@ -115,9 +116,9 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "left_knee": 1.3,
             "left_ankle": 1.6,
             "neck_pitch": 1.3,
-            "head_pitch": 2,
-            "head_yaw": 2,
-            "head_roll": 2,
+            "head_pitch": 1.0,
+            "head_yaw": 1.0,
+            "head_roll": 1.0,
             "left_antenna": 0.2,
             "right_antenna": 0.2,
             "right_hip_yaw": 1.3,
@@ -162,7 +163,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
         fix_base_link = False  # fixe the base of the robot
-        if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+        if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
             fix_base_link = True  # fixe the base of the robot
 
     # class normalization(LeggedRobotCfg.normalization):
@@ -217,7 +218,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -1.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -252,7 +253,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_replay_buffer_size = 1000000
         num_learning_epochs = 5
         num_mini_batches = 4
-        disc_coef = 1  # TUNE ?
+        disc_coef = 5  # TUNE ?
 
     class runner(LeggedRobotCfgPPO.runner):
         run_name = ""
@@ -269,7 +270,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         #disc_grad_penalty = 1  # original 10 # TUNE ?
         # smaller penalty is needed for high-dynamic mocap
-        disc_grad_penalty = 5  # original 10 # TUNE ?
+        disc_grad_penalty = 0.01  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
