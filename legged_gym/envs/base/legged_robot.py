@@ -199,10 +199,9 @@ class LeggedRobot(BaseTask):
             )
 
         if self.cfg.env.debug_save_obs:
-            self.envs_times[:] += self.dt
-
             self.saved_obs.append(policy_obs[0].cpu().numpy())
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
+        self.envs_times[:] += self.dt
 
         return (
             policy_obs,
@@ -283,11 +282,11 @@ class LeggedRobot(BaseTask):
         self.reset_buf = contact_termination | time_out_termination
 
         # Print reason for termination
-        # for i in range(self.reset_buf.size(0)):
-        #     if contact_termination[i]:
-        #         print(f"Environment {i} terminated due to excessive contact forces.")
-        #     elif time_out_termination[i]:
-        #         print(f"Environment {i} terminated due to timeout.")
+        for i in range(self.reset_buf.size(0)):
+            if contact_termination[i]:
+                print(f"Environment {i} terminated due to excessive contact forces.")
+            elif time_out_termination[i]:
+                print(f"Environment {i} terminated due to timeout.")
 
     def reset_idx(self, env_ids):
         """Reset some environments.
@@ -301,8 +300,6 @@ class LeggedRobot(BaseTask):
         """
         if len(env_ids) == 0:
             return
-        if self.cfg.env.debug_save_obs:
-            self.envs_times[env_ids] = 0.0
 
         # update curriculum
         if self.cfg.terrain.curriculum:
@@ -354,6 +351,8 @@ class LeggedRobot(BaseTask):
         # send timeout info to the algorithm
         if self.cfg.env.send_timeouts:
             self.extras["time_outs"] = self.time_out_buf
+
+        self.envs_times[env_ids] = 0.0
 
     def compute_reward(self):
         """Compute rewards
@@ -412,24 +411,19 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 0] = lin_vel_x
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
-
-        # self.gym.refresh_actor_root_state_tensor(self.sim)
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        # print(base_quat[0])
-        # print(base_lin_vel[0])
-        # print(base_ang_vel[0])
-        # print(self.base_ang_vel[0])
-        # print("--")
+            print(self.commands[0])
+        # base_quat = self.root_states[:, 3:7]
+        # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
 
         self.privileged_obs_buf = torch.cat(
             (
-                base_lin_vel * self.obs_scales.lin_vel,
-                base_ang_vel * self.obs_scales.ang_vel,
+                self.base_lin_vel * self.obs_scales.lin_vel,
+                self.base_ang_vel * self.obs_scales.ang_vel,
                 self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
+                # self.dof_pos,  # TODO
                 self.dof_vel * self.obs_scales.dof_vel,
                 self.actions,
             ),
@@ -485,22 +479,9 @@ class LeggedRobot(BaseTask):
         foot_pos = torch.cat(foot_pos, dim=-1)
         z_pos = self.root_states[:, 2:3]
 
-        base_quat = self.root_states[:, 3:7]
-        base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
-        base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
-        # offset = 0
-        # offset_dof_pos = offset
-        # offset = offset + self.dof_pos.size(1)
-        # offset_foot_pos = offset
-        # offset = offset + foot_pos.size(1)
-        # offset_base_lin_vel = offset
-        # offset = offset + base_lin_vel.size(1)
-        # offset_base_ang_vel = offset
-        # offset = offset + base_ang_vel.size(1)
-        # offset_dof_vel = offset
-        # offset = offset + self.dof_vel.size(1)
-        # offset_z_pos = offset
-        # offset = offset + z_pos.size(1)
+        # base_quat = self.root_states[:, 3:7]
+        # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
+        # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
 
         # print(f"dof_pos: {offset_dof_pos}:{offset_dof_pos+self.dof_pos.size(1)}")
         # print(f"foot_pos: {offset_foot_pos}:{offset_foot_pos+foot_pos.size(1)}")
@@ -524,8 +505,8 @@ class LeggedRobot(BaseTask):
             (
                 self.dof_pos,
                 foot_pos,
-                base_lin_vel,
-                base_ang_vel,
+                self.base_lin_vel,
+                self.base_ang_vel,
                 self.dof_vel,
                 z_pos,
             ),
@@ -1360,14 +1341,14 @@ class LeggedRobot(BaseTask):
             self.termination_contact_indices[i] = self.gym.find_actor_rigid_body_handle(
                 self.envs[0], self.actor_handles[0], termination_contact_names[i]
             )
-        if self.cfg.env.debug_save_obs:
-            self.envs_times = torch.zeros(
-                self.num_envs,
-                1,
-                dtype=torch.float,
-                device=self.device,
-                requires_grad=False,
-            )
+
+        self.envs_times = torch.zeros(
+            self.num_envs,
+            1,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
