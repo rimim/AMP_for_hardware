@@ -181,8 +181,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         randomize_base_mass = True
         added_mass_range = [-0.05, 0.05]
         push_robots = True
-        push_interval_s = 15
-        max_push_vel_xy = 0.05  # 0.3
+        push_interval_s = 3
+        max_push_vel_xy = 0.5  # 0.3
         randomize_gains = True
         stiffness_multiplier_range = [0.95, 1.05]
         damping_multiplier_range = [0.95, 1.05]
