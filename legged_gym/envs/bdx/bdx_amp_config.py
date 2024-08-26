@@ -36,8 +36,8 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 MOTION_FILES = [
     # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
     # "datasets/bdx/new_placo_moves/bdx_stand.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_fast.txt",
