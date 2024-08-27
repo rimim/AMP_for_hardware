@@ -282,7 +282,7 @@ class AMPLoader:
         return self.blend_frame_pose(frame_start, frame_end, blend)
 
     def get_full_frame_at_time_batch(self, traj_idxs, times):
-        p = times / self.trajectory_lens[traj_idxs]
+        p = (times / self.trajectory_lens[traj_idxs]) % 1
         n = self.trajectory_num_frames[traj_idxs]
         idx_low, idx_high = np.floor(p * n).astype(np.int), np.ceil(p * n).astype(
             np.int

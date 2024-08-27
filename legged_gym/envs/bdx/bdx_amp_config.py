@@ -222,6 +222,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             action_rate = -1.0
             stand_still = 0.0
             dof_pos_limits = 0.0
+            # motion_imitation = 5.0
 
     class commands:
         curriculum = False  # False

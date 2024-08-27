@@ -1576,3 +1576,12 @@ class LeggedRobot(BaseTask):
             ).clip(min=0.0),
             dim=1,
         )
+
+    def _reward_motion_imitation(self):
+        target_pos = self.amp_loader.get_joint_pose_batch(
+            self.amp_loader.get_full_frame_at_time_batch(
+                np.zeros(self.num_envs, dtype=np.int),
+                self.envs_times.cpu().numpy().flatten(),
+            )
+        )
+        return torch.sum(-torch.square(self.dof_pos - target_pos), dim=1)
