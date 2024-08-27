@@ -76,7 +76,7 @@ def play(args):
     num_frames = int(video_duration / env.dt)
     print(f'gathering {num_frames} frames')
     video = None
-    initial_distance = 3.5  # Desired starting distance from the robot
+    initial_distance = 1.5  # Desired starting distance from the robot
     desired_distance = 1.5  # Desired distance from the robot
     initial_height = 0.65   # Height of the camera
 
@@ -91,7 +91,7 @@ def play(args):
         raw_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
 
         # Calculate the rotation in the xy-plane (no pitch adjustment).
-        camera_rot = (camera_rot + camera_rot_per_sec * env.dt) % (2 * np.pi)
+        camera_rot = 0.50# (camera_rot + camera_rot_per_sec * env.dt) % (2 * np.pi)
         desired_camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
 
         # Separate smoothing factors for look_at and camera position.

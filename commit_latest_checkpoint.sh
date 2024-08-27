@@ -160,10 +160,12 @@ do
   LATEST_CHECKPOINT=$(ssh ${REMOTE_USER_SERVER} "find '$LAST_CHECKPOINT_DIR' -name '*.pt' -type f -exec stat --format='%Y %n' {} \; | sort -n | tail -1 | cut -d' ' -f2")
   # latest checkpoint filename
   CHECKPOINT=$(basename $LATEST_CHECKPOINT)
-  echo Latest checkpoint: $CHECKPOINT from ${REMOTE_USER_SERVER}
+  LOCAL_CHECKPOINT_DIR=$(basename "$LAST_CHECKPOINT_DIR")
+  LOCAL_TASK_CHECKPOINT_DIR="$LOCAL_TASK_DIR/$LOCAL_CHECKPOINT_DIR/"
 
-  if [ ! -f "$LOCAL_TASK_DIR"/"$LATEST_CHECKPOINT" ]; then
-    rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
+  if [ ! -f "$LOCAL_TASK_CHECKPOINT_DIR"/"$CHECKPOINT" ]; then
+    echo Fetching: "$LOCAL_TASK_CHECKPOINT_DIR"/"$CHECKPOINT"
+    rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_CHECKPOINT_DIR" || exit
 
     if [ ! -z "$LOCAL_TASK_REPO" ]; then
       cd "$LOCAL_TASK_REPO" || exit
@@ -175,7 +177,24 @@ do
       cd "$LOCAL_AMP_DIR" || exit
       python legged_gym/scripts/record_policy.py --task=$TASK || exit
 
-      ffmpeg -y -i record.mp4 -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart $LOCAL_TASK_REPO/$VIDEO_FILE || exit
+      days=0
+      hours=0
+      minutes=0
+      CHECKPOINT_NUMBER="${CHECKPOINT#model_}"
+      CHECKPOINT_NUMBER="${CHECKPOINT_NUMBER%.*}"
+      if [ "$CHECKPOINT_NUMBER" != "0" ]; then
+        mtime1=$(stat -c %Y "$LOCAL_TASK_CHECKPOINT_DIR"/model_0.pt)
+        mtime2=$(stat -c %Y "$LOCAL_TASK_CHECKPOINT_DIR"/"$CHECKPOINT")
+        diff_seconds=$((mtime2 - mtime1))
+        days=$((diff_seconds / 86400))
+        hours=$(( (diff_seconds % 86400) / 3600 ))
+        minutes=$(( (diff_seconds % 3600) / 60 ))
+      fi
+      CAPTION="${days}d ${hours}h ${minutes}m"
+      echo CAPTION: $CAPTION
+      ffmpeg -y -i record.mp4 -vf "drawtext=text='$CAPTION':fontcolor=white:fontsize=56:x=(w-text_w)/2:y=h-(text_h*3):alpha='if(lt(t,1),0,if(lt(t,2),t-1,if(lt(t,5),1,if(lt(t,6),1-(t-5),0))))'" -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart $LOCAL_TASK_REPO/$VIDEO_FILE || exit
+      mkdir -p "$LOCAL_AMP_DIR"/video_history/$LOCAL_CHECKPOINT_DIR
+      rsync -auv $LOCAL_TASK_REPO/$VIDEO_FILE "$LOCAL_AMP_DIR"/video_history/$LOCAL_CHECKPOINT_DIR/video_${CHECKPOINT_NUMBER}.mp4
 
       cd "$LOCAL_TASK_REPO" || exit
       git checkout main || exit

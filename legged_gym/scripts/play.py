@@ -55,6 +55,9 @@ def play(args):
     #env_cfg.control.control_type = "actuator_net"
     if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
         env_cfg.env.debug_save_obs = True
+    if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
+        env_cfg.env.debug_save_obs = True
+        env_cfg.env.debug_zero_action = True
 
     train_cfg.runner.amp_num_preload_transitions = 1
 
