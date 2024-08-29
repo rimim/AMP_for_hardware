@@ -184,11 +184,19 @@ def export_policy_as_jit(actor_critic, path):
         exporter.export(path)
     else: 
         os.makedirs(path, exist_ok=True)
-        path = os.path.join(path, 'policy_1.pt')
         model = copy.deepcopy(actor_critic.actor).to('cpu')
         traced_script_module = torch.jit.script(model)
-        traced_script_module.save(path)
+        traced_script_module.save(os.path.join(path, 'model.pt'))
+        dummy_input = torch.zeros((54), device="cpu")
 
+        torch.onnx.export(
+            traced_script_module,
+            dummy_input,
+            os.path.join(path, 'policy.onnx'),
+            verbose=True,
+            input_names=["obs"],
+            output_names=["actions"],
+        )
 
 class PolicyExporterLSTM(torch.nn.Module):
     def __init__(self, actor_critic):

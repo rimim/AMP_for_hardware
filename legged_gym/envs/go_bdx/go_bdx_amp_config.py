@@ -95,7 +95,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "left_hip_yaw": 40,
             "left_hip_roll": 40,
             "left_hip_pitch": 40,
-            "left_knee": 40,
+            "left_knee": 35,
             "left_ankle": 30,
             "neck_pitch": 40,
             "head_pitch": 15,
@@ -106,7 +106,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_hip_yaw": 40,
             "right_hip_roll": 40,
             "right_hip_pitch": 40,
-            "right_knee": 40,
+            "right_knee": 35,
             "right_ankle": 30,
         }
         damping = {
@@ -175,16 +175,20 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         substeps = 1
 
     class domain_rand:
-        randomize_friction = False
-        friction_range = [0.25, 1.75]
-        randomize_base_mass = False
-        added_mass_range = [-1.0, 1.0]
-        push_robots = False
+        randomize_friction = True
+        friction_range = [0.25, 1.05]
+        randomize_base_mass = True
+        added_mass_range = [-0.5, 0.5]
+        push_robots = True
         push_interval_s = 15
-        max_push_vel_xy = 1.0
-        randomize_gains = False
+        max_push_vel_xy = 0.5
+        randomize_gains = True
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
+        randomize_torques = True
+        torque_multiplier_range = [0.90, 1.1]
+        randomize_com = True
+        com_range = [-0.01, 0.01]
 
     class noise:
         add_noise = True
@@ -215,10 +219,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
-            feet_air_time = 0.0
+            feet_air_time = 0.2
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -1.0
+            action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -230,10 +234,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.3968, 0.3968]  # min max [m/s]
-            lin_vel_y = [0, 0] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [0, 0]  # min max [rad/s]
-            heading = [0, 0] #[-3.14, 3.14]
+            lin_vel_x = [-0.2, 1.0]  # min max [m/s]
+            lin_vel_y = [-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
+            ang_vel_yaw = [-1.57, 1.57]  # min max [rad/s]
+            heading = [-3.14, 3.14]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
@@ -241,7 +245,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
     class viewer(LeggedRobotCfg.viewer):
         ref_env = 0
-        pos = [-2, 0, 1]  # [m]
+        pos = [0, 0, 1]  # [m]
         lookat = [11.0, 5, 3.0]  # [m]
 
 
@@ -265,7 +269,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         #disc_grad_penalty = 1  # original 10 # TUNE ?

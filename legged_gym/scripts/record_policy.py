@@ -53,6 +53,11 @@ def play(args):
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = False
     train_cfg.runner.amp_num_preload_transitions = 1
+    if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+        env_cfg.env.debug_save_obs = True
+    if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
+        env_cfg.env.debug_save_obs = True
+        env_cfg.env.debug_zero_action = True
 
     # prepare environment
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)

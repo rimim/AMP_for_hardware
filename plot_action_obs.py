@@ -61,6 +61,9 @@ for i in range(nb_rows):
         axs[i, j].legend()
         axs[i, j].set_title(f"{isaac_joints_order[i * nb_cols + j]}")
 
+# Reduce margin
+plt.tight_layout()
+
 if args.png:
     plt.savefig("plot.png", dpi=dpi)  # Use specified width and height
 else:
