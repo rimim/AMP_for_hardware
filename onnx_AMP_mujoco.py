@@ -170,8 +170,8 @@ parser.add_argument("-o", "--onnx_model_path", type=str, required=True)
 parser.add_argument("--duration", type=int, default=8, help="Number of seconds for video")
 parser.add_argument('--width', type=int, help='Width of the viewer window (optional)')
 parser.add_argument('--height', type=int, help='Height of the viewer window (optional)')
-parser.add_argument('--video-width', type=int, default=1024, help='Width of the output video in pixels')
-parser.add_argument('--video-height', type=int, default=768, help='Height of the output video in pixels')
+parser.add_argument('--video-width', type=int, help='Width of the output video in pixels')
+parser.add_argument('--video-height', type=int, help='Height of the output video in pixels')
 parser.add_argument("--video", type=str, required=False)
 parser.add_argument('--hide-menu', action='store_true', help='Hide the viewer menu')
 parser.add_argument("--saved_obs", type=str, required=False)
@@ -185,7 +185,7 @@ if args.saved_actions is not None:
 
 # Params
 # dt = 0.002
-dt = 0.0001
+dt = 0.0002
 linearVelocityScale = 2.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
@@ -343,7 +343,7 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
 
 
 prev_isaac_action = np.zeros(16)
-commands = [0.4, 0.0, 0.0]
+commands = [0.38, 0.0, 0.0]
 # commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
@@ -383,6 +383,8 @@ imu_delay_simulator = ImuDelaySimulator(1)
 start = time.time()
 sim_step = 0
 sim_maxsteps = int(args.duration * fps)  # Number of frames to simulate
+viewer.cam.azimuth += 90  # Rotate the camera 90 degrees counterclockwise
+viewer.cam.elevation = -10  # Set the camera to be level with the ground
 try:
     start = time.time()
     while True:
