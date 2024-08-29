@@ -348,8 +348,9 @@ do
       fetch_tensordata json "Train/mean_reward/time" Train_mean_reward_time
       python plot_tensorboard.py -png --width 1600 --height 1080 "$HISTORY_DIR"/reports
 
-      python onnx_AMP_mujoco.py -o "$LOCAL_TASK_DIR"/exported/policies/policy.onnx --width=1600 --height=900 --video="$SIM2SIM_VIDEO_OUTPUT_FILE" --hide-menu --duration=8
-      ffmpeg -y -i sim2sim.mp4 -vf "drawtext=text='Mujoco':fontcolor=white:fontsize=56:x=(w-text_w)/2:y=h-(text_h*3):alpha='if(lt(t,1),0,if(lt(t,2),t-1,if(lt(t,5),1,if(lt(t,6),1-(t-5),0))))'" -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart "$SIM2SIM_VIDEO_OUTPUT_FILE" || exit
+      echo SIM2SIM_VIDEO_OUTPUT_FILE: $SIM2SIM_VIDEO_OUTPUT_FILE
+      python onnx_AMP_mujoco.py -o "$LOCAL_TASK_DIR"/exported/policies/policy.onnx --width=1600 --height=900 --video="sim2sim.mp4" --hide-menu --duration=8
+      ffmpeg -y -i sim2sim.mp4 -vf "drawtext=text='Mujoco':fontcolor=white:fontsize=56:x=(w-text_w)/2:y=h-(text_h*3):alpha='if(lt(t,1),0,if(lt(t,2),t-1,if(lt(t,5),1,if(lt(t,6),1-(t-5),0))))'" -c:v libx264 -b:v 128k -crf 23 -preset medium -c:a aac -movflags +faststart "$SIM2SIM_VIDEO_OUTPUT_FILE" || exit
 
       if [ ! -z "$LOCAL_TASK_REPO" ]; then
         cd "$LOCAL_TASK_REPO" || exit
