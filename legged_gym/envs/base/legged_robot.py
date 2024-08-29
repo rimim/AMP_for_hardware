@@ -160,6 +160,20 @@ class LeggedRobot(BaseTask):
         self.render()
         for _ in range(self.cfg.control.decimation):
             self.torques = self._compute_torques(self.actions).view(self.torques.shape)
+
+            # Torque randomization
+            if self.cfg.domain_rand.randomize_torques:
+                factor = (
+                    (
+                        self.cfg.domain_rand.torque_multiplier_range[0]
+                        - self.cfg.domain_rand.torque_multiplier_range[1]
+                    )
+                    * torch.rand(self.num_envs, self.num_actions, device=self.device)
+                    + self.cfg.domain_rand.torque_multiplier_range[1]
+                ).float()
+
+                self.torques *= factor
+
             self.gym.set_dof_actuation_force_tensor(
                 self.sim, gymtorch.unwrap_tensor(self.torques)
             )
@@ -168,6 +182,13 @@ class LeggedRobot(BaseTask):
                 self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
         reset_env_ids, terminal_amp_states = self.post_physics_step()
+
+        # randomize com
+        if self.cfg.domain_rand.randomize_com:
+            com_range = self.cfg.domain_rand.com_range
+            self.root_states[:, :2] += (com_range[0] - com_range[1]) * torch.rand(
+                self.num_envs, 2, device=self.device
+            ) + com_range[1]
 
         # return clipped obs, clipped states (None), rewards, dones and infos
         clip_obs = self.cfg.normalization.clip_observations

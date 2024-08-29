@@ -34,10 +34,10 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/wiggle.txt",
+    # "datasets/bdx/wiggle.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
     # "datasets/bdx/new_placo_moves/bdx_stand.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
@@ -96,8 +96,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = True
-        effort = 0.93  # Nm
-        # effort = 20  # Nm
+        # effort = 0.93  # Nm
+        effort = 0.52  # Nm
 
         stiffness_all = 8  # 9 [N*m/rad]
         damping_all = 0.05  # try 0.05
@@ -187,6 +187,10 @@ class BDXAMPCfg(LeggedRobotCfg):
         randomize_gains = True
         stiffness_multiplier_range = [0.95, 1.05]
         damping_multiplier_range = [0.95, 1.05]
+        randomize_torques = True
+        torque_multiplier_range = [0.90, 1.1]
+        randomize_com = True
+        com_range = [-0.01, 0.01]
 
     class noise:
         add_noise = True
@@ -233,7 +237,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.0, 0.0]  # min max [m/s]
+            lin_vel_x = [0.15, 0.15]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
@@ -276,7 +280,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.0  # 0.3
+        amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
