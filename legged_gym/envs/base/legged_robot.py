@@ -606,6 +606,7 @@ class LeggedRobot(BaseTask):
                 self.dof_pos_limits[i, 1] = (
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
+
                 # props["friction"] = 0.001
                 # props["damping"] = 0.0001
         return props
@@ -1251,6 +1252,7 @@ class LeggedRobot(BaseTask):
                 0,
             )
             dof_props = self._process_dof_props(dof_props_asset, i)
+
             self.gym.set_actor_dof_properties(env_handle, anymal_handle, dof_props)
             body_props = self.gym.get_actor_rigid_body_properties(
                 env_handle, anymal_handle
