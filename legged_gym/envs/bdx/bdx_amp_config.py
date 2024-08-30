@@ -143,7 +143,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 4  # 6
+        decimation = 10  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -174,8 +174,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.004
-        substeps = 2
+        dt = 0.001  # 0.004
+        substeps = 1  # 2
 
     class domain_rand:
         randomize_friction = True
@@ -238,7 +238,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.15, 0.15]  # min max [m/s]
+            lin_vel_x = [0.0, 0.15]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
             heading = [0, 0]
