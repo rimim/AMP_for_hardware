@@ -49,9 +49,13 @@ def play(args):
     env_cfg.terrain.curriculum = False
     env_cfg.noise.add_noise = False
     env_cfg.domain_rand.randomize_friction = False
-    env_cfg.domain_rand.push_robots = True
+    env_cfg.domain_rand.push_robots = False
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = False  # TODO
+    env_cfg.domain_rand.randomize_torques = False  # TODO
+    env_cfg.domain_rand.randomize_com = False  # TODO
+    # env_cfg.commands.ranges.lin_vel_x = [0.15, 0.15]
+    # env_cfg.commands.ranges.ang_vel_yaw = [0.0, 0.0]
 
     env_cfg.env.debug_save_obs = True
 

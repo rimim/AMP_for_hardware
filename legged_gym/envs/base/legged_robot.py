@@ -198,7 +198,9 @@ class LeggedRobot(BaseTask):
             self.saved_obs.append(policy_obs[0].cpu().numpy())
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
-        self.envs_times[:] += self.dt
+        self.envs_cooldowns[:] += self.dt
+        # self.envs_times[:] += self.dt * (self.envs_cooldowns > 100)
+        self.envs_times[:] += self.dt * (self.envs_cooldowns > 0.5)
 
         return (
             policy_obs,
@@ -340,6 +342,7 @@ class LeggedRobot(BaseTask):
             self.extras["time_outs"] = self.time_out_buf
 
         self.envs_times[env_ids] = 0.0
+        self.envs_cooldowns[env_ids] = 0.0
 
         self.randomize_torques_factors = (
             (
@@ -1290,6 +1293,14 @@ class LeggedRobot(BaseTask):
             )
 
         self.envs_times = torch.zeros(
+            self.num_envs,
+            1,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
+
+        self.envs_cooldowns = torch.zeros(
             self.num_envs,
             1,
             dtype=torch.float,
