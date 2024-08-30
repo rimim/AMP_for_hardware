@@ -96,6 +96,13 @@ class LeggedRobot(BaseTask):
             self._p1.init()
             print(f"Loaded joystick with {self._p1.get_numaxes()} axes.")
 
+        self._get_commands_from_keyboard = self.cfg.env.get_commands_from_keyboard
+        if self._get_commands_from_keyboard:
+            pygame.init()
+            # open a blank pygame window
+            self._screen = pygame.display.set_mode((100, 100))
+            pygame.display.set_caption("Press arrow keys to move robot")
+
         if not self.headless:
             self.set_camera(self.cfg.viewer.pos, self.cfg.viewer.lookat)
         self._init_buffers()
@@ -416,6 +423,31 @@ class LeggedRobot(BaseTask):
                 self.commands[:, 1] = lin_vel_y
                 self.commands[:, 2] = ang_vel
             print(self.commands[0])
+
+        elif self._get_commands_from_keyboard:
+            keys = pygame.key.get_pressed()
+            lin_vel_x = 0
+            lin_vel_y = 0
+            ang_vel = 0
+            if keys[pygame.K_z]:
+                lin_vel_x = torch.tensor(self.command_ranges["lin_vel_x"][1])
+            if keys[pygame.K_s]:
+                lin_vel_x = torch.tensor(self.command_ranges["lin_vel_x"][0])
+            # if keys[pygame.K_a]:
+            #     lin_vel_y = torch.tensor(self.command_ranges["lin_vel_y"][0])
+            # if keys[pygame.K_d]:
+            #     lin_vel_y = torch.tensor(self.command_ranges["lin_vel_y"][1])
+            if keys[pygame.K_q]:
+                ang_vel = torch.tensor(self.command_ranges["ang_vel_yaw"][0])
+            if keys[pygame.K_d]:
+                ang_vel = torch.tensor(self.command_ranges["ang_vel_yaw"][1])
+
+            self.commands[:, 0] = lin_vel_x
+            self.commands[:, 1] = lin_vel_y
+            self.commands[:, 2] = ang_vel
+            print(self.commands[0])
+            pygame.event.pump()  # process event queue
+
         # base_quat = self.root_states[:, 3:7]
         # base_lin_vel = quat_rotate_inverse(base_quat, self.root_states[:, 7:10])
         # base_ang_vel = quat_rotate_inverse(base_quat, self.root_states[:, 10:13])
