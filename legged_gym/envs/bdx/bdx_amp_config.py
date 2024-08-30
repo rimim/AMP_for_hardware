@@ -143,7 +143,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 10  # 4
+        decimation = 4  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -174,8 +174,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.001  # 0.004
-        substeps = 1  # 2
+        dt = 0.004  # 0.004
+        substeps = 2  # 2
 
     class domain_rand:
         randomize_friction = True
