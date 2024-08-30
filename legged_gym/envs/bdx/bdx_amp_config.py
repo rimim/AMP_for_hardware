@@ -189,9 +189,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         stiffness_multiplier_range = [0.95, 1.05]
         damping_multiplier_range = [0.95, 1.05]
         randomize_torques = True
-        torque_multiplier_range = [0.95, 1.05]
+        torque_multiplier_range = [0.9, 1.1]
         randomize_com = True
-        com_range = [-0.01, 0.01]
+        com_range = [-0.02, 0.02]
 
     class noise:
         add_noise = True
@@ -211,8 +211,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 6)
-            tracking_ang_vel = 1.0 * 1.0 / (0.002 * 6)  # 0.5 * 1.0 / (0.002 * 6)
+            tracking_lin_vel = 1.5 * 1.0 / (0.004 * 4)
+            tracking_ang_vel = 0.5 * 1.0 / (0.004 * 4)
             # tracking_lin_vel = 1.0
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
