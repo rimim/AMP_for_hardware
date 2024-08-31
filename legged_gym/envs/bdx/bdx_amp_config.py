@@ -34,9 +34,12 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
-    "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_medium.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
+    "datasets/bdx/new_placo_moves/bdx_turn_left.txt",
+    "datasets/bdx/new_placo_moves/bdx_turn_right.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
+    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_medium.txt",
     # "datasets/bdx/wiggle.txt",
     # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
     # "datasets/bdx/new_placo_moves/bdx_stand.txt",
@@ -240,7 +243,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         class ranges:
             lin_vel_x = [0.0, 0.15]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
-            ang_vel_yaw = [-0.15, 0.15]  # min max [rad/s]
+            ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
@@ -281,7 +284,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.2  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
