@@ -438,9 +438,9 @@ class LeggedRobot(BaseTask):
             # if keys[pygame.K_d]:
             #     lin_vel_y = torch.tensor(self.command_ranges["lin_vel_y"][1])
             if keys[pygame.K_q]:
-                ang_vel = torch.tensor(self.command_ranges["ang_vel_yaw"][0])
-            if keys[pygame.K_d]:
                 ang_vel = torch.tensor(self.command_ranges["ang_vel_yaw"][1])
+            if keys[pygame.K_d]:
+                ang_vel = torch.tensor(self.command_ranges["ang_vel_yaw"][0])
 
             self.commands[:, 0] = lin_vel_x
             self.commands[:, 1] = lin_vel_y

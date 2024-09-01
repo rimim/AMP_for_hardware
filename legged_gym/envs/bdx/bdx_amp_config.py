@@ -149,7 +149,16 @@ class BDXAMPCfg(LeggedRobotCfg):
         decimation = 4  # 4
 
     class terrain(LeggedRobotCfg.terrain):
-        mesh_type = "plane"
+        mesh_type = "trimesh"  # "heightfield" # none, plane, heightfield or trimesh
+        # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
+        terrain_proportions = [0, 1.0, 0, 0, 0.0]
+        # trimesh only:
+        # slope_treshold = (
+        #     0.75  # slopes above this threshold will be corrected to vertical surfaces
+        # )
+        # vertical_scale = 0.001  # [m]
+
+        # mesh_type = "plane"
         measure_heights = False
         static_friction = 5.0  # 5
         dynamic_friction = 5.0  # 5
