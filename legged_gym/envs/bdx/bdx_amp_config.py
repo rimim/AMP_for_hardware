@@ -104,7 +104,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 0.52  # Nm
 
         stiffness_all = 10  # 8 [N*m/rad]
-        damping_all = 0.02  # 0.05
+        damping_all = 0.03  # 0.05
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -149,7 +149,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         decimation = 4  # 4
 
     class terrain(LeggedRobotCfg.terrain):
-        mesh_type = "trimesh"  # "heightfield" # none, plane, heightfield or trimesh
+        mesh_type = "plane"  # "heightfield" # none, plane, heightfield or trimesh
         # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
         terrain_proportions = [0, 1.0, 0, 0, 0.0]
         # trimesh only:
@@ -250,7 +250,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.0, 0.15]  # min max [m/s]
+            lin_vel_x = [0.0, 0.2]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
             ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
             heading = [0, 0]
@@ -293,7 +293,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.3  # 0.3
+        amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.01  # original 10 # TUNE ?
