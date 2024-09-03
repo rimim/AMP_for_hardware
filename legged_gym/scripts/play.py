@@ -51,7 +51,7 @@ def play(args):
     env_cfg.domain_rand.randomize_friction = False
     env_cfg.domain_rand.push_robots = False
     env_cfg.domain_rand.randomize_gains = False
-    env_cfg.domain_rand.randomize_base_mass = True  # TODO
+    env_cfg.domain_rand.randomize_base_mass = False  # TODO
     #env_cfg.control.control_type = "actuator_net"
     if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
         env_cfg.env.debug_save_obs = True
@@ -91,7 +91,10 @@ def play(args):
     stop_rew_log = (
         env.max_episode_length + 1
     )  # number of steps before print average episode rewards
-    camera_position = np.array(env_cfg.viewer.pos, dtype=np.float64)
+    initial_distance = 1.5  # Desired starting distance from the robot
+    initial_height = 0.65   # Height of the camera
+    camera_rot = 0
+    camera_position = np.array([initial_distance, 0.0, initial_height])
     camera_vel = np.array([1.0, 1.0, 0.0])
     camera_direction = np.array(env_cfg.viewer.lookat) - np.array(env_cfg.viewer.pos)
     img_idx = 0
@@ -112,44 +115,45 @@ def play(args):
                 env.gym.write_viewer_image_to_file(env.viewer, filename)
                 img_idx += 1
         if MOVE_CAMERA:
-            camera_position += camera_vel * env.dt
+            camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
+            # camera_position += camera_vel * env.dt
             env.set_camera(camera_position, camera_position + camera_direction)
 
-        if i < stop_state_log:
-            logger.log_states(
-                {
-                    "dof_pos_target": actions[robot_index, joint_index].item()
-                    * env.cfg.control.action_scale,
-                    "dof_pos": env.dof_pos[robot_index, joint_index].item(),
-                    "dof_vel": env.dof_vel[robot_index, joint_index].item(),
-                    "dof_torque": env.torques[robot_index, joint_index].item(),
-                    "command_x": env.commands[robot_index, 0].item(),
-                    "command_y": env.commands[robot_index, 1].item(),
-                    "command_yaw": env.commands[robot_index, 2].item(),
-                    "base_vel_x": env.base_lin_vel[robot_index, 0].item(),
-                    "base_vel_y": env.base_lin_vel[robot_index, 1].item(),
-                    "base_vel_z": env.base_lin_vel[robot_index, 2].item(),
-                    "base_vel_yaw": env.base_ang_vel[robot_index, 2].item(),
-                    "contact_forces_z": env.contact_forces[
-                        robot_index, env.feet_indices, 2
-                    ]
-                    .cpu()
-                    .numpy(),
-                }
-            )
-        elif i == stop_state_log:
-            logger.plot_states()
-        if 0 < i < stop_rew_log:
-            if infos["episode"]:
-                num_episodes = torch.sum(env.reset_buf).item()
-                if num_episodes > 0:
-                    logger.log_rewards(infos["episode"], num_episodes)
-        elif i == stop_rew_log:
-            logger.print_rewards()
+        # if i < stop_state_log:
+        #     logger.log_states(
+        #         {
+        #             "dof_pos_target": actions[robot_index, joint_index].item()
+        #             * env.cfg.control.action_scale,
+        #             "dof_pos": env.dof_pos[robot_index, joint_index].item(),
+        #             "dof_vel": env.dof_vel[robot_index, joint_index].item(),
+        #             "dof_torque": env.torques[robot_index, joint_index].item(),
+        #             "command_x": env.commands[robot_index, 0].item(),
+        #             "command_y": env.commands[robot_index, 1].item(),
+        #             "command_yaw": env.commands[robot_index, 2].item(),
+        #             "base_vel_x": env.base_lin_vel[robot_index, 0].item(),
+        #             "base_vel_y": env.base_lin_vel[robot_index, 1].item(),
+        #             "base_vel_z": env.base_lin_vel[robot_index, 2].item(),
+        #             "base_vel_yaw": env.base_ang_vel[robot_index, 2].item(),
+        #             "contact_forces_z": env.contact_forces[
+        #                 robot_index, env.feet_indices, 2
+        #             ]
+        #             .cpu()
+        #             .numpy(),
+        #         }
+        #     )
+        # elif i == stop_state_log:
+        #     logger.plot_states()
+        # if 0 < i < stop_rew_log:
+        #     if infos["episode"]:
+        #         num_episodes = torch.sum(env.reset_buf).item()
+        #         if num_episodes > 0:
+        #             logger.log_rewards(infos["episode"], num_episodes)
+        # elif i == stop_rew_log:
+        #     logger.print_rewards()
 
 
 if __name__ == "__main__":
-    EXPORT_POLICY = True
+    EXPORT_POLICY = False
     RECORD_FRAMES = False
     MOVE_CAMERA = False
     args = get_args()

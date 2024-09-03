@@ -10,100 +10,6 @@ import onnxruntime
 
 import cv2  # OpenCV is required for this
 
-mujoco_joints_order = [
-    "right_hip_yaw",
-    "right_hip_roll",
-    "right_hip_pitch",
-    "right_knee",
-    "right_ankle",
-    "left_hip_yaw",
-    "left_hip_roll",
-    "left_hip_pitch",
-    "left_knee",
-    "left_ankle",
-    "neck_pitch",
-    "head_pitch",
-    "head_yaw",
-    "head_roll",
-    "left_antenna",
-    "right_antenna",
-]
-
-isaac_joints_order = [
-    "left_hip_yaw",
-    "left_hip_roll",
-    "left_hip_pitch",
-    "left_knee",
-    "left_ankle",
-    "neck_pitch",
-    "head_pitch",
-    "head_yaw",
-    "head_roll",
-    "left_antenna",
-    "right_antenna",
-    "right_hip_yaw",
-    "right_hip_roll",
-    "right_hip_pitch",
-    "right_knee",
-    "right_ankle",
-]
-
-
-def isaac_to_mujoco(joints):
-    new_joints = [
-        # right leg
-        joints[11],
-        joints[12],
-        joints[13],
-        joints[14],
-        joints[15],
-        # left leg
-        joints[0],
-        joints[1],
-        joints[2],
-        joints[3],
-        joints[4],
-        # head
-        joints[5],
-        joints[6],
-        joints[7],
-        joints[8],
-        joints[9],
-        joints[10],
-    ]
-
-    return new_joints
-
-
-def mujoco_to_isaac(joints):
-    new_joints = [
-        # left leg
-        joints[5],
-        joints[6],
-        joints[7],
-        joints[8],
-        joints[9],
-        # head
-        joints[10],
-        joints[11],
-        joints[12],
-        joints[13],
-        joints[14],
-        joints[15],
-        # right leg
-        joints[0],
-        joints[1],
-        joints[2],
-        joints[3],
-        joints[4],
-    ]
-    return new_joints
-
-# TODO ADD BACK
-def action_to_pd_targets(action, offset, scale):
-    return offset + scale * action
-
-
 def make_action_dict(action, joints_order):
     action_dict = {}
     for i, a in enumerate(action):
@@ -111,43 +17,6 @@ def make_action_dict(action, joints_order):
             action_dict[joints_order[i]] = a
 
     return action_dict
-
-
-class ActionFilter:
-    def __init__(self, window_size=10):
-        self.window_size = window_size
-        self.action_buffer = []
-
-    def push(self, action):
-        self.action_buffer.append(action)
-        if len(self.action_buffer) > self.window_size:
-            self.action_buffer.pop(0)
-
-    def get_filtered_action(self):
-        return np.mean(self.action_buffer, axis=0)
-
-
-class LowPassActionFilter:
-    def __init__(self, control_freq, cutoff_frequency=30.0):
-        self.last_action = 0
-        self.current_action = 0
-        self.control_freq = float(control_freq)
-        self.cutoff_frequency = float(cutoff_frequency)
-        self.alpha = self.compute_alpha()
-
-    def compute_alpha(self):
-        return (1.0 / self.cutoff_frequency) / (
-            1.0 / self.control_freq + 1.0 / self.cutoff_frequency
-        )
-
-    def push(self, action):
-        self.current_action = action
-
-    def get_filtered_action(self):
-        self.last_action = (
-            self.alpha * self.last_action + (1 - self.alpha) * self.current_action
-        )
-        return self.last_action
 
 class OnnxInfer:
     def __init__(self, onnx_model_path):
@@ -185,39 +54,13 @@ if args.saved_actions is not None:
 
 # Params
 # dt = 0.002
-dt = 0.0002
-linearVelocityScale = 2.0
+dt = 0.005
+linearVelocityScale = 1.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
-dof_vel_scale = 0.05
-action_clip = (-1, 1)
-obs_clip = (-5, 5)
-action_scale = 1.0
-
-
-# Higher
-mujoco_init_pos = np.array(
-    [
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-    ]
-)
-
-isaac_init_pos = np.array(mujoco_to_isaac(mujoco_init_pos))
+dof_vel_scale = 0.1
+action_scale = 0.75
+num_actions = 16
 
 model = mujoco.MjModel.from_xml_path("resources/robots/go_bdx/scene.xml")
 model.opt.timestep = dt
@@ -268,22 +111,6 @@ class ImuDelaySimulator:
 
         return rot, ang_rot
 
-
-# # TODO convert to numpy
-# def quat_rotate_inverse(q, v):
-#     shape = q.shape
-#     q_w = q[:, -1]
-#     q_vec = q[:, :3]
-#     a = v * (2.0 * q_w**2 - 1.0).unsqueeze(-1)
-#     b = torch.cross(q_vec, v, dim=-1) * q_w.unsqueeze(-1) * 2.0
-#     c = (
-#         q_vec
-#         * torch.bmm(q_vec.view(shape[0], 1, 3), v.view(shape[0], 3, 1)).squeeze(-1)
-#         * 2.0
-#     )
-#     return a - b + c
-
-
 def quat_rotate_inverse(q, v):
     q = np.array(q)
     v = np.array(v)
@@ -297,11 +124,14 @@ def quat_rotate_inverse(q, v):
 
     return a - b + c
 
+def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
+    q = data.qpos.astype(np.double)
+    dq = data.qvel.astype(np.double)
 
-def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator):
     base_lin_vel = (
         data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
     )
+    print(f"base_lin_vel: {base_lin_vel}")
 
     base_quat = data.qpos[3 : 3 + 4].copy()
     base_quat = [base_quat[1], base_quat[2], base_quat[3], base_quat[0]]
@@ -315,14 +145,12 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
         data.sensor("angular-velocity").data.astype(np.double) * angularVelocityScale
     )
 
-    mujoco_dof_pos = data.qpos[7 : 7 + 16].copy()
-    isaac_dof_pos = mujoco_to_isaac(mujoco_dof_pos)
+    dof_pos = data.qpos[7 : 7 + 16].copy()
 
-    isaac_dof_pos_scaled = (isaac_dof_pos - isaac_init_pos) * dof_pos_scale
+    dof_pos_scaled = dof_pos * dof_pos_scale
 
-    mujoco_dof_vel = data.qvel[6 : 6 + 16].copy()
-    isaac_dof_vel = mujoco_to_isaac(mujoco_dof_vel)
-    isaac_dof_vel_scaled = list(np.array(isaac_dof_vel) * dof_vel_scale)
+    dof_vel = data.qvel[6 : 6 + 16].copy()
+    dof_vel_scaled = list(np.array(dof_vel) * dof_vel_scale)
 
     imu_delay_simulator.push(base_quat, base_ang_vel, time.time())
     base_quat, base_ang_vel = imu_delay_simulator.get()
@@ -333,16 +161,15 @@ def get_obs(data, isaac_action, commands, imu_delay_simulator: ImuDelaySimulator
         [
             projected_gravity,
             commands,
-            isaac_dof_pos_scaled,
-            isaac_dof_vel_scaled,
-            isaac_action,
+            dof_pos_scaled,
+            dof_vel_scaled,
+            action,
         ]
     )
 
-    return obs
+    return (q, dq, obs)
 
-
-prev_isaac_action = np.zeros(16)
+prev_action = np.zeros(16)
 commands = [0.38, 0.0, 0.0]
 # commands = [0.0, 0.0, 0.0]
 # prev = time.time()
@@ -351,23 +178,11 @@ prev = data.time
 last_control = data.time
 control_freq = 85  # hz
 i = 0
-data.qpos[3 : 3 + 4] = [1, 0, 0.08, 0]
+data.qpos[3 : 3 + 4] = [1, 0, 0, 0]
 cutoff_frequency = 20
 
-# init_rot = [0, -0.1, 0]
-# init_rot = [0, 0, 0]
-# init_quat = R.from_euler("xyz", init_rot, degrees=False).as_quat()
-# data.qpos[3 : 3 + 4] = init_quat
-# data.qpos[3 : 3 + 4] = [init_quat[3], init_quat[1], init_quat[2], init_quat[0]]
-# data.qpos[3 : 3 + 4] = [1, 0, 0.13, 0]
-
-
-data.qpos[7 : 7 + 16] = mujoco_init_pos
-data.ctrl[:] = mujoco_init_pos
-
-action_filter = LowPassActionFilter(
-    control_freq=control_freq, cutoff_frequency=cutoff_frequency
-)
+data.qpos[7 : 7 + 16] = np.zeros(16)
+data.ctrl[:] = np.zeros(16)
 
 bdx_index = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "bdx")
 if bdx_index == -1:
@@ -376,8 +191,8 @@ if bdx_index == -1:
         body_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, i)
         print(f"Body ID {i}: {body_name}")
 
-mujoco_saved_obs = []
-mujoco_saved_actions = []
+saved_obs = []
+saved_actions = []
 command_value = []
 imu_delay_simulator = ImuDelaySimulator(1)
 start = time.time()
@@ -385,6 +200,7 @@ sim_step = 0
 sim_maxsteps = int(args.duration * fps)  # Number of frames to simulate
 viewer.cam.azimuth += 90  # Rotate the camera 90 degrees counterclockwise
 viewer.cam.elevation = -10  # Set the camera to be level with the ground
+decimation = 2
 try:
     start = time.time()
     while True:
@@ -392,42 +208,32 @@ try:
         t = data.time
         if time.time() - start < 1:
             last_control = t
-        if t - last_control >= 1 / control_freq:
-            isaac_obs = get_obs(data, prev_isaac_action, commands, imu_delay_simulator)
-            mujoco_saved_obs.append(isaac_obs)
+        q, dq, obs = get_obs(data, prev_action, commands, imu_delay_simulator)
+        q = q[-num_actions:]
+        dq = dq[-num_actions:]
+        if sim_step % decimation == 0:
+            saved_obs.append(obs)
 
             if args.saved_obs is not None:
-                isaac_obs = saved_obs[i]  # works with saved obs
+                obs = saved_obs[i]  # works with saved obs
 
-            # isaac_obs = np.clip(isaac_obs, obs_clip[0], obs_clip[1])
-
-            isaac_action = policy.infer(isaac_obs)
-            # isaac_actions = np.zeros(16)
+            action = policy.infer(obs)
             if args.saved_actions is not None:
-                isaac_action = saved_actions[i][0]
-            # isaac_action = np.clip(isaac_action, action_clip[0], action_clip[1])
-            prev_isaac_action = isaac_action.copy()
+                action = saved_actions[i][0]
+            prev_action = action.copy()
 
-            # isaac_action = np.zeros(16)
-            isaac_action = isaac_action * action_scale + isaac_init_pos
-
-            action_filter.push(isaac_action)
-            # isaac_action = action_filter.get_filtered_action()
-
-            mujoco_action = isaac_to_mujoco(isaac_action)
+            action = action * action_scale
 
             last_control = t
-            i += 1
 
-            data.ctrl[:] = mujoco_action.copy()
-            # data.ctrl[:] = np.zeros(16) + mujoco_init_pos
-            # euler_rot = [np.sin(2 * np.pi * 0.5 * t), 0, 0]
-            # quat = R.from_euler("xyz", euler_rot, degrees=False).as_quat()
-            # data.qpos[3 : 3 + 4] = quat
-            mujoco_saved_actions.append(mujoco_action)
+            target_q = action
+
+            data.ctrl[:] = action.copy()
+            saved_actions.append(action)
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
-        mujoco.mj_step(model, data, 50)
+
+        mujoco.mj_step(model, data)
         viewer.cam.lookat[:] = data.xpos[bdx_index]
         sim_step = sim_step + 1
 
@@ -455,8 +261,8 @@ except KeyboardInterrupt:
         "mujoco": command_value,
     }
     pickle.dump(data, open("mujoco_command_value.pkl", "wb"))
-    pickle.dump(mujoco_saved_obs, open("mujoco_saved_obs.pkl", "wb"))
-    pickle.dump(mujoco_saved_actions, open("mujoco_saved_actions.pkl", "wb"))
+    pickle.dump(saved_obs, open("mujoco_saved_obs.pkl", "wb"))
+    pickle.dump(saved_actions, open("mujoco_saved_actions.pkl", "wb"))
 
 if video_writer is not None:
     video_writer.release()

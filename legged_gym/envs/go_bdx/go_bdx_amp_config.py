@@ -50,7 +50,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         num_observations = 54  # 3+3+3+16+16+16
         num_privileged_obs = 60  # 3+3+4+3+16+16+16
         num_actions = 16
-        env_spacing = 2.5
+        env_spacing = 1.5
         reference_state_initialization = False
         reference_state_initialization_prob = 0.85
         amp_motion_files = MOTION_FILES
@@ -136,7 +136,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 6
+        decimation = 10
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -166,12 +166,19 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
             fix_base_link = True  # fixe the base of the robot
 
-    # class normalization(LeggedRobotCfg.normalization):
-    #     clip_observations = 5.0
-    #     clip_actions = 1.0
+    class normalization(LeggedRobotCfg.normalization):
+        class obs_scales:
+            lin_vel = 2.
+            ang_vel = 1.
+            dof_pos = 1.
+            dof_vel = 0.05
+            quat = 1.
+            height_measurements = 5.0
+        clip_observations = 5.0
+        clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.005
+        dt = 0.001
         substeps = 1
 
     class domain_rand:
@@ -222,21 +229,21 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.2
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = -0.1
+            action_rate = 0.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
     class commands:
         curriculum = False  # False
         max_curriculum = 1.0
-        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.2, 1.0]  # min max [m/s]
-            lin_vel_y = [-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [-1.57, 1.57]  # min max [rad/s]
+            lin_vel_x = [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_y = [0, 0] #[-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
+            ang_vel_yaw = [0, 0] #[-1.57, 1.57]  # min max [rad/s]
             heading = [-3.14, 3.14]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
@@ -264,7 +271,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         experiment_name = "go_bdx_amp"
         algorithm_class_name = "AMPPPO"
         policy_class_name = "ActorCritic"
-        max_iterations = 500000  # number of policy updates
+        max_iterations = 100000  # number of policy updates
 
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES

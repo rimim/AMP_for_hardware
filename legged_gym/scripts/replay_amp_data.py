@@ -72,8 +72,8 @@ def play(args):
     # fv = Viewer()
     # fv.start()
 
-    initial_distance = 3.5  # Desired starting distance from the robot
-    desired_distance = 1.5  # Desired distance from the robot
+    initial_distance = 0.5  # Desired starting distance from the robot
+    desired_distance = 0.5  # Desired distance from the robot
     initial_height = 0.65   # Height of the camera
 
     # while traj_idx < len(env.amp_loader.trajectory_lens):
@@ -243,13 +243,13 @@ def play(args):
 
         # Reset camera position.
         if 'camera_position' not in locals():
-            camera_position = np.array([initial_distance, 0.0, initial_height])
+            camera_position = np.array([initial_distance, -3.5, initial_height])
             smoothed_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
         raw_look_at = np.array(env.root_states[0, :3].cpu(), dtype=np.float64)
 
         # Calculate the rotation in the xy-plane (no pitch adjustment).
         #camera_rot = (camera_rot + camera_rot_per_sec * env.dt) % (np.pi / 8)
-        desired_camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
+        desired_camera_position = desired_distance * np.array([np.cos(camera_rot), -3.5, 0]) + np.array([0, 0, initial_height])
 
         # Separate smoothing factors for look_at and camera position.
         alpha_look_at = 0.1  # Smoothing factor for look_at position
