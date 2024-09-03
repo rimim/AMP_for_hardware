@@ -131,7 +131,7 @@ def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
     base_lin_vel = (
         data.sensor("linear-velocity").data.astype(np.double) * linearVelocityScale
     )
-    print(f"base_lin_vel: {base_lin_vel}")
+    # print(f"base_lin_vel: {base_lin_vel}")
 
     base_quat = data.qpos[3 : 3 + 4].copy()
     base_quat = [base_quat[1], base_quat[2], base_quat[3], base_quat[0]]
