@@ -35,6 +35,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 #MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
 MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_walk_forward.txt"]
+MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_stand.txt"]
 # MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
 # MOTION_FILES = [
 #     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
@@ -241,7 +242,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_x = [0, 0] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
             lin_vel_y = [0, 0] #[-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
             ang_vel_yaw = [0, 0] #[-1.57, 1.57]  # min max [rad/s]
             heading = [-3.14, 3.14]

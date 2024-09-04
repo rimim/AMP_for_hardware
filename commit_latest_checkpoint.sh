@@ -114,7 +114,7 @@ function fetch_tensordata() {
   fi
   mkdir -p "$HISTORY_DIR"/reports
   wget -q "http://localhost:6006/data/plugin/scalars/scalars?run=${TASK}/${LOCAL_CHECKPOINT_DIR}&tag=${report}&format=${format}" -O "$HISTORY_DIR"/reports/${output}.${format}
-  if [ ! "$HISTORY_DIR"/reports/${output}.${format} ]; then
+  if [ ! -s "$HISTORY_DIR"/reports/${output}.${format} ]; then
     echo "The report does not exist or is empty. Removing the file."
     rm -f "$HISTORY_DIR"/reports/${output}.${format}
   fi
@@ -288,6 +288,8 @@ do
     HISTORY_DIR="$LOCAL_AMP_DIR"/history/$TASK/$LOCAL_CHECKPOINT_DIR
     echo Latest checkpoint: $CHECKPOINT from ${REMOTE_USER_SERVER}
 
+    echo CHECKPOINT: "$CHECKPOINT"
+    echo LAST_CHECKPOINT: "$LAST_CHECKPOINT"
     if [[ ! -f "$LOCAL_TASK_DIR"/"$LATEST_CHECKPOINT" || "$LAST_CHECKPOINT" != "$CHECKPOINT" ]]; then
       if [[ ! -z "$REMOTE" ]]; then
         rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
@@ -303,6 +305,7 @@ do
         SIM2SIM_VIDEO_OUTPUT_FILE=$LOCAL_TASK_REPO/$SIM2SIM_VIDEO_FILE
       else
         SIM2SIM_VIDEO_OUTPUT_FILE=$SIM2SIM_VIDEO_FILE
+        VIDEO_OUTPUT_FILE=$VIDEO_FILE
       fi
 
       cd "$LOCAL_AMP_DIR" || exit
@@ -324,8 +327,10 @@ do
       fi
       CAPTION="${days}d ${hours}h ${minutes}m"
       echo CAPTION: $CAPTION
+      echo ffmpeg -y -i record.mp4 -vf "drawtext=text='$CAPTION':fontcolor=white:fontsize=56:x=(w-text_w)/2:y=h-(text_h*3):alpha='if(lt(t,1),0,if(lt(t,2),t-1,if(lt(t,5),1,if(lt(t,6),1-(t-5),0))))'" -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart "$VIDEO_OUTPUT_FILE" || exit
       ffmpeg -y -i record.mp4 -vf "drawtext=text='$CAPTION':fontcolor=white:fontsize=56:x=(w-text_w)/2:y=h-(text_h*3):alpha='if(lt(t,1),0,if(lt(t,2),t-1,if(lt(t,5),1,if(lt(t,6),1-(t-5),0))))'" -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart "$VIDEO_OUTPUT_FILE" || exit
       mkdir -p "$HISTORY_DIR"
+      echo rsync -auv "$VIDEO_OUTPUT_FILE" "$HISTORY_DIR"/video_${CHECKPOINT_NUMBER}.mp4
       rsync -auv "$VIDEO_OUTPUT_FILE" "$HISTORY_DIR"/video_${CHECKPOINT_NUMBER}.mp4
       cp -f "$LOCAL_TASK_DIR"/exported/policies/model.pt "$HISTORY_DIR"/model_${CHECKPOINT_NUMBER}.pt || exit
       cp -f "$LOCAL_TASK_DIR"/exported/policies/policy.onnx "$HISTORY_DIR"/policy_${CHECKPOINT_NUMBER}.onnx || exit

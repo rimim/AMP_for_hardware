@@ -31,16 +31,21 @@ nb_rows = int(np.ceil(len(all_files) / nb_cols))
 fig, axs = plt.subplots(nb_rows, nb_cols, figsize=figsize)
 
 for idx, file in enumerate(all_files):
-    if file.endswith(".csv"):
-        data = np.loadtxt(file, delimiter=',', skiprows=1)  # Assuming data starts from the second row
-        x = data[:, 1]
-        y = data[:, 2]
-    elif file.endswith(".json"):
-        with open(file, 'r') as f:
-            data = json.load(f)
-        x = np.array([entry[1] for entry in data])  # Extracting y from the JSON arrays
-        y = np.array([entry[2] for entry in data])  # Extracting y from the JSON arrays
-    
+    print(f"Parsing: {file}")
+    try:
+        if file.endswith(".csv"):
+            data = np.loadtxt(file, delimiter=',', skiprows=1)  # Assuming data starts from the second row
+            x = data[:, 1]
+            y = data[:, 2]
+        elif file.endswith(".json"):
+            with open(file, 'r') as f:
+                data = json.load(f)
+            x = np.array([entry[1] for entry in data])  # Extracting y from the JSON arrays
+            y = np.array([entry[2] for entry in data])  # Extracting y from the JSON arrays
+    except Exception as e:
+        print(f"Error processing file {file}: {e}")
+        continue
+
     row = idx // nb_cols
     col = idx % nb_cols
     axs[row, col].plot(x, y, color='orange')  # Use orange color to match the screenshot

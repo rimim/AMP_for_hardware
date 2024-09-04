@@ -170,8 +170,8 @@ def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
     return (q, dq, obs)
 
 prev_action = np.zeros(16)
-commands = [0.38, 0.0, 0.0]
-# commands = [0.0, 0.0, 0.0]
+#commands = [0.38, 0.0, 0.0]
+commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
