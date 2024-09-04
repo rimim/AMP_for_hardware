@@ -137,7 +137,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 10
+        decimation = 2
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -179,8 +179,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.001
-        substeps = 1
+        dt = 0.005
+        substeps = 2
 
     class domain_rand:
         randomize_friction = True

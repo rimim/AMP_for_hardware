@@ -52,6 +52,13 @@ def play(args):
     env_cfg.domain_rand.push_robots = False
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = False
+    env_cfg.domain_rand.randomize_torques = False
+    env_cfg.domain_rand.randomize_com = False
+    env_cfg.commands.ranges.lin_vel_x = [0, 0]
+    env_cfg.commands.ranges.lin_vel_y = [0, 0]
+    env_cfg.commands.ranges.ang_vel_yaw = [0, 0]
+    env_cfg.commands.ranges.heading = [0, 0]
+
     train_cfg.runner.amp_num_preload_transitions = 1
     if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
         env_cfg.env.debug_save_obs = True
