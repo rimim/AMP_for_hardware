@@ -45,7 +45,12 @@ import legged_gym.utils.kinematics.urdf as pk
 from legged_gym import LEGGED_GYM_ROOT_DIR, envs
 from legged_gym.envs.base.base_task import BaseTask
 from legged_gym.utils.helpers import class_to_dict
-from legged_gym.utils.math import quat_apply_yaw, torch_rand_sqrt_float, wrap_to_pi
+from legged_gym.utils.math import (
+    quat_apply_yaw,
+    torch_rand_sqrt_float,
+    wrap_to_pi,
+    get_scale_shift,
+)
 from legged_gym.utils.terrain import Terrain
 from rsl_rl.datasets.motion_loader import AMPLoader
 
@@ -181,9 +186,9 @@ class LeggedRobot(BaseTask):
             self.gym.refresh_dof_state_tensor(self.sim)
         reset_env_ids, terminal_amp_states = self.post_physics_step()
 
-        # randomize com
-        if self.cfg.domain_rand.randomize_com:
-            self.root_states[:, :2] += self.randomize_com_values
+        # # randomize com
+        # if self.cfg.domain_rand.randomize_com:
+        #     self.root_states[:, :2] += self.randomize_com_values
 
         # return clipped obs, clipped states (None), rewards, dones and infos
         clip_obs = self.cfg.normalization.clip_observations
@@ -351,19 +356,21 @@ class LeggedRobot(BaseTask):
         self.envs_times[env_ids] = 0.0
         self.envs_cooldowns[env_ids] = 0.0
 
-        self.randomize_torques_factors = (
-            (
-                self.cfg.domain_rand.torque_multiplier_range[0]
-                - self.cfg.domain_rand.torque_multiplier_range[1]
-            )
-            * torch.rand(self.num_envs, self.num_actions, device=self.device)
-            + self.cfg.domain_rand.torque_multiplier_range[1]
-        ).float()
+        if self.cfg.domain_rand.randomize_torques:
+            self.randomize_torques_factors = (
+                (
+                    self.cfg.domain_rand.torque_multiplier_range[0]
+                    - self.cfg.domain_rand.torque_multiplier_range[1]
+                )
+                * torch.rand(self.num_envs, self.num_actions, device=self.device)
+                + self.cfg.domain_rand.torque_multiplier_range[1]
+            ).float()
 
-        com_range = self.cfg.domain_rand.com_range
-        self.randomize_com_values = (com_range[0] - com_range[1]) * torch.rand(
-            self.num_envs, 2, device=self.device
-        ) + com_range[1]
+        if self.cfg.domain_rand.randomize_com:
+            com_range = self.cfg.domain_rand.com_range
+            self.randomize_com_values[:, :] = (
+                com_range[0] - com_range[1]
+            ) * torch.rand(self.num_envs, 3, device=self.device) + com_range[1]
 
     def compute_reward(self):
         """Compute rewards
@@ -644,16 +651,18 @@ class LeggedRobot(BaseTask):
         return props
 
     def _process_rigid_body_props(self, props, env_id):
-        # if env_id==0:
-        #     sum = 0
-        #     for i, p in enumerate(props):
-        #         sum += p.mass
-        #         print(f"Mass of body {i}: {p.mass} (before randomization)")
-        #     print(f"Total mass {sum} (before randomization)")
-        # randomize base mass
         if self.cfg.domain_rand.randomize_base_mass:
             rng = self.cfg.domain_rand.added_mass_range
             props[0].mass += np.random.uniform(rng[0], rng[1])
+
+        if self.cfg.domain_rand.randomize_com:
+            props[0].com += gymapi.Vec3(
+                self.randomize_com_values[env_id, 0],
+                self.randomize_com_values[env_id, 1],
+                self.randomize_com_values[env_id, 2],
+            )
+        pass
+
         return props
 
     def _post_physics_step_callback(self):
@@ -1259,6 +1268,7 @@ class LeggedRobot(BaseTask):
         env_upper = gymapi.Vec3(0.0, 0.0, 0.0)
         self.actor_handles = []
         self.envs = []
+
         for i in range(self.num_envs):
             # create env instance
             env_handle = self.gym.create_env(
@@ -1269,6 +1279,14 @@ class LeggedRobot(BaseTask):
                 1
             )
             start_pose.p = gymapi.Vec3(*pos)
+
+            self.randomize_torques_factors = torch.ones(
+                self.num_envs, self.num_actions, device=self.device
+            )
+
+            self.randomize_com_values = torch.zeros(
+                self.num_envs, 3, device=self.device
+            )
 
             rigid_shape_props = self._process_rigid_shape_props(
                 rigid_shape_props_asset, i
@@ -1341,12 +1359,6 @@ class LeggedRobot(BaseTask):
             device=self.device,
             requires_grad=False,
         )
-
-        self.randomize_torques_factors = torch.ones(
-            self.num_envs, self.num_actions, device=self.device
-        )
-
-        self.randomize_com_values = torch.zeros(self.num_envs, 3, device=self.device)
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
