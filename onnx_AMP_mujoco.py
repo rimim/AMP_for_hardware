@@ -54,7 +54,7 @@ if args.saved_actions is not None:
 
 # Params
 # dt = 0.002
-dt = 0.005
+dt = 0.0001
 linearVelocityScale = 1.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
@@ -170,13 +170,13 @@ def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
     return (q, dq, obs)
 
 prev_action = np.zeros(16)
-#commands = [0.38, 0.0, 0.0]
-commands = [0.0, 0.0, 0.0]
+commands = [0.38, 0.0, 0.0]
+#commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 85  # hz
+control_freq = 100  # hz
 i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0, 0]
 cutoff_frequency = 20
@@ -212,10 +212,10 @@ try:
         q = q[-num_actions:]
         dq = dq[-num_actions:]
         if sim_step % decimation == 0:
-            saved_obs.append(obs)
+            # saved_obs.append(obs)
 
-            if args.saved_obs is not None:
-                obs = saved_obs[i]  # works with saved obs
+            # if args.saved_obs is not None:
+            #     obs = saved_obs[i]  # works with saved obs
 
             action = policy.infer(obs)
             if args.saved_actions is not None:
@@ -229,11 +229,11 @@ try:
             target_q = action
 
             data.ctrl[:] = action.copy()
-            saved_actions.append(action)
+            # saved_actions.append(action)
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
 
-        mujoco.mj_step(model, data)
+        mujoco.mj_step(model, data, 50)
         viewer.cam.lookat[:] = data.xpos[bdx_index]
         sim_step = sim_step + 1
 
@@ -260,9 +260,9 @@ except KeyboardInterrupt:
         "config": {},
         "mujoco": command_value,
     }
-    pickle.dump(data, open("mujoco_command_value.pkl", "wb"))
-    pickle.dump(saved_obs, open("mujoco_saved_obs.pkl", "wb"))
-    pickle.dump(saved_actions, open("mujoco_saved_actions.pkl", "wb"))
+    # pickle.dump(data, open("mujoco_command_value.pkl", "wb"))
+    # pickle.dump(saved_obs, open("mujoco_saved_obs.pkl", "wb"))
+    # pickle.dump(saved_actions, open("mujoco_saved_actions.pkl", "wb"))
 
 if video_writer is not None:
     video_writer.release()

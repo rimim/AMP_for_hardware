@@ -1,7 +1,8 @@
 <mujoco model="bdx">
-  <compiler angle="radian" meshdir="meshes" texturedir="textures"/>
+  <compiler angle="radian" meshdir="meshes" texturedir="textures" autolimits="true"/>
 
-  <option timestep="0.001"/>
+  <!-- <option timestep="0.001"/> -->
+  <option integrator="implicitfast"/>
 
   <default>
     <default class="bdx">
@@ -10,27 +11,27 @@
       <geom friction="0.4" margin="0.001" condim="1"/>
       <!-- <geom material="bdx" group="2"/> -->
       <default class="leg-joint-param">
-        <joint  damping="1.3" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="knee-joint-param">
-        <joint  damping="1.3" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="ankle-joint-param">
-        <joint  damping="1.6" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="neck-joint-param">
-        <joint  damping="1.0" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="head-joint-param">
-        <joint  damping="1.0" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="antenna-joint-param">
-        <joint  damping="0.01" frictionloss="0.01" armature="0.01" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.01" armature="0.01" range="-0.785398 0.785398"/>
       </default>
     </default>
   </default>
@@ -90,31 +91,6 @@
             </body>
           </body>
         </body>
-       <body name="right_hip_rotation" pos="-0.033111 -0.046658 0.363959">
-          <inertial pos="-0.00508397 -0.00309242 -0.0631043" quat="0.999573 -0.0213461 0.0199274 -0.00141326" mass="0.633" diaginertia="0.000533636 0.0004183 0.000196963"/>
-          <joint class="leg-joint-param" name="right_hip_yaw" pos="0 0 0" axis="0 0 -1"/>
-          <geom pos="0.033111 0.046658 -0.363959" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_hip_rotation"/>
-          <body name="right_hip" pos="-0.0073 -0.00275 -0.076">
-            <inertial pos="0.0189112 -0.0234713 0.000362123" quat="0.708795 0.704899 0.0263546 0.00571972" mass="0.633" diaginertia="0.000149816 0.000136791 0.0000505934"/>
-            <joint class="leg-joint-param" name="right_hip_roll" pos="0 0 0" axis="1 0 0"/>
-            <geom pos="0.040411 0.049408 -0.287959" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_hip"/>
-            <body name="right_thigh" pos="0.017466 -0.069601 0.000785">
-              <inertial pos="-0.0341087 -0.0267727 -0.0344467" quat="0.650781 0.294346 0.297734 0.633403" mass="0.633" diaginertia="0.00236734 0.00206723 0.000603735"/>
-              <joint class="leg-joint-param" name="right_hip_pitch" pos="0 0 0" axis="0 -1 0"/>
-              <geom pos="0.022945 0.119009 -0.288744" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_thigh"/>
-              <body name="right_shin" pos="-0.079306 0 -0.077708">
-                <inertial pos="0.0222946 0.0149367 -0.0900588" quat="0.673783 -0.130184 -0.166338 0.708097" mass="0.633" diaginertia="0.00117688 0.00102167 0.000215741"/>
-                <joint class="leg-joint-param" name="right_knee" pos="0 0 0" axis="0 1 0"/>
-                <geom pos="0.102251 0.119009 -0.211036" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_shin"/>
-                <body name="right_foot_link" pos="0.045 0.0152 -0.13">
-                  <inertial pos="0.0317645 -0.00793337 -0.0421515" quat="0.5014523 0.506725 0.4864445 0.5051209" mass="0.678" diaginertia="0.00103795 0.000833717 0.000325637"/>
-                  <joint class="ankle-joint-param" name="right_ankle" pos="0 0 0" axis="0 -1 0"/>
-                  <geom pos="0.057251 0.103809 -0.081036" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_foot"/>
-                </body>
-              </body>
-            </body>
-           </body>
-        </body>
         <body name="neck" pos="0.056339 0.0119 0.395171">
           <inertial pos="-0.0240043 -0.0164112 0.050435" quat="0.415022 -0.234316 -0.0652626 0.876694" mass="0.633" diaginertia="0.000651818 0.000640093 0.000104188"/>
           <joint class="neck-joint-param" name="neck_pitch" pos="0 0 0" axis="0 -1 0"/>
@@ -145,6 +121,31 @@
             </body>
           </body>
         </body>
+        <body name="right_hip_rotation" pos="-0.033111 -0.046658 0.363959">
+          <inertial pos="-0.00508397 -0.00309242 -0.0631043" quat="0.999573 -0.0213461 0.0199274 -0.00141326" mass="0.633" diaginertia="0.000533636 0.0004183 0.000196963"/>
+          <joint class="leg-joint-param" name="right_hip_yaw" pos="0 0 0" axis="0 0 -1"/>
+          <geom pos="0.033111 0.046658 -0.363959" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_hip_rotation"/>
+          <body name="right_hip" pos="-0.0073 -0.00275 -0.076">
+            <inertial pos="0.0189112 -0.0234713 0.000362123" quat="0.708795 0.704899 0.0263546 0.00571972" mass="0.633" diaginertia="0.000149816 0.000136791 0.0000505934"/>
+            <joint class="leg-joint-param" name="right_hip_roll" pos="0 0 0" axis="1 0 0"/>
+            <geom pos="0.040411 0.049408 -0.287959" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_hip"/>
+            <body name="right_thigh" pos="0.017466 -0.069601 0.000785">
+              <inertial pos="-0.0341087 -0.0267727 -0.0344467" quat="0.650781 0.294346 0.297734 0.633403" mass="0.633" diaginertia="0.00236734 0.00206723 0.000603735"/>
+              <joint class="leg-joint-param" name="right_hip_pitch" pos="0 0 0" axis="0 -1 0"/>
+              <geom pos="0.022945 0.119009 -0.288744" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_thigh"/>
+              <body name="right_shin" pos="-0.079306 0 -0.077708">
+                <inertial pos="0.0222946 0.0149367 -0.0900588" quat="0.673783 -0.130184 -0.166338 0.708097" mass="0.633" diaginertia="0.00117688 0.00102167 0.000215741"/>
+                <joint class="leg-joint-param" name="right_knee" pos="0 0 0" axis="0 1 0"/>
+                <geom pos="0.102251 0.119009 -0.211036" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_shin"/>
+                <body name="right_foot_link" pos="0.045 0.0152 -0.13">
+                  <inertial pos="0.0317645 -0.00793337 -0.0421515" quat="0.5014523 0.506725 0.4864445 0.5051209" mass="0.678" diaginertia="0.00103795 0.000833717 0.000325637"/>
+                  <joint class="ankle-joint-param" name="right_ankle" pos="0 0 0" axis="0 -1 0"/>
+                  <geom pos="0.057251 0.103809 -0.081036" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_foot"/>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
       </body>
     </body>
   </worldbody>
@@ -158,22 +159,22 @@
     <exclude body1="head_body_yaw" body2="head_body_roll"/>
   </contact>
   <actuator>
-    <position kp="40" kv="1.3" name="left_hip_yaw" joint="left_hip_yaw" gear="1"/>
-    <position kp="40" kv="1.3" name="left_hip_roll" joint="left_hip_roll" gear="1"/>
-    <position kp="40" kv="1.3" name="left_hip_pitch" joint="left_hip_pitch" gear="1"/>
-    <position kp="35" kv="1.3" name="left_knee" joint="left_knee" gear="1"/>
-    <position kp="30" kv="1.3" name="left_ankle" joint="left_ankle" gear="1"/>
-    <position kp="40" kv="1.3" name="neck_pitch" joint="neck_pitch" gear="1"/>
-    <position kp="15" kv="1.0" name="head_pitch" joint="head_pitch" gear="1"/>
-    <position kp="15" kv="1.0" name="head_yaw" joint="head_yaw" gear="1"/>
-    <position kp="15" kv="1.0" name="head_roll" joint="head_roll" gear="1"/>
-    <position kp="3" kv="0.2" name="left_antenna" joint="left_antenna" gear="1"/>
-    <position kp="3" kv="0.2" name="right_antenna" joint="right_antenna" gear="1"/>
-    <position kp="40" kv="1.3" name="right_hip_yaw" joint="right_hip_yaw" gear="1"/>
-    <position kp="40" kv="1.3" name="right_hip_roll" joint="right_hip_roll" gear="1"/>
-    <position kp="40" kv="1.3" name="right_hip_pitch" joint="right_hip_pitch" gear="1"/>
-    <position kp="35" kv="1.3" name="right_knee" joint="right_knee" gear="1"/>
-    <position kp="30" kv="1.6" name="right_ankle" joint="right_ankle" gear="1"/>
+    <position kp="40" kv="1.3" name="left_hip_yaw" joint="left_hip_yaw" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="40" kv="1.3" name="left_hip_roll" joint="left_hip_roll" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="40" kv="1.3" name="left_hip_pitch" joint="left_hip_pitch" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="35" kv="1.3" name="left_knee" joint="left_knee" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="30" kv="1.3" name="left_ankle" joint="left_ankle" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="40" kv="1.3" name="neck_pitch" joint="neck_pitch" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="15" kv="1.0" name="head_pitch" joint="head_pitch" gear="1" forcerange="-7.3 7.3" ctrlrange="-5.55 5.55"/>
+    <position kp="15" kv="1.0" name="head_yaw" joint="head_yaw" gear="1" forcerange="-7.3 7.3" ctrlrange="-5.55 5.55"/>
+    <position kp="15" kv="1.0" name="head_roll" joint="head_roll" gear="1" forcerange="-7.3 7.3" ctrlrange="-5.55 5.55"/>
+    <position kp="3" kv="0.2" name="left_antenna" joint="left_antenna" gear="1" forcerange="-0.2943 0.2943" ctrlrange="-13.62 13.62"/>
+    <position kp="3" kv="0.2" name="right_antenna" joint="right_antenna" gear="1" forcerange="-0.2943 0.2943" ctrlrange="-13.62 13.62"/>
+    <position kp="40" kv="1.3" name="right_hip_yaw" joint="right_hip_yaw" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="40" kv="1.3" name="right_hip_roll" joint="right_hip_roll" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="40" kv="1.3" name="right_hip_pitch" joint="right_hip_pitch" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="35" kv="1.3" name="right_knee" joint="right_knee" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
+    <position kp="30" kv="1.6" name="right_ankle" joint="right_ankle" gear="1" forcerange="-23.7 23.7" ctrlrange="-30 30"/>
   </actuator>
   <sensor>
     <framequat name='orientation' objtype='site' noise='0.001' objname='imu'/>
