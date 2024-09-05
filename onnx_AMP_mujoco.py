@@ -59,7 +59,7 @@ linearVelocityScale = 1.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
 dof_vel_scale = 0.1
-action_scale = 0.75
+action_scale = 0.80
 num_actions = 16
 
 model = mujoco.MjModel.from_xml_path("resources/robots/go_bdx/scene.xml")
