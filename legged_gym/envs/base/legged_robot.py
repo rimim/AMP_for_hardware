@@ -466,7 +466,6 @@ class LeggedRobot(BaseTask):
                 self.projected_gravity,
                 self.commands[:, :3] * self.commands_scale,
                 (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
-                # self.dof_pos,  # TODO
                 self.dof_vel * self.obs_scales.dof_vel,
                 self.actions,
             ),
@@ -493,7 +492,6 @@ class LeggedRobot(BaseTask):
             ) * self.noise_scale_vec
 
         # Remove velocity observations from policy observation.
-        # TODO add ang vel ?
         if self.num_obs == self.num_privileged_obs - 6:
             self.obs_buf = self.privileged_obs_buf[:, 6:]
         else:
