@@ -104,7 +104,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # effort = 0.52  # Nm
 
         stiffness_all = 10  # 8 [N*m/rad]
-        damping_all = 0.02  # 0.05
+        damping_all = 0.03  # 0.05
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -250,9 +250,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.0, 0.15]  # min max [m/s]
+            lin_vel_x = [0.0, 0.12]  # min max [m/s]
             lin_vel_y = [0, 0]  # min max [m/s]
-            ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
+            ang_vel_yaw = [-0.4, 0.4]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
