@@ -1,12 +1,14 @@
 import argparse
 import pickle
 import time
+import sys
 
 import mujoco
 import mujoco_viewer
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import onnxruntime
+import pygame
 
 import cv2  # OpenCV is required for this
 
@@ -45,6 +47,7 @@ parser.add_argument("--video", type=str, required=False)
 parser.add_argument('--hide-menu', action='store_true', help='Hide the viewer menu')
 parser.add_argument("--saved_obs", type=str, required=False)
 parser.add_argument("--saved_actions", type=str, required=False)
+parser.add_argument("--xbox", action="store_true", default=False)
 args = parser.parse_args()
 
 if args.saved_obs is not None:
@@ -52,14 +55,30 @@ if args.saved_obs is not None:
 if args.saved_actions is not None:
     saved_actions = pickle.loads(open("saved_actions.pkl", "rb").read())
 
+if args.xbox:
+    pygame.init()
+    pygame.joystick.init()
+    if pygame.joystick.get_count() < 1:
+        print("No joystick connected!")
+        sys.exit()
+
+    # Select the first joystick
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
+
+    # Print some information about the controller
+    print(f"Joystick Name: {joystick.get_name()}")
+    print(f"Number of Axes: {joystick.get_numaxes()}")
+    print(f"Number of Buttons: {joystick.get_numbuttons()}")
+
 # Params
 # dt = 0.002
-dt = 0.0001
+dt = 0.005
 linearVelocityScale = 1.0
-angularVelocityScale = 0.25
+angularVelocityScale = 1.0
 dof_pos_scale = 1.0
 dof_vel_scale = 0.1
-action_scale = 1.0 
+action_scale = 1.0
 num_actions = 16
 
 model = mujoco.MjModel.from_xml_path("resources/robots/go_bdx/scene.xml")
@@ -78,7 +97,7 @@ if args.video_width and args.video_height:
 else:
     frame_width = viewer.viewport.width
     frame_height = viewer.viewport.height
-# model.opt.gravity[:] = [0, 0, 0]  # no gravity
+#model.opt.gravity[:] = [0, 0, 0]  # no gravity
 if args.hide_menu:
     viewer._hide_menu = True  # Assuming the MujocoViewer supports this attribute
 
@@ -169,14 +188,21 @@ def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
 
     return (q, dq, obs)
 
+class obs_scales:
+    lin_vel = 2.0
+    ang_vel = 0.25
+    dof_pos = 1.0
+    dof_vel = 0.05
+    height_measurements = 5.0
+
 prev_action = np.zeros(16)
-commands = [0.38, 0.0, 0.0]
-#commands = [0.0, 0.0, 0.0]
+#commands = [0.38, 0.0, 0.0]
+commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 85  # hz
+control_freq = 60  # hz
 i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0, 0]
 cutoff_frequency = 20
@@ -185,6 +211,7 @@ data.qpos[7 : 7 + 16] = np.zeros(16)
 data.ctrl[:] = np.zeros(16)
 
 bdx_index = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "bdx")
+
 if bdx_index == -1:
     print("Body 'bdx' not found in model. Bodies in the model:")
     for i in range(model.nbody):
@@ -200,10 +227,36 @@ sim_step = 0
 sim_maxsteps = int(args.duration * fps)  # Number of frames to simulate
 viewer.cam.azimuth += 90  # Rotate the camera 90 degrees counterclockwise
 viewer.cam.elevation = -10  # Set the camera to be level with the ground
-decimation = 4
+decimation = 2
+running = True
+
+# # Fix the base body position and disable dynamics
+# data.qpos[:3] = np.array([0, 0, 1])  # Position the base 1 meter above the ground
+# data.qvel[:3] = np.zeros(3)  # Zero out velocities to prevent movement
+
+# # Optionally disable gravity if you don't want any downward force
+# model.opt.gravity[:] = 0
+
+
+# Get the gravity vector (assuming negative z-axis gravity)
+gravity = np.linalg.norm(model.opt.gravity)
+
+# Initialize total mass to 0
+total_mass = 0.0
+
+# Sum the masses of all bodies in the model
+for body_id in range(model.nbody):
+    total_mass += model.body_mass[body_id]
+
+# Compute the weight (mass * gravity)
+robot_weight = total_mass * gravity
+
+# Print the total weight
+print(f"Total robot weight: {robot_weight:.2f} N")
+
 try:
     start = time.time()
-    while True:
+    while running:
         # t = time.time()
         t = data.time
         if time.time() - start < 1:
@@ -233,11 +286,48 @@ try:
 
             command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
 
-        mujoco.mj_step(model, data, 50)
+        mujoco.mj_step(model, data)
         viewer.cam.lookat[:] = data.xpos[bdx_index]
         sim_step = sim_step + 1
 
         viewer.render()
+
+        if args.xbox:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.JOYAXISMOTION:
+                    # # Axis motion event (analog stick)
+                    # for i in range(joystick.get_numaxes()):
+                    #     axis_value = joystick.get_axis(i)
+                    #     print(f"Axis {i}: {axis_value:.2f}")
+                    lin_vel_x = -joystick.get_axis(1) * 0.4
+                    lin_vel_y = 0
+                    ang_vel = -joystick.get_axis(0) * 0.3
+                    lin_vel_x = round(lin_vel_x,1) * obs_scales.lin_vel
+                    lin_vel_y = round(lin_vel_y,1)
+                    ang_vel = round(ang_vel,1)
+                    if abs(lin_vel_x) != 0 or abs(ang_vel) != 0:
+                        print(f"lin_vel_x: {lin_vel_x} ang_vel: {ang_vel}")
+                    commands[0] = lin_vel_x
+                    commands[1] = lin_vel_y
+                    commands[2] = ang_vel #* obs_scales.ang_vel
+
+                elif event.type == pygame.JOYBUTTONDOWN:
+                    # Button press event
+                    for i in range(joystick.get_numbuttons()):
+                        if joystick.get_button(i):
+                            print(f"Button {i} pressed")
+                elif event.type == pygame.JOYBUTTONUP:
+                    # Button release event
+                    for i in range(joystick.get_numbuttons()):
+                        if not joystick.get_button(i):
+                            print(f"Button {i} released")
+
+            # Exit on keypress
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_ESCAPE]:
+                running = False
 
         if video_writer is not None:
             img = np.zeros((frame_height, frame_width, 3), dtype=np.uint8)
@@ -253,6 +343,29 @@ try:
             video_writer.write(img)
             if sim_step >= sim_maxsteps:
                 break
+
+        # Check for collisions after the step
+        for i in range(data.ncon):  # Iterate over all contacts
+            contact = data.contact[i]
+            
+            geom1 = contact.geom1  # Geom ID 1 involved in the contact
+            geom2 = contact.geom2  # Geom ID 2 involved in the contact
+            
+            # Get the body IDs associated with the geoms
+            body1 = model.geom_bodyid[geom1]
+            body2 = model.geom_bodyid[geom2]
+            
+            # Get the body names
+            body_name1 = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, body1)
+            body_name2 = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_BODY, body2)
+            
+            # Handle case where body name is None
+            if body_name1 is None:
+                body_name1 = f"Body {body1}"
+            if body_name2 is None:
+                body_name2 = f"Body {body2}"
+            if body_name1 != "floor" and body_name2 != "floor":            
+                print(f"Collision detected between {body_name1} and {body_name2}")
 
         prev = t
 except KeyboardInterrupt:
