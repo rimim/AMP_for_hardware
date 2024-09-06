@@ -173,6 +173,11 @@ class LeggedRobot(BaseTask):
         self.render()
         for _ in range(self.cfg.control.decimation):
             self.torques = self._compute_torques(self.actions).view(self.torques.shape)
+
+            # Torque randomization
+            if self.cfg.domain_rand.randomize_torques:
+                self.torques *= self.randomize_torques_factors
+
             self.gym.set_dof_actuation_force_tensor(
                 self.sim, gymtorch.unwrap_tensor(self.torques)
             )
@@ -181,6 +186,10 @@ class LeggedRobot(BaseTask):
                 self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
         reset_env_ids, terminal_amp_states = self.post_physics_step()
+
+        # randomize com
+        if self.cfg.domain_rand.randomize_com:
+            self.root_states[:, :2] += self.randomize_com_values
 
         # return clipped obs, clipped states (None), rewards, dones and infos
         clip_obs = self.cfg.normalization.clip_observations
@@ -343,6 +352,20 @@ class LeggedRobot(BaseTask):
             self.extras["time_outs"] = self.time_out_buf
 
         self.envs_times[env_ids] = 0.0
+
+        self.randomize_torques_factors = (
+            (
+                self.cfg.domain_rand.torque_multiplier_range[0]
+                - self.cfg.domain_rand.torque_multiplier_range[1]
+            )
+            * torch.rand(self.num_envs, self.num_actions, device=self.device)
+            + self.cfg.domain_rand.torque_multiplier_range[1]
+        ).float()
+
+        com_range = self.cfg.domain_rand.com_range
+        self.randomize_com_values = (com_range[0] - com_range[1]) * torch.rand(
+            self.num_envs, 2, device=self.device
+        ) + com_range[1]
 
     def compute_reward(self):
         """Compute rewards
@@ -1338,6 +1361,12 @@ class LeggedRobot(BaseTask):
             device=self.device,
             requires_grad=False,
         )
+
+        self.randomize_torques_factors = torch.ones(
+            self.num_envs, self.num_actions, device=self.device
+        )
+
+        self.randomize_com_values = torch.zeros(self.num_envs, 3, device=self.device)
 
     def _get_env_origins(self):
         """Sets environment origins. On rough terrain the origins are defined by the terrain platforms.

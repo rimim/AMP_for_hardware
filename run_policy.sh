@@ -69,6 +69,7 @@ if [ $USE_MUJOCO -eq 1 ]; then
     exit 1
   fi
   echo Running: $ONNX_POLICY
+  echo python onnx_AMP_mujoco.py -o "$ONNX_POLICY" --hide-menu
   python onnx_AMP_mujoco.py -o "$ONNX_POLICY" --hide-menu
 else
   if [[ -z "$CHECKPOINT_NUMBER" ]]; then

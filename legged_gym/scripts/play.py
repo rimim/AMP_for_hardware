@@ -116,7 +116,6 @@ def play(args):
                 img_idx += 1
         if MOVE_CAMERA:
             camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
-            # camera_position += camera_vel * env.dt
             env.set_camera(camera_position, camera_position + camera_direction)
 
         # if i < stop_state_log:

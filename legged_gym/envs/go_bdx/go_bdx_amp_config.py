@@ -34,18 +34,22 @@ import os
 from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobotCfgPPO
 
 #MOTION_FILES = glob.glob("datasets/bdx/placo_moves_faster/*")
-MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_walk_forward.txt"]
-MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_stand.txt"]
+#MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_walk_forward.txt"]
+#MOTION_FILES = ["datasets/go_bdx/placo_moves/bdx_stand.txt"]
 # MOTION_FILES = ["datasets/bdx/placo_moves_faster/bdx_walk_forward.txt"]
-# MOTION_FILES = [
-#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_02.txt",
-#     "datasets/bdx/placo_moves/bdx_walk_forward_higher_step_0_04.txt",
-# ]
+MOTION_FILES = [
+     # "datasets/go_bdx/placo_moves/bdx_stand.txt",
+     # "datasets/go_bdx/placo_moves/bdx_step_left.txt",
+     # "datasets/go_bdx/placo_moves/bdx_step_right.txt",
+     "datasets/go_bdx/placo_moves/bdx_walk_forward.txt",
+     "datasets/go_bdx/placo_moves/bdx_turn_left.txt",
+     "datasets/go_bdx/placo_moves/bdx_turn_right.txt",
+     # "datasets/go_bdx/placo_moves/bdx_walk_forward_fast.txt",
+]
 
 
 class GOBDXAMPCfg(LeggedRobotCfg):
     class env(LeggedRobotCfg.env):
-        #num_envs = 8000
         num_envs = 8
         include_history_steps = None  # Number of steps of history to include.
         num_observations = 54  # 3+3+3+16+16+16
@@ -137,7 +141,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 2
+        decimation = 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -167,16 +171,16 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
             fix_base_link = True  # fixe the base of the robot
 
-    class normalization(LeggedRobotCfg.normalization):
-        class obs_scales:
-            lin_vel = 2.
-            ang_vel = 1.
-            dof_pos = 1.
-            dof_vel = 0.05
-            quat = 1.
-            height_measurements = 5.0
-        clip_observations = 5.0
-        clip_actions = 1.0
+    # class normalization(LeggedRobotCfg.normalization):
+    #     class obs_scales:
+    #         lin_vel = 2.
+    #         ang_vel = 1.
+    #         dof_pos = 1.
+    #         dof_vel = 0.05
+    #         quat = 1.
+    #         height_measurements = 5.0
+    #     clip_observations = 5.0
+    #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
         dt = 0.005
@@ -190,7 +194,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         push_robots = True
         push_interval_s = 15
         max_push_vel_xy = 0.5
-        randomize_gains = True
+        randomize_gains = False
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
         randomize_torques = True
@@ -203,11 +207,11 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         noise_level = 1.0  # scales other values
 
         class noise_scales:
-            dof_pos = 0.03
-            dof_vel = 1.5
-            lin_vel = 0.1
-            ang_vel = 0.3
-            gravity = 0.05
+            dof_pos = 0.01
+            dof_vel = 0.01
+            lin_vel = 0.01
+            ang_vel = 0.01
+            gravity = 0.01
             height_measurements = 0.1
 
     class rewards(LeggedRobotCfg.rewards):
@@ -227,10 +231,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = 0.0
-            feet_air_time = 0.2
+            feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0.0
+            action_rate = -1.0
             stand_still = 0.0
             dof_pos_limits = 0.0
 
@@ -242,10 +246,10 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0, 0] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_x = [0, 0.38] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
             lin_vel_y = [0, 0] #[-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [0, 0] #[-1.57, 1.57]  # min max [rad/s]
-            heading = [-3.14, 3.14]
+            ang_vel_yaw = [-0.2, 0.2] #[-1.57, 1.57]  # min max [rad/s]
+            heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
             # ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]

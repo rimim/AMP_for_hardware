@@ -59,7 +59,7 @@ linearVelocityScale = 1.0
 angularVelocityScale = 0.25
 dof_pos_scale = 1.0
 dof_vel_scale = 0.1
-action_scale = 0.80
+action_scale = 1.0 
 num_actions = 16
 
 model = mujoco.MjModel.from_xml_path("resources/robots/go_bdx/scene.xml")
@@ -176,7 +176,7 @@ commands = [0.38, 0.0, 0.0]
 # last_control = time.time()
 prev = data.time
 last_control = data.time
-control_freq = 100  # hz
+control_freq = 85  # hz
 i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0, 0]
 cutoff_frequency = 20
@@ -200,7 +200,7 @@ sim_step = 0
 sim_maxsteps = int(args.duration * fps)  # Number of frames to simulate
 viewer.cam.azimuth += 90  # Rotate the camera 90 degrees counterclockwise
 viewer.cam.elevation = -10  # Set the camera to be level with the ground
-decimation = 2
+decimation = 4
 try:
     start = time.time()
     while True:
