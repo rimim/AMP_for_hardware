@@ -34,20 +34,9 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/placo_moves_high_foot/bdx_walk_forward.txt",
-    "datasets/bdx/placo_moves_high_foot/bdx_turn_left.txt",
-    "datasets/bdx/placo_moves_high_foot/bdx_turn_right.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_medium.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_medium.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_medium.txt",
-    # "datasets/bdx/wiggle.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
-    # "datasets/bdx/new_placo_moves/bdx_stand.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_fast.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_slow.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_left_fast.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_slow.txt",
-    # "datasets/bdx/new_placo_moves/bdx_walk_forward_turn_right_fast.txt",
+    "datasets/bdx/lower_com_placo_moves/bdx_walk_forward.txt",
+    "datasets/bdx/lower_com_placo_moves/bdx_turn_left.txt",
+    "datasets/bdx/lower_com_placo_moves/bdx_turn_right.txt",
 ]
 
 NO_FEET = False  # Do not use feet in the amp observations and data
@@ -72,24 +61,44 @@ class BDXAMPCfg(LeggedRobotCfg):
         no_feet = NO_FEET
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.17]  # x,y,z [m]
+        pos = [0.0, 0.0, 0.16]  # x,y,z [m]
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
-        default_joint_angles = {  # = target angles [rad] when action = 0.0
-            "left_hip_yaw": -0.03485756878823724,  # [rad]
-            "left_hip_roll": 0.052286054888550475,  # [rad]
-            "left_hip_pitch": 0.36623601032755765,  # [rad]
-            "left_knee": -0.964204465274923,  # [rad]
-            "left_ankle": 0.5112970996901808,  # [rad]
-            "neck_pitch": -0.17453292519943295,  # [rad]
-            "head_pitch": -0.17453292519943295,  # [rad]
-            "head_yaw": 0,  # [rad]
-            "left_antenna": 0.0,  # [rad]
-            "right_antenna": 0.0,  # [rad]
-            "right_hip_yaw": -0.03676731090962078,  # [rad]
-            "right_hip_roll": -0.030315211140564333,  # [rad]
-            "right_hip_pitch": 0.4065815100399598,  # [rad]
-            "right_knee": -1.0864064934571644,  # [rad]
-            "right_ankle": 0.5932324840794684,  # [rad]
+
+        # Higher com 0.175
+        # default_joint_angles = {  # = target angles [rad] when action = 0.0
+        #     "left_hip_yaw": -0.03485756878823724,  # [rad]
+        #     "left_hip_roll": 0.052286054888550475,  # [rad]
+        #     "left_hip_pitch": 0.36623601032755765,  # [rad]
+        #     "left_knee": -0.964204465274923,  # [rad]
+        #     "left_ankle": 0.5112970996901808,  # [rad]
+        #     "neck_pitch": -0.17453292519943295,  # [rad]
+        #     "head_pitch": -0.17453292519943295,  # [rad]
+        #     "head_yaw": 0,  # [rad]
+        #     "left_antenna": 0.0,  # [rad]
+        #     "right_antenna": 0.0,  # [rad]
+        #     "right_hip_yaw": -0.03676731090962078,  # [rad]
+        #     "right_hip_roll": -0.030315211140564333,  # [rad]
+        #     "right_hip_pitch": 0.4065815100399598,  # [rad]
+        #     "right_knee": -1.0864064934571644,  # [rad]
+        #     "right_ankle": 0.5932324840794684,  # [rad]
+        # }
+        # lower com 0.16
+        default_joint_angles = {
+            "left_hip_yaw": -0.03455234018541292,
+            "left_hip_roll": 0.055730747490168285,
+            "left_hip_pitch": 0.5397158397618105,
+            "left_knee": -1.3152788306721914,
+            "left_ankle": 0.6888361815639528,
+            "neck_pitch": -0.1745314896173976,
+            "head_pitch": -0.17453429522668937,
+            "head_yaw": 0,
+            "left_antenna": 0,
+            "right_antenna": 0,
+            "right_hip_yaw": -0.03646051060835733,
+            "right_hip_roll": -0.03358034284950263,
+            "right_hip_pitch": 0.5216150220237578,
+            "right_knee": -1.326235199315616,
+            "right_ankle": 0.7179857110436013,
         }
 
     class control(LeggedRobotCfg.control):
