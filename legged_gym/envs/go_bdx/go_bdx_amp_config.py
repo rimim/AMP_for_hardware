@@ -128,7 +128,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_antenna": 0.2,
             "right_hip_yaw": 1.3,
             "right_hip_roll": 1.3,
-            "right_hip_pitch": 1.3,action_rate
+            "right_hip_pitch": 1.3,
             "right_knee": 1.3,
             "right_ankle": 1.6,
         }
