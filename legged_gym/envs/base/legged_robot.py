@@ -54,7 +54,6 @@ from rsl_rl.datasets.motion_loader import AMPLoader
 
 
 class LeggedRobot(BaseTask):
-
     def __init__(
         self, cfg: LeggedRobotCfg, sim_params, physics_engine, sim_device, headless
     ):
@@ -733,10 +732,18 @@ class LeggedRobot(BaseTask):
 
         if control_type == "actuator_net":
             self.joint_pos_target = actions_scaled + self.default_dof_pos
-            self.joint_pos_err = self.dof_pos - self.joint_pos_target + self.motor_offsets
+            self.joint_pos_err = (
+                self.dof_pos - self.joint_pos_target + self.motor_offsets
+            )
             self.joint_vel = self.dof_vel
-            torques = self.actuator_network(self.joint_pos_err, self.joint_pos_err_last, self.joint_pos_err_last_last,
-                                            self.joint_vel, self.joint_vel_last, self.joint_vel_last_last)
+            torques = self.actuator_network(
+                self.joint_pos_err,
+                self.joint_pos_err_last,
+                self.joint_pos_err_last_last,
+                self.joint_vel,
+                self.joint_vel_last,
+                self.joint_vel_last_last,
+            )
             self.joint_pos_err_last_last = torch.clone(self.joint_pos_err_last)
             self.joint_pos_err_last = torch.clone(self.joint_pos_err)
             self.joint_vel_last_last = torch.clone(self.joint_vel_last)
@@ -1082,30 +1089,52 @@ class LeggedRobot(BaseTask):
                 self.randomized_d_gains,
             ) = self.compute_randomized_gains(self.num_envs)
         if self.cfg.control.control_type == "actuator_net":
-            actuator_path = f'{os.path.dirname(os.path.dirname(os.path.realpath(__file__)))}/../../resources/actuator_nets/unitree_go1.pt'
+            actuator_path = f"{os.path.dirname(os.path.dirname(os.path.realpath(__file__)))}/../../resources/actuator_nets/unitree_go1.pt"
             actuator_network = torch.jit.load(actuator_path).to(self.device)
 
-            def eval_actuator_network(joint_pos, joint_pos_last, joint_pos_last_last, joint_vel, joint_vel_last,
-                                      joint_vel_last_last):
-                xs = torch.cat((joint_pos.unsqueeze(-1),
-                                joint_pos_last.unsqueeze(-1),
-                                joint_pos_last_last.unsqueeze(-1),
-                                joint_vel.unsqueeze(-1),
-                                joint_vel_last.unsqueeze(-1),
-                                joint_vel_last_last.unsqueeze(-1)), dim=-1)
+            def eval_actuator_network(
+                joint_pos,
+                joint_pos_last,
+                joint_pos_last_last,
+                joint_vel,
+                joint_vel_last,
+                joint_vel_last_last,
+            ):
+                xs = torch.cat(
+                    (
+                        joint_pos.unsqueeze(-1),
+                        joint_pos_last.unsqueeze(-1),
+                        joint_pos_last_last.unsqueeze(-1),
+                        joint_vel.unsqueeze(-1),
+                        joint_vel_last.unsqueeze(-1),
+                        joint_vel_last_last.unsqueeze(-1),
+                    ),
+                    dim=-1,
+                )
                 torques = actuator_network(xs.view(self.num_envs * 16, 6))
                 return torques.view(self.num_envs, 16)
 
             self.actuator_network = eval_actuator_network
 
-            self.joint_pos_err_last_last = torch.zeros((self.num_envs, 16), device=self.device)
-            self.joint_pos_err_last = torch.zeros((self.num_envs, 16), device=self.device)
-            self.joint_vel_last_last = torch.zeros((self.num_envs, 16), device=self.device)
+            self.joint_pos_err_last_last = torch.zeros(
+                (self.num_envs, 16), device=self.device
+            )
+            self.joint_pos_err_last = torch.zeros(
+                (self.num_envs, 16), device=self.device
+            )
+            self.joint_vel_last_last = torch.zeros(
+                (self.num_envs, 16), device=self.device
+            )
             self.joint_vel_last = torch.zeros((self.num_envs, 16), device=self.device)
 
     def _init_custom_buffers__(self):
-        self.motor_offsets = torch.zeros(self.num_envs, self.num_dof, dtype=torch.float, device=self.device,
-                                         requires_grad=False)
+        self.motor_offsets = torch.zeros(
+            self.num_envs,
+            self.num_dof,
+            dtype=torch.float,
+            device=self.device,
+            requires_grad=False,
+        )
 
     def compute_randomized_gains(self, num_envs):
         p_mult = (
