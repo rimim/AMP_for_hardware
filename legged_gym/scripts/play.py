@@ -43,7 +43,7 @@ def play(args):
     env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
     # override some parameters for testing
     env_cfg.env.num_envs = min(env_cfg.env.num_envs, 50)
-    env_cfg.env.get_commands_from_joystick = False
+    env_cfg.env.get_commands_from_joystick = True
     env_cfg.terrain.num_rows = 5
     env_cfg.terrain.num_cols = 5
     env_cfg.terrain.curriculum = False
@@ -52,10 +52,10 @@ def play(args):
     env_cfg.domain_rand.push_robots = False
     env_cfg.domain_rand.randomize_gains = False
     env_cfg.domain_rand.randomize_base_mass = False  # TODO
-    #env_cfg.control.control_type = "actuator_net"
-    if os.getenv('GYM_PLOT_COMMAND_ACTION') is not None:
+    # env_cfg.control.control_type = "actuator_net"
+    if os.getenv("GYM_PLOT_COMMAND_ACTION") is not None:
         env_cfg.env.debug_save_obs = True
-    if os.getenv('GYM_PLOT_COMMAND_ACTION_REF') is not None:
+    if os.getenv("GYM_PLOT_COMMAND_ACTION_REF") is not None:
         env_cfg.env.debug_save_obs = True
         env_cfg.env.debug_zero_action = True
 
@@ -92,7 +92,7 @@ def play(args):
         env.max_episode_length + 1
     )  # number of steps before print average episode rewards
     initial_distance = 1.5  # Desired starting distance from the robot
-    initial_height = 0.65   # Height of the camera
+    initial_height = 0.65  # Height of the camera
     camera_rot = 0
     camera_position = np.array([initial_distance, 0.0, initial_height])
     camera_vel = np.array([1.0, 1.0, 0.0])
@@ -115,7 +115,9 @@ def play(args):
                 env.gym.write_viewer_image_to_file(env.viewer, filename)
                 img_idx += 1
         if MOVE_CAMERA:
-            camera_position = desired_distance * np.array([np.cos(camera_rot), np.sin(camera_rot), 0]) + np.array([0, 0, initial_height])
+            camera_position = desired_distance * np.array(
+                [np.cos(camera_rot), np.sin(camera_rot), 0]
+            ) + np.array([0, 0, initial_height])
             env.set_camera(camera_position, camera_position + camera_direction)
 
         # if i < stop_state_log:
