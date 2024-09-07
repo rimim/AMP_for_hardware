@@ -78,7 +78,7 @@ linearVelocityScale = 1.0
 angularVelocityScale = 1.0
 dof_pos_scale = 1.0
 dof_vel_scale = 0.1
-action_scale = 1.0
+action_scale = 0.85
 num_actions = 16
 
 model = mujoco.MjModel.from_xml_path("resources/robots/go_bdx/scene.xml")
@@ -89,6 +89,7 @@ if args.width and args.height:
     viewer = mujoco_viewer.MujocoViewer(model, data, width=args.width, height=args.height, hide_menus=args.hide_menu)
 else:
     viewer = mujoco_viewer.MujocoViewer(model, data, hide_menus=args.hide_menu)
+
 context = mujoco.MjrContext(model, mujoco.mjtFontScale.mjFONTSCALE_150)
 fps = 33  # Frames per second
 if args.video_width and args.video_height:
@@ -107,7 +108,6 @@ if args.video is not None:
     video_writer = cv2.VideoWriter(args.video, fourcc, fps, (frame_width, frame_height))
 
 policy = OnnxInfer(args.onnx_model_path)
-
 
 class ImuDelaySimulator:
     def __init__(self, delay_ms):
@@ -188,6 +188,22 @@ def get_obs(data, action, commands, imu_delay_simulator: ImuDelaySimulator):
 
     return (q, dq, obs)
 
+def reset_robot():
+    new_base_position = [0.0, 0.0, 0.0]  # x, y, z coordinates
+    new_base_orientation = [0.0, 0.0, 0.0, 0.0]  # quaternion [w, x, y, z]
+
+    data.qpos[0:3] = new_base_position  # First 3 elements represent position (x, y, z)
+    data.qpos[3:7] = new_base_orientation  # Next 4 elements represent orientation (quaternion)
+
+    # Optionally reset the joint positions (after the floating base state)
+    data.qpos[7:] = initial_joint_positions  # Replace with joint positions if needed
+
+    data.qvel[:] = 0  # Reset all velocities (base and joint velocities)
+
+class default_command_velocities:
+    lin_vel = 0.5
+    ang_vel = 0.2
+
 class obs_scales:
     lin_vel = 2.0
     ang_vel = 0.25
@@ -196,8 +212,9 @@ class obs_scales:
     height_measurements = 5.0
 
 prev_action = np.zeros(16)
-#commands = [0.38, 0.0, 0.0]
-commands = [0.0, 0.0, 0.0]
+commands = [default_command_velocities.lin_vel * obs_scales.lin_vel, 0.0, 0.0]
+if args.xbox:
+    commands = [0.0, 0.0, 0.0]
 # prev = time.time()
 # last_control = time.time()
 prev = data.time
@@ -206,6 +223,7 @@ control_freq = 60  # hz
 i = 0
 data.qpos[3 : 3 + 4] = [1, 0, 0, 0]
 cutoff_frequency = 20
+initial_joint_positions = data.qpos[7:].copy()
 
 data.qpos[7 : 7 + 16] = np.zeros(16)
 data.ctrl[:] = np.zeros(16)
@@ -250,9 +268,32 @@ for body_id in range(model.nbody):
 
 # Compute the weight (mass * gravity)
 robot_weight = total_mass * gravity
+buttons_pressed_mask = 0
 
 # Print the total weight
 print(f"Total robot weight: {robot_weight:.2f} N")
+
+left_antenna_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "left_antenna") - 1
+right_antenna_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "right_antenna") - 1
+neck_pitch_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "neck_pitch") - 1
+head_pitch_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "head_pitch") - 1
+head_roll_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, "head_yaw") - 1
+
+# left_antenna_qpos_adr = model.jnt_qposadr[left_antenna_id]
+# right_antenna_qpos_adr = model.jnt_qposadr[right_antenna_id]
+# neck_pitch_qpos_adr = model.jnt_qposadr[neck_pitch_id]
+# head_roll_qpos_adr = model.jnt_qposadr[head_roll_id]
+
+move_ears_back = False
+move_ears_forward = False
+move_head_down = False
+move_head_up = False
+turn_head_left = False
+turn_head_right = False
+ear_action_scale = 0.2
+head_action_scale = 0.1
+ears_back_position = 1.0
+head_target_position = 1.0
 
 try:
     start = time.time()
@@ -273,7 +314,48 @@ try:
             action = policy.infer(obs)
             if args.saved_actions is not None:
                 action = saved_actions[i][0]
+            prev_action_left_ear = prev_action[left_antenna_id]
+            prev_action_right_ear = prev_action[right_antenna_id]
+            prev_action_head_roll = prev_action[head_roll_id]
+            prev_action_head_pitch = prev_action[head_pitch_id]
+            prev_action_neck_pitch = prev_action[neck_pitch_id]
             prev_action = action.copy()
+            if move_ears_back:
+                prev_action_left_ear += ear_action_scale * (ears_back_position - prev_action_left_ear)
+                prev_action_right_ear += ear_action_scale * (ears_back_position - prev_action_right_ear)
+                prev_action[left_antenna_id] = prev_action_left_ear
+                prev_action[right_antenna_id] = prev_action_right_ear
+                action[left_antenna_id] = prev_action[left_antenna_id]
+                action[right_antenna_id] = prev_action[right_antenna_id]
+            elif move_ears_forward:
+                prev_action_left_ear += ear_action_scale * (-ears_back_position - prev_action_left_ear)
+                prev_action_right_ear += ear_action_scale * (-ears_back_position - prev_action_right_ear)
+                prev_action[left_antenna_id] = prev_action_left_ear
+                prev_action[right_antenna_id] = prev_action_right_ear
+                action[left_antenna_id] = prev_action[left_antenna_id]
+                action[right_antenna_id] = prev_action[right_antenna_id]
+            elif turn_head_left:
+                prev_action_head_roll += head_action_scale * (head_target_position - prev_action_head_roll)
+                prev_action[head_roll_id] = prev_action_head_roll
+                action[head_roll_id] = prev_action[head_roll_id]
+            elif turn_head_right:
+                prev_action_head_roll += head_action_scale * (-head_target_position - prev_action_head_roll)
+                prev_action[head_roll_id] = prev_action_head_roll
+                action[head_roll_id] = prev_action[head_roll_id]
+            elif move_head_down:
+                prev_action_head_pitch += head_action_scale * (head_target_position - prev_action_head_pitch)
+                prev_action_neck_pitch += head_action_scale * (head_target_position - prev_action_neck_pitch)
+                prev_action[head_pitch_id] = prev_action_head_pitch
+                prev_action[neck_pitch_id] = prev_action_neck_pitch
+                action[head_pitch_id] = prev_action[head_pitch_id]
+                action[neck_pitch_id] = prev_action[neck_pitch_id]
+            elif move_head_up:
+                prev_action_head_pitch += head_action_scale * (-head_target_position - prev_action_head_pitch)
+                prev_action_neck_pitch += head_action_scale * (-head_target_position - prev_action_neck_pitch)
+                prev_action[head_pitch_id] = prev_action_head_pitch
+                prev_action[neck_pitch_id] = prev_action_neck_pitch
+                action[head_pitch_id] = prev_action[head_pitch_id]
+                action[neck_pitch_id] = prev_action[neck_pitch_id]
 
             action = action * action_scale
 
@@ -284,11 +366,14 @@ try:
             data.ctrl[:] = action.copy()
             # saved_actions.append(action)
 
-            command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
+            # command_value.append([data.ctrl.copy(), data.qpos[7:].copy()])
 
         mujoco.mj_step(model, data)
         viewer.cam.lookat[:] = data.xpos[bdx_index]
         sim_step = sim_step + 1
+        if video_writer is not None:
+            print(f"sim_step: {sim_step}:{sim_maxsteps}")
+            sys.stdout.flush() 
 
         viewer.render()
 
@@ -301,9 +386,9 @@ try:
                     # for i in range(joystick.get_numaxes()):
                     #     axis_value = joystick.get_axis(i)
                     #     print(f"Axis {i}: {axis_value:.2f}")
-                    lin_vel_x = -joystick.get_axis(1) * 0.4
+                    lin_vel_x = joystick.get_axis(0) * default_command_velocities.lin_vel
                     lin_vel_y = 0
-                    ang_vel = -joystick.get_axis(0) * 0.3
+                    ang_vel = joystick.get_axis(1) * default_command_velocities.ang_vel
                     lin_vel_x = round(lin_vel_x,1) * obs_scales.lin_vel
                     lin_vel_y = round(lin_vel_y,1)
                     ang_vel = round(ang_vel,1)
@@ -317,12 +402,40 @@ try:
                     # Button press event
                     for i in range(joystick.get_numbuttons()):
                         if joystick.get_button(i):
-                            print(f"Button {i} pressed")
+                            buttons_pressed_mask = buttons_pressed_mask | (1 << i)
+                            if i == 0:
+                                turn_head_left = True
+                            elif i == 1:
+                                move_head_up = True
+                            elif i == 3:
+                                turn_head_right = True
+                            elif i == 4:
+                                move_head_down = True
+                            elif i == 6:
+                                move_ears_forward = True
+                            elif i == 7:
+                                move_ears_back = True
                 elif event.type == pygame.JOYBUTTONUP:
                     # Button release event
                     for i in range(joystick.get_numbuttons()):
-                        if not joystick.get_button(i):
-                            print(f"Button {i} released")
+                        if (buttons_pressed_mask & (1 << i)) >> i == 1:
+                            buttons_pressed_mask = buttons_pressed_mask & ~(1 << i)
+                            if i == 0:
+                                turn_head_left = False
+                            elif i == 1:
+                                move_head_up = False
+                            elif i == 2:
+                                reset_robot()
+                            elif i == 3:
+                                turn_head_right = False
+                            elif i == 4:
+                                move_head_down = False
+                            elif i == 6:
+                                move_ears_forward = False
+                            elif i == 7:
+                                move_ears_back = False
+                            else:
+                                print(f"Button #{i} pressed")
 
             # Exit on keypress
             keys = pygame.key.get_pressed()
@@ -364,6 +477,9 @@ try:
                 body_name1 = f"Body {body1}"
             if body_name2 is None:
                 body_name2 = f"Body {body2}"
+            if body_name1 == "floor" and body_name2 == "pelvis":
+                print(f"Collision detected between {body_name1} and {body_name2}")
+                reset_robot()
             if body_name1 != "floor" and body_name2 != "floor":            
                 print(f"Collision detected between {body_name1} and {body_name2}")
 

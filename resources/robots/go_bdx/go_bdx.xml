@@ -1,8 +1,7 @@
 <mujoco model="bdx">
   <compiler angle="radian" meshdir="meshes" texturedir="textures" autolimits="true"/>
 
-  <!-- <option timestep="0.001"/> -->
-  <option integrator="implicitfast"/>
+  <option cone="elliptic" impratio="100"/>
 
   <default>
     <default class="bdx">
@@ -23,15 +22,15 @@
       </default>
 
       <default class="neck-joint-param">
-        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>""
       </default>
 
       <default class="head-joint-param">
-        <joint damping="0.01" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
+        <joint damping="0.001" frictionloss="0.1" armature="0.1" range="-0.785398 0.785398"/>
       </default>
 
       <default class="antenna-joint-param">
-        <joint damping="0.01" frictionloss="0.01" armature="0.01" range="-0.785398 0.785398"/>
+        <joint damping="0.0001" frictionloss="0.001" armature="0.001" range="-0.785398 0.785398"/>
       </default>
     </default>
   </default>
@@ -108,14 +107,14 @@
                 <joint class="head-joint-param" name="head_roll" pos="0 0 0" axis="1 0 0"/>
                 <geom pos="-0.031508 -0.00085 -0.562171" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="head_body_roll"/>
                 <body name="ear_left" pos="-0.16665 0.0683 0.001231">
-                  <inertial pos="0.000161565 0.0247291 0.016145" quat="0.998004 -0.0231719 0.0382937 0.0445513" mass="0.0964016" diaginertia="0.0000208107 0.0000200388 0.00000195059"/>
+                  <inertial pos="0.000161565 0.0247291 0.016145" quat="0.998004 -0.0231719 0.0382937 0.0445513" mass="0.001" diaginertia="0.0000001 0.0000001 0.0000001"/>
                   <joint class="antenna-joint-param" name="left_antenna" pos="0 0 0" axis="0 -1 0"/>
-                  <geom pos="0.135142 -0.06915 -0.563402" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="ear_left"/>
+                  <geom pos="0.135142 -0.06915 -0.563402" quat="1 0 0 0" type="mesh" rgba="0.7 0.7 0.7 1" mesh="ear_left" contype="0" conaffinity="0"/>
                 </body>
                 <body name="ear_right" pos="-0.16665 -0.0697 0.001231">
-                  <inertial pos="0.000161565 -0.0247291 0.016145" quat="0.998004 0.0231719 0.0382937 -0.0445513" mass="0.0964016" diaginertia="0.0000208107 0.0000200388 0.00000195059"/>
+                  <inertial pos="0.000161565 -0.0247291 0.016145" quat="0.998004 0.0231719 0.0382937 -0.0445513" mass="0.001" diaginertia="0.0000001 0.0000001 0.0000001"/>
                   <joint class="antenna-joint-param" name="right_antenna" pos="0 0 0" axis="0 -1 0"/>
-                  <geom pos="0.135142 0.06885 -0.563402" type="mesh" rgba="0.7 0.7 0.7 1" mesh="ear_right"/>
+                  <geom pos="0.135142 0.06885 -0.563402" type="mesh" rgba="0.7 0.7 0.7 1" mesh="ear_right" contype="0" conaffinity="0"/>
                 </body>
               </body>
             </body>
@@ -152,6 +151,11 @@
   <contact>
     <exclude body1="pelvis" body2="right_hip"/>
     <exclude body1="pelvis" body2="left_hip"/>
+    <exclude body1="pelvis" body2="left_thigh"/>
+    <exclude body1="pelvis" body2="right_thigh"/>
+    <exclude body1="neck" body2="right_hip_rotation"/>
+    <exclude body1="neck" body2="left_hip_rotation"/>
+    <exclude body1="left_hip_rotation" body2="right_hip_rotation"/>
     <exclude body1="neck" body2="head_body_pitch"/>
     <exclude body1="neck" body2="head_body_yaw"/>
     <exclude body1="neck" body2="head_body_roll"/>

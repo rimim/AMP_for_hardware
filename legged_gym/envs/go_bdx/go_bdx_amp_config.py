@@ -41,10 +41,11 @@ MOTION_FILES = [
      # "datasets/go_bdx/placo_moves/bdx_stand.txt",
      # "datasets/go_bdx/placo_moves/bdx_step_left.txt",
      # "datasets/go_bdx/placo_moves/bdx_step_right.txt",
-     "datasets/go_bdx/placo_moves/bdx_walk_forward.txt",
+     # "datasets/go_bdx/placo_moves/bdx_walk_forward.txt",
+     "datasets/go_bdx/placo_moves/bdx_walk_backward.txt",
+     "datasets/go_bdx/placo_moves/bdx_walk_forward_fast.txt",
      "datasets/go_bdx/placo_moves/bdx_turn_left.txt",
      "datasets/go_bdx/placo_moves/bdx_turn_right.txt",
-     # "datasets/go_bdx/placo_moves/bdx_walk_forward_fast.txt",
 ]
 
 
@@ -246,7 +247,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0, 0.38] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_x = [-0.8, 0.8] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
             lin_vel_y = [0, 0] #[-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
             ang_vel_yaw = [-0.2, 0.2] #[-1.57, 1.57]  # min max [rad/s]
             heading = [0, 0]
