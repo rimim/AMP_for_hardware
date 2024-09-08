@@ -290,7 +290,7 @@ do
 
     echo CHECKPOINT: "$CHECKPOINT"
     echo LAST_CHECKPOINT: "$LAST_CHECKPOINT"
-    if [[ ! -f "$LOCAL_TASK_DIR"/"$LATEST_CHECKPOINT" || "$LAST_CHECKPOINT" != "$CHECKPOINT" ]]; then
+    if [[ ! -f "$LATEST_CHECKPOINT" || "$LAST_CHECKPOINT" != "$CHECKPOINT" ]]; then
       if [[ ! -z "$REMOTE" ]]; then
         rsync -avz $REMOTE_USER_SERVER:"$LATEST_CHECKPOINT" "$LOCAL_TASK_DIR/$(basename "$LAST_CHECKPOINT_DIR")/" || exit
       fi

@@ -46,8 +46,8 @@ MOTION_FILES = [
     # "datasets/go_bdx/placo_moves/bdx_turn_right.txt",
     # "datasets/go_bdx/placo_moves/bdx_walk_forward_fast.txt",
     "datasets/go_bdx/antoine_placo_moves/bdx_walk_forward.txt",
-    "datasets/go_bdx/antoine_placo_moves/bdx_turn_left.txt",
-    "datasets/go_bdx/antoine_placo_moves/bdx_turn_right.txt",
+    # "datasets/go_bdx/antoine_placo_moves/bdx_turn_left.txt",
+    # "datasets/go_bdx/antoine_placo_moves/bdx_turn_right.txt",
 ]
 
 
@@ -96,54 +96,52 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = False
-        # effort = 0.6  # Nm
-        # effort = 20  # Nm
-
-        stiffness_all = 100
-        damping_all = 1.5
+        dof_friction = 0.01
+        #effort = 0.6  # Nm
+        #effort = 20  # Nm
 
         stiffness = {
-            "left_hip_yaw": stiffness_all,
-            "left_hip_roll": stiffness_all,
-            "left_hip_pitch": stiffness_all,
-            "left_knee": stiffness_all,
-            "left_ankle": stiffness_all,
-            "neck_pitch": stiffness_all,
-            "head_pitch": stiffness_all,
-            "head_yaw": stiffness_all,
-            "head_roll": stiffness_all,
-            "left_antenna": stiffness_all,
-            "right_antenna": stiffness_all,
-            "right_hip_yaw": stiffness_all,
-            "right_hip_roll": stiffness_all,
-            "right_hip_pitch": stiffness_all,
-            "right_knee": stiffness_all,
-            "right_ankle": stiffness_all,
+            "left_hip_yaw": 40,
+            "left_hip_roll": 40,
+            "left_hip_pitch": 40,
+            "left_knee": 35,
+            "left_ankle": 30,
+            "neck_pitch": 40,
+            "head_pitch": 15,
+            "head_yaw": 15,
+            "head_roll": 15,
+            "left_antenna": 3,
+            "right_antenna": 3,
+            "right_hip_yaw": 40,
+            "right_hip_roll": 40,
+            "right_hip_pitch": 40,
+            "right_knee": 35,
+            "right_ankle": 30,
         }
         damping = {
-            "left_hip_yaw": damping_all,
-            "left_hip_roll": damping_all,
-            "left_hip_pitch": damping_all,
-            "left_knee": damping_all,
-            "left_ankle": damping_all,
-            "neck_pitch": damping_all,
-            "head_pitch": damping_all,
-            "head_yaw": damping_all,
-            "head_roll": damping_all,
-            "left_antenna": damping_all,
-            "right_antenna": damping_all,
-            "right_hip_yaw": damping_all,
-            "right_hip_roll": damping_all,
-            "right_hip_pitch": damping_all,
-            "right_knee": damping_all,
-            "right_ankle": damping_all,
+            "left_hip_yaw": 1.3,
+            "left_hip_roll": 1.3,
+            "left_hip_pitch": 1.3,
+            "left_knee": 1.3,
+            "left_ankle": 1.6,
+            "neck_pitch": 1.3,
+            "head_pitch": 1.0,
+            "head_yaw": 1.0,
+            "head_roll": 1.0,
+            "left_antenna": 0.2,
+            "right_antenna": 0.2,
+            "right_hip_yaw": 1.3,
+            "right_hip_roll": 1.3,
+            "right_hip_pitch": 1.3,
+            "right_knee": 1.3,
+            "right_ankle": 1.6,
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25
-        # action_scale = 1.0
+        #action_scale = 0.25
+        action_scale = 1.0
         ###### HACKHACK BEGIN
-        # action_scale = 1
+        #action_scale = 1
         ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
@@ -226,8 +224,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.004 * 4)
-            tracking_ang_vel = 0.5 * 1.0 / (0.004 * 4)
+            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -254,7 +252,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         class ranges:
             lin_vel_x = [0, 0.3]  # [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
             lin_vel_y = [0, 0]  # [-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [-0.4, 0.4]  # [-1.57, 1.57]  # min max [rad/s]
+            ang_vel_yaw = [0, 0]  # [-1.57, 1.57]  # min max [rad/s]
+            # ang_vel_yaw = [-0.4, 0.4]  # [-1.57, 1.57]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
