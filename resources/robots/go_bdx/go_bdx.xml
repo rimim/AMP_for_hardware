@@ -152,6 +152,8 @@
   <contact>
     <exclude body1="pelvis" body2="right_hip"/>
     <exclude body1="pelvis" body2="left_hip"/>
+    <exclude body1="pelvis" body2="left_thigh"/>
+    <exclude body1="pelvis" body2="right_thigh"/>
     <exclude body1="neck" body2="head_body_pitch"/>
     <exclude body1="neck" body2="head_body_yaw"/>
     <exclude body1="neck" body2="head_body_roll"/>
