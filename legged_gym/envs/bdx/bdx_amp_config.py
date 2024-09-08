@@ -111,7 +111,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # dof_friction = 0.001
 
         stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.03  # 0.03
+        damping_all = 0.1  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -179,8 +179,8 @@ class BDXAMPCfg(LeggedRobotCfg):
             "head",
             "left_antenna",
             "right_antenna",
-            # "leg_module",
-            # "leg_module_2",
+            "leg_module",
+            "leg_module_2",
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
