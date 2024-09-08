@@ -108,8 +108,10 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
+        dof_friction = 0.01
+
         stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.1  # 0.03
+        damping_all = 0.05  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -119,8 +121,8 @@ class BDXAMPCfg(LeggedRobotCfg):
             "neck_pitch": stiffness_all,
             "head_pitch": stiffness_all,
             "head_yaw": stiffness_all,
-            "left_antenna": 1,
-            "right_antenna": 1,
+            "left_antenna": 0.1,
+            "right_antenna": 0.1,
             "right_hip_yaw": stiffness_all,
             "right_hip_roll": stiffness_all,
             "right_hip_pitch": stiffness_all,
