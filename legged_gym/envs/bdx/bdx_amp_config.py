@@ -213,7 +213,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         com_range = [-0.02, 0.02]
 
     class noise:
-        add_noise = False
+        add_noise = True
         noise_level = 1.0  # scales other values
 
         class noise_scales:
