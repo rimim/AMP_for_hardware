@@ -644,7 +644,7 @@ class LeggedRobot(BaseTask):
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
 
-                # props["friction"] = self.cfg.control.dof_friction
+                props["friction"] = self.cfg.control.dof_friction
                 # props["damping"] = 0.0001
         return props
 
