@@ -35,8 +35,8 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
     "datasets/bdx/lower_com_placo_moves/bdx_walk_forward.txt",
-    # "datasets/bdx/trunk_pitch_placo_moves/bdx_turn_left.txt",
-    # "datasets/bdx/trunk_pitch_placo_moves/bdx_turn_right.txt",
+    "datasets/bdx/lower_com_placo_moves/bdx_turn_left.txt",
+    "datasets/bdx/lower_com_placo_moves/bdx_turn_right.txt",
 ]
 
 NO_FEET = False  # Do not use feet in the amp observations and data
@@ -149,8 +149,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        # action_scale = 0.25  # 0.25
-        action_scale = 1.0  # 0.25
+        action_scale = 0.25  # 0.25
+        # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 4  # 4
@@ -257,8 +257,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
-            lin_vel_y = [0, 0]  # min max [m/s]
+            lin_vel_x = [0.0, 0.1]  # min max [m/s]
+            lin_vel_y = [-0.3, 0.3]  # min max [m/s]
             # ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
