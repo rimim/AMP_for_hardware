@@ -35,8 +35,8 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
     "datasets/bdx/lower_com_placo_moves/bdx_walk_forward.txt",
-    "datasets/bdx/lower_com_placo_moves/bdx_turn_left.txt",
-    "datasets/bdx/lower_com_placo_moves/bdx_turn_right.txt",
+    # "datasets/bdx/lower_com_placo_moves/bdx_turn_left.txt",
+    # "datasets/bdx/lower_com_placo_moves/bdx_turn_right.txt",
 ]
 
 NO_FEET = False  # Do not use feet in the amp observations and data
