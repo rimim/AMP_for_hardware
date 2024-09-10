@@ -104,7 +104,7 @@ class BDXAMPCfg(LeggedRobotCfg):
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        override_effort = True
+        override_effort = False
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
