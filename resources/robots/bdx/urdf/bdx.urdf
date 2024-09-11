@@ -2191,7 +2191,7 @@
         <parent link="head_assembly" />
         <child link="left_antenna_assembly" />
         <axis xyz="0 0 1"/>
-        <limit effort="0.52" velocity="10.7" lower="-1.1344640137963142301" upper="2.0943951023931952626"/>
+        <limit effort="0.17" velocity="10" lower="-1.1344640137963142301" upper="2.0943951023931952626"/>
         <joint_properties friction="0.1"/>
     </joint>
     <link name="right_antenna_assembly">
@@ -2251,7 +2251,7 @@
         <parent link="head_assembly" />
         <child link="right_antenna_assembly" />
         <axis xyz="0 0 1"/>
-        <limit effort="0.52" velocity="10.7" lower="-2.0943951023931952626" upper="1.1344640137963142301"/>
+        <limit effort="0.17" velocity="10" lower="-2.0943951023931952626" upper="1.1344640137963142301"/>
         <joint_properties friction="0.1"/>
     </joint>
     <joint name="head_yaw" type="revolute">
