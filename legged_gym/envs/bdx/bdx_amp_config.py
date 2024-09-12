@@ -129,7 +129,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         # action scale: target angle = actionScale * action + defaultAngle
         # action_scale = 0.25  # 0.25
-        action_scale = 1.0  # 0.25
+        action_scale = 0.75  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 10  # 4
@@ -158,8 +158,8 @@ class BDXAMPCfg(LeggedRobotCfg):
             "head",
             "left_antenna",
             "right_antenna",
-            # "leg_module",
-            # "leg_module_2",
+            "leg_module",
+            "leg_module_2",
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
