@@ -41,11 +41,10 @@ MOTION_FILES = [
      # "datasets/go_bdx/placo_moves/bdx_stand.txt",
      # "datasets/go_bdx/placo_moves/bdx_step_left.txt",
      # "datasets/go_bdx/placo_moves/bdx_step_right.txt",
-     # "datasets/go_bdx/placo_moves/bdx_walk_forward.txt",
-     "datasets/go_bdx/placo_moves/bdx_walk_backward.txt",
-     "datasets/go_bdx/placo_moves/bdx_walk_forward_fast.txt",
-     "datasets/go_bdx/placo_moves/bdx_turn_left.txt",
-     "datasets/go_bdx/placo_moves/bdx_turn_right.txt",
+     "datasets/go_bdx/placo_moves/bdx_walk_forward.txt",
+     # "datasets/go_bdx/placo_moves/bdx_walk_backward.txt",
+     # "datasets/go_bdx/placo_moves/bdx_turn_left.txt",
+     # "datasets/go_bdx/placo_moves/bdx_turn_right.txt",
 ]
 
 
@@ -62,6 +61,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         amp_motion_files = MOTION_FILES
         ee_names = ["left_foot", "right_foot"]
         get_commands_from_joystick = False
+        get_commands_from_keyboard = False
         episode_length_s = 8  # episode length in seconds
         debug_save_obs = False
         debug_zero_action = False
@@ -94,8 +94,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = False
-        #effort = 0.6  # Nm
-        #effort = 20  # Nm
+        dof_friction = 0 # 0.01
 
         stiffness = {
             "left_hip_yaw": 40,
@@ -134,12 +133,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
             "right_ankle": 1.6,
         }
 
-        # action scale: target angle = actionScale * action + defaultAngle
-        #action_scale = 0.25
         action_scale = 1.0
-        ###### HACKHACK BEGIN
-        #action_scale = 1
-        ###### HACKHACK END
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 4
@@ -184,27 +178,27 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.005
+        dt = 0.004
         substeps = 2
 
     class domain_rand:
-        randomize_friction = True
+        randomize_friction = False
         friction_range = [0.25, 1.05]
-        randomize_base_mass = True
+        randomize_base_mass = False
         added_mass_range = [-0.5, 0.5]
-        push_robots = True
+        push_robots = False
         push_interval_s = 15
         max_push_vel_xy = 0.5
         randomize_gains = False
         stiffness_multiplier_range = [0.9, 1.1]
         damping_multiplier_range = [0.9, 1.1]
-        randomize_torques = True
+        randomize_torques = False
         torque_multiplier_range = [0.90, 1.1]
-        randomize_com = True
+        randomize_com = False
         com_range = [-0.01, 0.01]
 
     class noise:
-        add_noise = True
+        add_noise = False
         noise_level = 1.0  # scales other values
 
         class noise_scales:
@@ -242,14 +236,15 @@ class GOBDXAMPCfg(LeggedRobotCfg):
     class commands:
         curriculum = False  # False
         max_curriculum = 1.0
-        num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [-0.8, 0.8] #[0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
-            lin_vel_y = [0, 0] #[-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [-0.2, 0.2] #[-1.57, 1.57]  # min max [rad/s]
+            lin_vel_x = [-0.3, 0.3]  # [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_y = [0, 0]  # [-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
+            ang_vel_yaw = [-0.1, 0.1]  # [-1.57, 1.57]  # min max [rad/s]
+            # ang_vel_yaw = [-0.4, 0.4]  # [-1.57, 1.57]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
@@ -285,9 +280,10 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        #disc_grad_penalty = 1  # original 10 # TUNE ?
+        # disc_grad_penalty = 1  # original 10 # TUNE ?
         # smaller penalty is needed for high-dynamic mocap
-        disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        #disc_grad_penalty = 0.1  # original 10 # TUNE ?
+        disc_grad_penalty = 1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
