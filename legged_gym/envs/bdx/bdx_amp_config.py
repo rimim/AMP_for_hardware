@@ -34,7 +34,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/placo_moves/bdx_walk_forward.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
     # "datasets/bdx/placo_moves/bdx_turn_left.txt",
     # "datasets/bdx/placo_moves/bdx_turn_right.txt",
 ]
@@ -89,8 +89,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.03  # 0.03
+        stiffness_all = 5  # 10 [N*m/rad]
+        damping_all = 0.1  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -132,7 +132,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 4  # 4
+        decimation = 10  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"  # "heightfield" # none, plane, heightfield or trimesh
@@ -172,8 +172,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.004  # 0.004
-        substeps = 2  # 2
+        dt = 0.001  # 0.004
+        substeps = 1  # 2
 
     class domain_rand:
         randomize_friction = False
@@ -210,8 +210,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.004 * 4)
-            tracking_ang_vel = 0.5 * 1.0 / (0.004 * 4)
+            tracking_lin_vel = 1.5 * 1.0 / (0.001 * 10)
+            tracking_ang_vel = 0.5 * 1.0 / (0.001 * 10)
             # tracking_lin_vel = 1.0
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
@@ -237,7 +237,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.12, 0.12]  # min max [m/s]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
