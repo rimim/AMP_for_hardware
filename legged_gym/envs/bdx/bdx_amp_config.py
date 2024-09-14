@@ -89,8 +89,8 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        stiffness_all = 7  # 10 [N*m/rad]
-        damping_all = 0.05  # 0.03
+        stiffness_all = 10  # 10 [N*m/rad]
+        damping_all = 0.03  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -132,7 +132,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 10  # 4
+        decimation = 4  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"  # "heightfield" # none, plane, heightfield or trimesh
@@ -172,8 +172,8 @@ class BDXAMPCfg(LeggedRobotCfg):
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.001  # 0.004
-        substeps = 1  # 2
+        dt = 0.004  # 0.004
+        substeps = 2  # 2
 
     class domain_rand:
         randomize_friction = False
@@ -206,7 +206,7 @@ class BDXAMPCfg(LeggedRobotCfg):
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
         base_height_target = 0.175
-        tracking_sigma = 0.1  # tracking reward = exp(-error^2/sigma)
+        tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
@@ -224,7 +224,7 @@ class BDXAMPCfg(LeggedRobotCfg):
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
-            action_rate = 0
+            action_rate = -1.0
             stand_still = 0.0
             dof_pos_limits = 0.0
             # motion_imitation = 5.0
@@ -283,7 +283,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.1  # original 10 # TUNE ?
+        disc_grad_penalty = 0.01  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
