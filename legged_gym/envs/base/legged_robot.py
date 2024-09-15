@@ -216,7 +216,7 @@ class LeggedRobot(BaseTask):
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
         self.envs_cooldowns[:] += self.dt
-        # self.envs_times[:] += self.dt * (self.envs_cooldowns > 100)
+
         self.envs_times[:] += self.dt * (self.envs_cooldowns > 0.5)
 
         return (
