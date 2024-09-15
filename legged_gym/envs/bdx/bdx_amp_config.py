@@ -34,7 +34,7 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward_dx_0_03.txt",
     # "datasets/bdx/placo_moves/bdx_turn_left.txt",
     # "datasets/bdx/placo_moves/bdx_turn_right.txt",
 ]
@@ -107,10 +107,10 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        dof_friction = 0.01
+        dof_friction = 0.00  # 0.01
 
         stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.05  # 0.03
+        damping_all = 0.03  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -257,7 +257,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            lin_vel_x = [0.12, 0.12]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
@@ -300,7 +300,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_reward_coef = 2.0  # 2.0
         amp_motion_files = MOTION_FILES
         amp_num_preload_transitions = 2000000
-        amp_task_reward_lerp = 0.2  # 0.3
+        amp_task_reward_lerp = 0.3  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
         disc_grad_penalty = 0.1  # original 10 # TUNE ?
