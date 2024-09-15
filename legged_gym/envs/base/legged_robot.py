@@ -166,6 +166,11 @@ class LeggedRobot(BaseTask):
 
         # actions[:, :] = target_pos
 
+        # a = 0.5
+        # f = 1
+        # targ = a * torch.sin(2 * np.pi * f * self.envs_times[0])
+        # actions[0, :] = targ.to(self.device)
+
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
         # step physics and render each frame
@@ -644,7 +649,7 @@ class LeggedRobot(BaseTask):
                     m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 )
 
-                # props["friction"] = self.cfg.control.dof_friction
+                props["friction"] = self.cfg.control.dof_friction
                 # props["damping"] = 0.0001
         return props
 

@@ -89,8 +89,10 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        stiffness_all = 5  # 10 [N*m/rad]
-        damping_all = 0.1  # 0.03
+        dof_friction = 0.01
+
+        stiffness_all = 10  # 10 [N*m/rad]
+        damping_all = 0.08  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -205,7 +207,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
-        base_height_target = 0.175
+        base_height_target = 0.16
         tracking_sigma = 0.05  # tracking reward = exp(-error^2/sigma)
 
         class scales(LeggedRobotCfg.rewards.scales):
