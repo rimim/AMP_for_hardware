@@ -181,7 +181,7 @@ class BDXRoughCfg(LeggedRobotCfg):
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
         base_height_target = 0.15
-        tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
+        tracking_sigma = 0.05  # tracking reward = exp(-error^2/sigma)
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
@@ -191,7 +191,7 @@ class BDXRoughCfg(LeggedRobotCfg):
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
-            orientation = -0.1
+            orientation = -0.3
             torques = -0.000025  # -0.000025
             dof_vel = 0.0
             dof_acc = 0.0
@@ -211,7 +211,7 @@ class BDXRoughCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.1, 0.1]  # min max [m/s]
+            lin_vel_x = [0.2, 0.2]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
