@@ -64,22 +64,39 @@ class BDXAMPCfg(LeggedRobotCfg):
         pos = [0.0, 0.0, 0.16]  # x,y,z [m]
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
 
+        # default_joint_angles = {
+        #     "left_hip_yaw": -0.03455234018541292,
+        #     "left_hip_roll": 0.055730747490168285,
+        #     "left_hip_pitch": 0.5397158397618105,
+        #     "left_knee": -1.3152788306721914,
+        #     "left_ankle": 0.6888361815639528,
+        #     "neck_pitch": -0.1745314896173976,
+        #     "head_pitch": -0.17453429522668937,
+        #     "head_yaw": 0,
+        #     "left_antenna": 0,
+        #     "right_antenna": 0,
+        #     "right_hip_yaw": -0.03646051060835733,
+        #     "right_hip_roll": -0.03358034284950263,
+        #     "right_hip_pitch": 0.5216150220237578,
+        #     "right_knee": -1.326235199315616,
+        #     "right_ankle": 0.7179857110436013,
+        # }
         default_joint_angles = {
-            "left_hip_yaw": -0.03455234018541292,
-            "left_hip_roll": 0.055730747490168285,
-            "left_hip_pitch": 0.5397158397618105,
-            "left_knee": -1.3152788306721914,
-            "left_ankle": 0.6888361815639528,
-            "neck_pitch": -0.1745314896173976,
-            "head_pitch": -0.17453429522668937,
+            "left_hip_yaw": -0.0038368461980583203,
+            "left_hip_roll": 0.014431210831554308,
+            "left_hip_pitch": 1.133082668956462,
+            "left_knee": -1.4620636255950707,
+            "left_ankle": 0.590808248377727,
+            "neck_pitch": -0.17453292519943295,
+            "head_pitch": -0.17453292519943295,
             "head_yaw": 0,
             "left_antenna": 0,
             "right_antenna": 0,
-            "right_hip_yaw": -0.03646051060835733,
-            "right_hip_roll": -0.03358034284950263,
-            "right_hip_pitch": 0.5216150220237578,
-            "right_knee": -1.326235199315616,
-            "right_ankle": 0.7179857110436013,
+            "right_hip_yaw": 0.0019449075083605783,
+            "right_hip_roll": 0.007371299077063522,
+            "right_hip_pitch": 1.1351700102241071,
+            "right_knee": -1.4585281663702696,
+            "right_ankle": 0.5851648236531114,
         }
 
     class control(LeggedRobotCfg.control):
