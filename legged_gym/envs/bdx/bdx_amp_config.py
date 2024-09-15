@@ -66,38 +66,38 @@ class BDXAMPCfg(LeggedRobotCfg):
         rot = [0, -0.08, 0, 1]
 
         # default_joint_angles = {
-        #     "left_hip_yaw": -0.03455234018541292,
-        #     "left_hip_roll": 0.055730747490168285,
-        #     "left_hip_pitch": 0.5397158397618105,
-        #     "left_knee": -1.3152788306721914,
-        #     "left_ankle": 0.6888361815639528,
-        #     "neck_pitch": -0.1745314896173976,
-        #     "head_pitch": -0.17453429522668937,
+        #     "left_hip_yaw": -0.0038368461980583203,
+        #     "left_hip_roll": 0.014431210831554308,
+        #     "left_hip_pitch": 1.133082668956462,
+        #     "left_knee": -1.4620636255950707,
+        #     "left_ankle": 0.590808248377727,
+        #     "neck_pitch": -0.17453292519943295,
+        #     "head_pitch": -0.17453292519943295,
         #     "head_yaw": 0,
         #     "left_antenna": 0,
         #     "right_antenna": 0,
-        #     "right_hip_yaw": -0.03646051060835733,
-        #     "right_hip_roll": -0.03358034284950263,
-        #     "right_hip_pitch": 0.5216150220237578,
-        #     "right_knee": -1.326235199315616,
-        #     "right_ankle": 0.7179857110436013,
+        #     "right_hip_yaw": 0.0019449075083605783,
+        #     "right_hip_roll": 0.007371299077063522,
+        #     "right_hip_pitch": 1.1351700102241071,
+        #     "right_knee": -1.4585281663702696,
+        #     "right_ankle": 0.5851648236531114,
         # }
         default_joint_angles = {
-            "left_hip_yaw": -0.0038368461980583203,
-            "left_hip_roll": 0.014431210831554308,
-            "left_hip_pitch": 1.133082668956462,
-            "left_knee": -1.4620636255950707,
-            "left_ankle": 0.590808248377727,
+            "left_hip_yaw": -0.002853397830292128,
+            "left_hip_roll": 0.01626303761810685,
+            "left_hip_pitch": 1.0105624704499077,
+            "left_knee": -1.4865015965817336,
+            "left_ankle": 0.6504953719748071,
             "neck_pitch": -0.17453292519943295,
             "head_pitch": -0.17453292519943295,
             "head_yaw": 0,
             "left_antenna": 0,
             "right_antenna": 0,
-            "right_hip_yaw": 0.0019449075083605783,
-            "right_hip_roll": 0.007371299077063522,
-            "right_hip_pitch": 1.1351700102241071,
-            "right_knee": -1.4585281663702696,
-            "right_ankle": 0.5851648236531114,
+            "right_hip_yaw": 0.001171696610228082,
+            "right_hip_roll": 0.006726989242258406,
+            "right_hip_pitch": 1.0129772861831692,
+            "right_knee": -1.4829304760981399,
+            "right_ankle": 0.6444901047812701,
         }
 
     class control(LeggedRobotCfg.control):
@@ -107,10 +107,10 @@ class BDXAMPCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        dof_friction = 0.0
+        dof_friction = 0.01
 
         stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.03  # 0.03
+        damping_all = 0.05  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -185,7 +185,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
         # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
-        fix_base_link = False  # fixe the base of the robot
+        fix_base_link = True  # fixe the base of the robot
 
     # class normalization(LeggedRobotCfg.normalization):
     #     clip_observations = 5.0
