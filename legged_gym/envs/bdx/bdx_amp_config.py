@@ -110,7 +110,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         dof_friction = 0.01  # 0.01
 
         stiffness_all = 20  # 10 [N*m/rad]
-        damping_all = 0.02  # 0.03
+        damping_all = 0.1  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -148,9 +148,9 @@ class BDXAMPCfg(LeggedRobotCfg):
         }
 
         # action scale: target angle = actionScale * action + defaultAngle
-        action_scale = 0.25  # 0.25
+        # action_scale = 0.25  # 0.25
         # action_scale = 0.5  # 0.25
-        # action_scale = 1.0  # 0.25
+        action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 8  # 4
@@ -179,14 +179,14 @@ class BDXAMPCfg(LeggedRobotCfg):
             "head",
             "left_antenna",
             "right_antenna",
-            "leg_module",
-            "leg_module_2",
+            # "leg_module",
+            # "leg_module_2",
         ]
         flip_visual_attachments = False
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
         # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
-        fix_base_link = False  # fixe the base of the robot
+        fix_base_link = False  # fix the base of the robot
 
         angular_damping = 0.05
         linear_damping = 0.0
@@ -237,8 +237,8 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.004 * 4)
-            tracking_ang_vel = 0.5 * 1.0 / (0.004 * 4)
+            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 8)
+            tracking_ang_vel = 0.5 * 1.0 / (0.002 * 8)
             # tracking_lin_vel = 1.0
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
@@ -246,9 +246,9 @@ class BDXAMPCfg(LeggedRobotCfg):
             orientation = 0.0
             torques = -0.000025  # -0.000025
             dof_vel = 0.0
-            dof_acc = 0.0
+            dof_acc = -1.0
             base_height = 0.0
-            feet_air_time = 0.0
+            feet_air_time = 1.0
             collision = 0.0
             feet_stumble = 0.0
             action_rate = -1.0
@@ -264,7 +264,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.12, 0.12]  # min max [m/s]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
@@ -310,7 +310,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.1  # original 10 # TUNE ?
+        disc_grad_penalty = 1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 
