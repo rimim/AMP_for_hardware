@@ -191,11 +191,11 @@ class BDXRoughCfg(LeggedRobotCfg):
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
-            orientation = 0.0
+            orientation = -0.1
             torques = -0.000025  # -0.000025
             dof_vel = 0.0
             dof_acc = 0.0
-            base_height = 0.1
+            base_height = -0.1
             feet_air_time = 0.0
             collision = 0.0
             feet_stumble = 0.0
