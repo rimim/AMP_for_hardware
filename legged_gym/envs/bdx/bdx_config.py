@@ -80,8 +80,8 @@ class BDXRoughCfg(LeggedRobotCfg):
 
         dof_friction = 0.01
 
-        stiffness_all = 10  # 10 [N*m/rad]
-        damping_all = 0.08  # 0.03
+        stiffness_all = 20  # 10 [N*m/rad]
+        damping_all = 0.1  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -123,7 +123,7 @@ class BDXRoughCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 10  # 4
+        decimation = 8  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -147,8 +147,8 @@ class BDXRoughCfg(LeggedRobotCfg):
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.001  # 0.004
-        substeps = 1  # 2
+        dt = 0.002  # 0.004
+        substeps = 2  # 2
 
     class domain_rand:
         randomize_friction = False
@@ -181,12 +181,12 @@ class BDXRoughCfg(LeggedRobotCfg):
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
         base_height_target = 0.15
-        tracking_sigma = 0.05  # tracking reward = exp(-error^2/sigma)
+        tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.001 * 10)
-            tracking_ang_vel = 0.5 * 1.0 / (0.001 * 10)
+            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 8)
+            tracking_ang_vel = 0.5 * 1.0 / (0.002 * 8)
             # tracking_lin_vel = 1.0
             # tracking_ang_vel = 0.5
             lin_vel_z = 0.0
