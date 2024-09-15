@@ -1661,6 +1661,11 @@ class LeggedRobot(BaseTask):
             dim=1,
         )
 
+    def _reward_close_default_position(self):
+        # Penalize being far from the default position
+
+        return torch.sum(torch.square(self.dof_pos - self.default_dof_pos), dim=1)
+
     def _reward_motion_imitation(self):
         target_pos = self.amp_loader.get_joint_pose_batch(
             self.amp_loader.get_full_frame_at_time_batch(
