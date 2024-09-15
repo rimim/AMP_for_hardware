@@ -63,6 +63,7 @@ class BDXAMPCfg(LeggedRobotCfg):
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.16]  # x,y,z [m]
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
+        rot = [0, -0.08, 0, 1]
 
         # default_joint_angles = {
         #     "left_hip_yaw": -0.03455234018541292,
