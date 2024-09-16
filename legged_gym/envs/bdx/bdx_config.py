@@ -78,10 +78,10 @@ class BDXRoughCfg(LeggedRobotCfg):
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        dof_friction = 0.01
+        dof_friction = 0.00
 
-        stiffness_all = 20  # 10 [N*m/rad]
-        damping_all = 0.1  # 0.03
+        stiffness_all = 10  # 10 [N*m/rad]
+        damping_all = 0.03  # 0.03
         stiffness = {
             "left_hip_yaw": stiffness_all,
             "left_hip_roll": stiffness_all,
@@ -123,7 +123,7 @@ class BDXRoughCfg(LeggedRobotCfg):
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
-        decimation = 8  # 4
+        decimation = 4  # 4
 
     class terrain(LeggedRobotCfg.terrain):
         mesh_type = "plane"
@@ -147,7 +147,7 @@ class BDXRoughCfg(LeggedRobotCfg):
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.002  # 0.004
+        dt = 0.004  # 0.004
         substeps = 2  # 2
 
     class domain_rand:
@@ -185,10 +185,10 @@ class BDXRoughCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.002 * 8)
-            tracking_ang_vel = 0.5 * 1.0 / (0.002 * 8)
-            # tracking_lin_vel = 1.0
-            # tracking_ang_vel = 0.5
+            # tracking_lin_vel = 1.5 * 1.0 / (0.002 * 8)
+            # tracking_ang_vel = 0.5 * 1.0 / (0.002 * 8)
+            tracking_lin_vel = 1.5
+            tracking_ang_vel = 0.5
             lin_vel_z = 0.0
             ang_vel_xy = 0.0
             orientation = -0.1
@@ -196,13 +196,13 @@ class BDXRoughCfg(LeggedRobotCfg):
             dof_vel = 0.0
             dof_acc = 0.0
             base_height = -0.1
-            feet_air_time = 0.1
+            feet_air_time = 0.2
             collision = 0.0
             feet_stumble = 0.0
             action_rate = -0.1
             stand_still = 0.0
             dof_pos_limits = 0.0
-            close_default_position = -0.1
+            close_default_position = -0.5
 
     class commands:
         curriculum = False  # False
@@ -212,7 +212,7 @@ class BDXRoughCfg(LeggedRobotCfg):
         heading_command = False  # if true: compute ang vel command from heading error
 
         class ranges:
-            lin_vel_x = [0.2, 0.2]  # min max [m/s]
+            lin_vel_x = [0.1, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
             ang_vel_yaw = [0.0, 0.0]  # min max [rad/s]
             heading = [0, 0]
