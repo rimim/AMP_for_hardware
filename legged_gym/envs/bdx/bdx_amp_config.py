@@ -34,9 +34,9 @@ from legged_gym.envs.base.legged_robot_config import LeggedRobotCfg, LeggedRobot
 
 # MOTION_FILES = glob.glob("datasets/bdx/new_placo_moves/*")
 MOTION_FILES = [
-    "datasets/bdx/lower_com_placo_moves/bdx_walk_forward.txt",
-    # "datasets/bdx/lower_com_placo_moves/bdx_turn_left.txt",
-    # "datasets/bdx/lower_com_placo_moves/bdx_turn_right.txt",
+    "datasets/bdx/new_placo_moves/bdx_walk_forward.txt",
+    # "datasets/bdx/placo_moves/bdx_turn_left.txt",
+    # "datasets/bdx/placo_moves/bdx_turn_right.txt",
 ]
 
 NO_FEET = False  # Do not use feet in the amp observations and data
@@ -63,52 +63,51 @@ class BDXAMPCfg(LeggedRobotCfg):
     class init_state(LeggedRobotCfg.init_state):
         pos = [0.0, 0.0, 0.16]  # x,y,z [m]
         # pos = [0.0, 0.0, 0.3]  # x,y,z [m]
+        rot = [0, -0.08, 0, 1]
 
-        # Higher com 0.175
-        # default_joint_angles = {  # = target angles [rad] when action = 0.0
-        #     "left_hip_yaw": -0.03485756878823724,  # [rad]
-        #     "left_hip_roll": 0.052286054888550475,  # [rad]
-        #     "left_hip_pitch": 0.36623601032755765,  # [rad]
-        #     "left_knee": -0.964204465274923,  # [rad]
-        #     "left_ankle": 0.5112970996901808,  # [rad]
-        #     "neck_pitch": -0.17453292519943295,  # [rad]
-        #     "head_pitch": -0.17453292519943295,  # [rad]
-        #     "head_yaw": 0,  # [rad]
-        #     "left_antenna": 0.0,  # [rad]
-        #     "right_antenna": 0.0,  # [rad]
-        #     "right_hip_yaw": -0.03676731090962078,  # [rad]
-        #     "right_hip_roll": -0.030315211140564333,  # [rad]
-        #     "right_hip_pitch": 0.4065815100399598,  # [rad]
-        #     "right_knee": -1.0864064934571644,  # [rad]
-        #     "right_ankle": 0.5932324840794684,  # [rad]
+        # default_joint_angles = {
+        #     "left_hip_yaw": -0.0038368461980583203,
+        #     "left_hip_roll": 0.014431210831554308,
+        #     "left_hip_pitch": 1.133082668956462,
+        #     "left_knee": -1.4620636255950707,
+        #     "left_ankle": 0.590808248377727,
+        #     "neck_pitch": -0.17453292519943295,
+        #     "head_pitch": -0.17453292519943295,
+        #     "head_yaw": 0,
+        #     "left_antenna": 0,
+        #     "right_antenna": 0,
+        #     "right_hip_yaw": 0.0019449075083605783,
+        #     "right_hip_roll": 0.007371299077063522,
+        #     "right_hip_pitch": 1.1351700102241071,
+        #     "right_knee": -1.4585281663702696,
+        #     "right_ankle": 0.5851648236531114,
         # }
-        # lower com 0.16
         default_joint_angles = {
-            "left_hip_yaw": -0.03455234018541292,
-            "left_hip_roll": 0.055730747490168285,
-            "left_hip_pitch": 0.5397158397618105,
-            "left_knee": -1.3152788306721914,
-            "left_ankle": 0.6888361815639528,
-            "neck_pitch": -0.1745314896173976,
-            "head_pitch": -0.17453429522668937,
+            "left_hip_yaw": -0.002853397830292128,
+            "left_hip_roll": 0.01626303761810685,
+            "left_hip_pitch": 1.0105624704499077,
+            "left_knee": -1.4865015965817336,
+            "left_ankle": 0.6504953719748071,
+            "neck_pitch": -0.17453292519943295,
+            "head_pitch": -0.17453292519943295,
             "head_yaw": 0,
             "left_antenna": 0,
             "right_antenna": 0,
-            "right_hip_yaw": -0.03646051060835733,
-            "right_hip_roll": -0.03358034284950263,
-            "right_hip_pitch": 0.5216150220237578,
-            "right_knee": -1.326235199315616,
-            "right_ankle": 0.7179857110436013,
+            "right_hip_yaw": 0.001171696610228082,
+            "right_hip_roll": 0.006726989242258406,
+            "right_hip_pitch": 1.0129772861831692,
+            "right_knee": -1.4829304760981399,
+            "right_ankle": 0.6444901047812701,
         }
 
     class control(LeggedRobotCfg.control):
         # PD Drive parameters:
         control_type = "P"
-        override_effort = False
+        override_effort = True
         effort = 0.93  # Nm
         # effort = 0.52  # Nm
 
-        # dof_friction = 0.001
+        # dof_friction = 0.01  # 0.01
 
         stiffness_all = 10  # 10 [N*m/rad]
         damping_all = 0.03  # 0.03
@@ -150,6 +149,7 @@ class BDXAMPCfg(LeggedRobotCfg):
 
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25  # 0.25
+        # action_scale = 0.5  # 0.25
         # action_scale = 1.0  # 0.25
 
         # decimation: Number of control action updates @ sim DT per policy DT
@@ -186,47 +186,54 @@ class BDXAMPCfg(LeggedRobotCfg):
         self_collisions = 1  # 1 to disable, 0 to enable...bitwise filter
         # default_dof_drive_mode = 0  # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
         disable_gravity = False
-        fix_base_link = False  # fixe the base of the robot
+        fix_base_link = False  # fix the base of the robot
+
+        # angular_damping = 0.05
+        # linear_damping = 0.0
+        # armature = 0.0
+        # thickness = 0.01
 
     # class normalization(LeggedRobotCfg.normalization):
     #     clip_observations = 5.0
     #     clip_actions = 1.0
 
     class sim(LeggedRobotCfg.sim):
-        dt = 0.004  # 0.004
+        # dt = 0.004  # 0.004
+        dt = 0.004
         substeps = 2  # 2
 
     class domain_rand:
-        randomize_friction = False
-        friction_range = [0.95, 1.05]
-        randomize_base_mass = False
-        added_mass_range = [-0.05, 0.05]
+        randomize_friction = True
+        friction_range = [0.8, 1.2]
+        randomize_base_mass = True
+        added_mass_range = [-0.2, 0.2]
         push_robots = False
         push_interval_s = 15
         max_push_vel_xy = 0.5  # 0.3
         randomize_gains = False
         stiffness_multiplier_range = [0.95, 1.05]
         damping_multiplier_range = [0.95, 1.05]
-        randomize_torques = False
-        torque_multiplier_range = [0.95, 1.05]
-        randomize_com = False
-        com_range = [-0.01, 0.01]
+        randomize_torques = True
+        torque_multiplier_range = [0.8, 1.2]
+        randomize_com = True
+        com_range = [-0.04, 0.04]
 
     class noise:
-        add_noise = False
+        add_noise = True
         noise_level = 1.0  # scales other values
 
         class noise_scales:
-            dof_pos = 0.01
-            dof_vel = 0.01  # 1.5
-            lin_vel = 0.01
-            ang_vel = 0.01
-            gravity = 0.01
+            dof_pos = 0.05
+            dof_vel = 0.05  # 1.5
+            lin_vel = 0.05
+            ang_vel = 0.05
+            gravity = 0.05
             height_measurements = 0.1
 
     class rewards(LeggedRobotCfg.rewards):
         soft_dof_pos_limit = 0.9
-        base_height_target = 0.175
+        base_height_target = 0.16
+        tracking_sigma = 0.05  # tracking reward = exp(-error^2/sigma)
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
@@ -259,7 +266,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         class ranges:
             lin_vel_x = [0.0, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [-0.1, 0.1]  # min max [rad/s]
+            ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
@@ -303,7 +310,7 @@ class BDXAMPCfgPPO(LeggedRobotCfgPPO):
         amp_task_reward_lerp = 0.2  # 0.3
         amp_discr_hidden_dims = [1024, 512]
 
-        disc_grad_penalty = 0.01  # original 10 # TUNE ?
+        disc_grad_penalty = 0.1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 

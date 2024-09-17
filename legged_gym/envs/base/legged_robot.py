@@ -166,6 +166,11 @@ class LeggedRobot(BaseTask):
 
         # actions[:, :] = target_pos
 
+        # a = 0.5
+        # f = 1
+        # targ = a * torch.sin(2 * np.pi * f * self.envs_times[0])
+        # actions[0, :] = targ.to(self.device)
+
         clip_actions = self.cfg.normalization.clip_actions
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
         # step physics and render each frame
@@ -211,7 +216,7 @@ class LeggedRobot(BaseTask):
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
 
         self.envs_cooldowns[:] += self.dt
-        # self.envs_times[:] += self.dt * (self.envs_cooldowns > 100)
+
         self.envs_times[:] += self.dt * (self.envs_cooldowns > 0.5)
 
         return (
@@ -1655,6 +1660,11 @@ class LeggedRobot(BaseTask):
             ).clip(min=0.0),
             dim=1,
         )
+
+    def _reward_close_default_position(self):
+        # Penalize being far from the default position
+
+        return torch.sum(torch.square(self.dof_pos - self.default_dof_pos), dim=1)
 
     def _reward_motion_imitation(self):
         target_pos = self.amp_loader.get_joint_pose_batch(
