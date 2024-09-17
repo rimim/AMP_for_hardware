@@ -223,11 +223,11 @@ class BDXAMPCfg(LeggedRobotCfg):
         noise_level = 1.0  # scales other values
 
         class noise_scales:
-            dof_pos = 0.01
-            dof_vel = 0.01  # 1.5
-            lin_vel = 0.01
-            ang_vel = 0.01
-            gravity = 0.01
+            dof_pos = 0.05
+            dof_vel = 0.05  # 1.5
+            lin_vel = 0.05
+            ang_vel = 0.05
+            gravity = 0.05
             height_measurements = 0.1
 
     class rewards(LeggedRobotCfg.rewards):
@@ -266,7 +266,7 @@ class BDXAMPCfg(LeggedRobotCfg):
         class ranges:
             lin_vel_x = [0.0, 0.1]  # min max [m/s]
             lin_vel_y = [0.0, 0.0]  # min max [m/s]
-            ang_vel_yaw = [-0.5, 0.5]  # min max [rad/s]
+            ang_vel_yaw = [-0.7, 0.7]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
             # lin_vel_y = [0.0, 0.0]  # min max [m/s]
