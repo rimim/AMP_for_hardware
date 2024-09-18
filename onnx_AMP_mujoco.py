@@ -73,7 +73,7 @@ if args.xbox:
 
 # Params
 # dt = 0.002
-dt = 0.005
+dt = 0.004
 linearVelocityScale = 1.0
 angularVelocityScale = 1.0
 dof_pos_scale = 1.0
