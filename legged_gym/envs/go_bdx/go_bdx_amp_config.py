@@ -94,7 +94,7 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         # PD Drive parameters:
         control_type = "P"
         override_effort = False
-        dof_friction = 0 # 0.01
+        dof_friction = 0.01
 
         stiffness = {
             "left_hip_yaw": 40,
@@ -215,8 +215,8 @@ class GOBDXAMPCfg(LeggedRobotCfg):
 
         class scales(LeggedRobotCfg.rewards.scales):
             termination = 0.0
-            tracking_lin_vel = 1.5 * 1.0 / (0.005 * 6)
-            tracking_ang_vel = 0.5 * 1.0 / (0.005 * 6)
+            tracking_lin_vel = 1.5 * 1.0 / (0.004 * 6)
+            tracking_ang_vel = 0.5 * 1.0 / (0.004 * 6)
             # tracking_lin_vel = 0
             # tracking_ang_vel = 0
             lin_vel_z = 0.0
@@ -239,11 +239,12 @@ class GOBDXAMPCfg(LeggedRobotCfg):
         num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = False  # if true: compute ang vel command from heading error
+        minimum_command_size = 0.1 # was 0.01
 
         class ranges:
-            lin_vel_x = [-0.3, 0.3]  # [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
+            lin_vel_x = [0, 0.6]  # [0.4, 0.4] #[-0.2, 1.0]  # min max [m/s]
             lin_vel_y = [0, 0]  # [-0.3, 0.3] #[-0.1836, 0.1836]  # min max [m/s]
-            ang_vel_yaw = [-0.1, 0.1]  # [-1.57, 1.57]  # min max [rad/s]
+            ang_vel_yaw = [0, 0]  # [-1.57, 1.57]  # min max [rad/s]
             # ang_vel_yaw = [-0.4, 0.4]  # [-1.57, 1.57]  # min max [rad/s]
             heading = [0, 0]
             # lin_vel_x = [0.1, 0.2]  # min max [m/s]
@@ -282,8 +283,7 @@ class GOBDXAMPCfgPPO(LeggedRobotCfgPPO):
 
         # disc_grad_penalty = 1  # original 10 # TUNE ?
         # smaller penalty is needed for high-dynamic mocap
-        #disc_grad_penalty = 0.1  # original 10 # TUNE ?
-        disc_grad_penalty = 1  # original 10 # TUNE ?
+        disc_grad_penalty = 0.1  # original 10 # TUNE ?
 
         # min_normalized_std = [0.05, 0.02, 0.05] * 4
 

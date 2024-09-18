@@ -93,6 +93,7 @@ class LeggedRobotCfg(BaseConfig):
         num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 10.0  # time before command are changed[s]
         heading_command = True  # if true: compute ang vel command from heading error
+        minimum_command_size = 0.1 # was 0.01
 
         class ranges:
             lin_vel_x = [-1.0, 1.0]  # min max [m/s]
@@ -174,6 +175,7 @@ class LeggedRobotCfg(BaseConfig):
             stand_still = -0.0
 
         only_positive_rewards = True  # if true negative total rewards are clipped at zero (avoids early termination problems)
+        # NB: reduce tracking_sigma if linear velocity is low
         tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = (
             1.0  # percentage of urdf limits, values above this limit are penalized

@@ -198,8 +198,8 @@ class LeggedRobot(BaseTask):
         reset_env_ids, terminal_amp_states = self.post_physics_step()
 
         # randomize com
-        if self.cfg.domain_rand.randomize_com:
-            self.root_states[:, :2] += self.randomize_com_values
+        # if self.cfg.domain_rand.randomize_com:
+        #     self.root_states[:, :2] += self.randomize_com_values
 
         # return clipped obs, clipped states (None), rewards, dones and infos
         clip_obs = self.cfg.normalization.clip_observations
@@ -220,10 +220,7 @@ class LeggedRobot(BaseTask):
         if self.cfg.env.debug_save_obs:
             self.saved_obs.append(policy_obs[0].cpu().numpy())
             pickle.dump(self.saved_obs, open("saved_obs.pkl", "wb"))
-
-        self.envs_cooldowns[:] += self.dt
-        # self.envs_times[:] += self.dt * (self.envs_cooldowns > 100)
-        self.envs_times[:] += self.dt * (self.envs_cooldowns > 0.5)
+        self.envs_times[:] += self.dt
 
         return (
             policy_obs,
@@ -365,7 +362,6 @@ class LeggedRobot(BaseTask):
             self.extras["time_outs"] = self.time_out_buf
 
         self.envs_times[env_ids] = 0.0
-        self.envs_cooldowns[env_ids] = 0.0
 
         if self.cfg.domain_rand.randomize_torques:
             self.randomize_torques_factors = (
@@ -756,7 +752,7 @@ class LeggedRobot(BaseTask):
 
         # set small commands to zero
         self.commands[env_ids, :2] *= (
-            torch.norm(self.commands[env_ids, :2], dim=1) > 0.01
+            torch.norm(self.commands[env_ids, :2], dim=1) > self.cfg.commands.minimum_command_size
         ).unsqueeze(1)
 
     def _compute_torques(self, actions):
@@ -1346,6 +1342,7 @@ class LeggedRobot(BaseTask):
         env_upper = gymapi.Vec3(0.0, 0.0, 0.0)
         self.actor_handles = []
         self.envs = []
+
         for i in range(self.num_envs):
             # create env instance
             env_handle = self.gym.create_env(
@@ -1379,6 +1376,7 @@ class LeggedRobot(BaseTask):
                 0,
             )
             dof_props = self._process_dof_props(dof_props_asset, i)
+
             self.gym.set_actor_dof_properties(env_handle, anymal_handle, dof_props)
             body_props = self.gym.get_actor_rigid_body_properties(
                 env_handle, anymal_handle
@@ -1421,14 +1419,6 @@ class LeggedRobot(BaseTask):
             )
 
         self.envs_times = torch.zeros(
-            self.num_envs,
-            1,
-            dtype=torch.float,
-            device=self.device,
-            requires_grad=False,
-        )
-
-        self.envs_cooldowns = torch.zeros(
             self.num_envs,
             1,
             dtype=torch.float,
@@ -1733,3 +1723,17 @@ class LeggedRobot(BaseTask):
             ).clip(min=0.0),
             dim=1,
         )
+
+    def _reward_close_default_position(self):
+        # Penalize being far from the default position
+
+        return torch.sum(torch.square(self.dof_pos - self.default_dof_pos), dim=1)
+
+    def _reward_motion_imitation(self):
+        target_pos = self.amp_loader.get_joint_pose_batch(
+            self.amp_loader.get_full_frame_at_time_batch(
+                np.zeros(self.num_envs, dtype=np.int),
+                self.envs_times.cpu().numpy().flatten(),
+            )
+        )
+        return torch.sum(-torch.square(self.dof_pos - target_pos), dim=1)
