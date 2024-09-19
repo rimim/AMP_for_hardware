@@ -364,7 +364,7 @@ class AMPOnPolicyRunner:
 
     def load(self, path, load_optimizer=True):
         #loaded_dict = torch.load(path, map_location=torch.device('cuda:0'))
-        loaded_dict = torch.load(path, map_location=torch.device('cuda:0'))
+        loaded_dict = torch.load(path, map_location=torch.device(self.device))
         self.alg.actor_critic.load_state_dict(loaded_dict["model_state_dict"])
         self.alg.discriminator.load_state_dict(loaded_dict["discriminator_state_dict"])
         self.alg.amp_normalizer = loaded_dict["amp_normalizer"]
